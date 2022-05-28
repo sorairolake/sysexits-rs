@@ -6,7 +6,7 @@
 ![License][license-badge]
 
 **sysexits-rs** ([`sysexits`][version-url]) is a library that provides the
-system exit code constants as defined by [`sysexits.h`][sysexits-man-url].
+system exit code constants as defined by [`<sysexits.h>`][sysexits-man-url].
 
 This library implements the [`Termination`][termination-docs-url] trait, so
 this can be returned from the `main` function.
@@ -35,10 +35,10 @@ for more details.
 
 [ci-badge]: https://github.com/sorairolake/sysexits-rs/workflows/CI/badge.svg
 [ci-url]: https://github.com/sorairolake/sysexits-rs/actions?query=workflow%3ACI
-[version-badge]: https://img.shields.io/crates/v/sysexits-rs
-[version-url]: https://crates.io/crates/sysexits-rs
-[docs-badge]: https://img.shields.io/docsrs/sysexits-rs
-[docs-url]: https://docs.rs/sysexits-rs
-[license-badge]: https://img.shields.io/crates/l/sysexits-rs
+[version-badge]: https://img.shields.io/crates/v/sysexits
+[version-url]: https://crates.io/crates/sysexits
+[docs-badge]: https://img.shields.io/docsrs/sysexits
+[docs-url]: https://docs.rs/sysexits
+[license-badge]: https://img.shields.io/crates/l/sysexits
 [sysexits-man-url]: https://man.openbsd.org/sysexits
 [termination-docs-url]: https://doc.rust-lang.org/std/process/trait.Termination.html
