@@ -327,6 +327,62 @@ mod tests {
             format!("{:?}", ExitCode::from(SysExits::Usage)),
             format!("{:?}", ExitCode::from(64))
         );
+        assert_eq!(
+            format!("{:?}", ExitCode::from(SysExits::DataErr)),
+            format!("{:?}", ExitCode::from(65))
+        );
+        assert_eq!(
+            format!("{:?}", ExitCode::from(SysExits::NoInput)),
+            format!("{:?}", ExitCode::from(66))
+        );
+        assert_eq!(
+            format!("{:?}", ExitCode::from(SysExits::NoUser)),
+            format!("{:?}", ExitCode::from(67))
+        );
+        assert_eq!(
+            format!("{:?}", ExitCode::from(SysExits::NoHost)),
+            format!("{:?}", ExitCode::from(68))
+        );
+        assert_eq!(
+            format!("{:?}", ExitCode::from(SysExits::Unavailable)),
+            format!("{:?}", ExitCode::from(69))
+        );
+        assert_eq!(
+            format!("{:?}", ExitCode::from(SysExits::Software)),
+            format!("{:?}", ExitCode::from(70))
+        );
+        assert_eq!(
+            format!("{:?}", ExitCode::from(SysExits::OsErr)),
+            format!("{:?}", ExitCode::from(71))
+        );
+        assert_eq!(
+            format!("{:?}", ExitCode::from(SysExits::OsFile)),
+            format!("{:?}", ExitCode::from(72))
+        );
+        assert_eq!(
+            format!("{:?}", ExitCode::from(SysExits::CantCreat)),
+            format!("{:?}", ExitCode::from(73))
+        );
+        assert_eq!(
+            format!("{:?}", ExitCode::from(SysExits::IoErr)),
+            format!("{:?}", ExitCode::from(74))
+        );
+        assert_eq!(
+            format!("{:?}", ExitCode::from(SysExits::TempFail)),
+            format!("{:?}", ExitCode::from(75))
+        );
+        assert_eq!(
+            format!("{:?}", ExitCode::from(SysExits::Protocol)),
+            format!("{:?}", ExitCode::from(76))
+        );
+        assert_eq!(
+            format!("{:?}", ExitCode::from(SysExits::NoPerm)),
+            format!("{:?}", ExitCode::from(77))
+        );
+        assert_eq!(
+            format!("{:?}", ExitCode::from(SysExits::Config)),
+            format!("{:?}", ExitCode::from(78))
+        );
     }
 
     #[test]
@@ -338,6 +394,62 @@ mod tests {
         assert_eq!(
             format!("{:?}", SysExits::Usage.report()),
             format!("{:?}", ExitCode::from(64))
+        );
+        assert_eq!(
+            format!("{:?}", SysExits::DataErr.report()),
+            format!("{:?}", ExitCode::from(65))
+        );
+        assert_eq!(
+            format!("{:?}", SysExits::NoInput.report()),
+            format!("{:?}", ExitCode::from(66))
+        );
+        assert_eq!(
+            format!("{:?}", SysExits::NoUser.report()),
+            format!("{:?}", ExitCode::from(67))
+        );
+        assert_eq!(
+            format!("{:?}", SysExits::NoHost.report()),
+            format!("{:?}", ExitCode::from(68))
+        );
+        assert_eq!(
+            format!("{:?}", SysExits::Unavailable.report()),
+            format!("{:?}", ExitCode::from(69))
+        );
+        assert_eq!(
+            format!("{:?}", SysExits::Software.report()),
+            format!("{:?}", ExitCode::from(70))
+        );
+        assert_eq!(
+            format!("{:?}", SysExits::OsErr.report()),
+            format!("{:?}", ExitCode::from(71))
+        );
+        assert_eq!(
+            format!("{:?}", SysExits::OsFile.report()),
+            format!("{:?}", ExitCode::from(72))
+        );
+        assert_eq!(
+            format!("{:?}", SysExits::CantCreat.report()),
+            format!("{:?}", ExitCode::from(73))
+        );
+        assert_eq!(
+            format!("{:?}", SysExits::IoErr.report()),
+            format!("{:?}", ExitCode::from(74))
+        );
+        assert_eq!(
+            format!("{:?}", SysExits::TempFail.report()),
+            format!("{:?}", ExitCode::from(75))
+        );
+        assert_eq!(
+            format!("{:?}", SysExits::Protocol.report()),
+            format!("{:?}", ExitCode::from(76))
+        );
+        assert_eq!(
+            format!("{:?}", SysExits::NoPerm.report()),
+            format!("{:?}", ExitCode::from(77))
+        );
+        assert_eq!(
+            format!("{:?}", SysExits::Config.report()),
+            format!("{:?}", ExitCode::from(78))
         );
     }
 }
