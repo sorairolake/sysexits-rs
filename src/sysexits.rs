@@ -19,38 +19,102 @@ use std::process::{ExitCode, Termination};
 #[repr(u8)]
 pub enum SysExits {
     /// The successful exit.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::Ok as u8, 0);
+    /// ```
     Ok,
 
     /// The command was used incorrectly, e.g., with the wrong number of
     /// arguments, a bad flag, bad syntax in a parameter, or whatever.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::Usage as u8, 64);
+    /// ```
     Usage = 64,
 
     /// The input data was incorrect in some way.
     /// This should only be used for user's data and not system files.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::DataErr as u8, 65);
+    /// ```
     DataErr,
 
     /// An input file (not a system file) did not exist or was not readable.
     /// This could also include errors like "No message" to a mailer (if it
     /// cared to catch it).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::NoInput as u8, 66);
+    /// ```
     NoInput,
 
     /// The user specified did not exist.
     /// This might be used for mail addresses or remote logins.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::NoUser as u8, 67);
+    /// ```
     NoUser,
 
     /// The host specified did not exist.
     /// This is used in mail addresses or network requests.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::NoHost as u8, 68);
+    /// ```
     NoHost,
 
     /// A service is unavailable.
     /// This can occur if a support program or file does not exist.
     /// This can also be used as a catch-all message when something you wanted
     /// to do doesn't work, but you don't know why.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::Unavailable as u8, 69);
+    /// ```
     Unavailable,
 
     /// An internal software error has been detected.
     /// This should be limited to non-operating system related errors if
     /// possible.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::Software as u8, 70);
+    /// ```
     Software,
 
     /// An operating system error has been detected.
@@ -59,35 +123,99 @@ pub enum SysExits {
     /// [`getuid(2)`][getuid-2-man-url] returning a user that does not exist in
     /// the passwd file.
     ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::OsErr as u8, 71);
+    /// ```
+    ///
     /// [getuid-2-man-url]: https://man.openbsd.org/getuid.2
     OsErr,
 
     /// Some system file (e.g., `/etc/passwd`, `/var/run/utmp`) does not exist,
     /// cannot be opened, or has some sort of error (e.g., syntax error).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::OsFile as u8, 72);
+    /// ```
     OsFile,
 
     /// A (user specified) output file cannot be created.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::CantCreat as u8, 73);
+    /// ```
     CantCreat,
 
     /// An error occurred while doing I/O on some file.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::IoErr as u8, 74);
+    /// ```
     IoErr,
 
     /// Temporary failure, indicating something that is not really an error.
     /// For example that a mailer could not create a connection, and the request
     /// should be reattempted later.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::TempFail as u8, 75);
+    /// ```
     TempFail,
 
     /// The remote system returned something that was "not possible" during a
     /// protocol exchange.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::Protocol as u8, 76);
+    /// ```
     Protocol,
 
     /// You did not have sufficient permission to perform the operation.
     /// This is not intended for file system problems, which should use
     /// [`NoInput`](Self::NoInput) or [`CantCreat`](Self::CantCreat), but rather
     /// for higher level permissions.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::NoPerm as u8, 77);
+    /// ```
     NoPerm,
 
     /// Something was found in an unconfigured or misconfigured state.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::SysExits;
+    ///
+    /// assert_eq!(SysExits::Config as u8, 78);
+    /// ```
     Config,
 }
 
@@ -140,26 +268,6 @@ impl Termination for SysExits {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_the_system_exit_code_is_valid() {
-        assert_eq!(SysExits::Ok as u8, 0);
-        assert_eq!(SysExits::Usage as u8, 64);
-        assert_eq!(SysExits::DataErr as u8, 65);
-        assert_eq!(SysExits::NoInput as u8, 66);
-        assert_eq!(SysExits::NoUser as u8, 67);
-        assert_eq!(SysExits::NoHost as u8, 68);
-        assert_eq!(SysExits::Unavailable as u8, 69);
-        assert_eq!(SysExits::Software as u8, 70);
-        assert_eq!(SysExits::OsErr as u8, 71);
-        assert_eq!(SysExits::OsFile as u8, 72);
-        assert_eq!(SysExits::CantCreat as u8, 73);
-        assert_eq!(SysExits::IoErr as u8, 74);
-        assert_eq!(SysExits::TempFail as u8, 75);
-        assert_eq!(SysExits::Protocol as u8, 76);
-        assert_eq!(SysExits::NoPerm as u8, 77);
-        assert_eq!(SysExits::Config as u8, 78);
-    }
 
     #[test]
     fn test_is_success_for_successful_termination() {
