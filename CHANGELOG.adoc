@@ -12,6 +12,12 @@ project adheres to https://semver.org/[Semantic Versioning].
 
 toc::[]
 
+== {project-url}[Unreleased]
+
+=== Changed
+
+* Rename `sysexits::SysExits` to `sysexits::ExitCode`
+
 == {compare-url}/v0.1.0\...v0.1.1[0.1.1] - 2022-05-30
 
 === Added

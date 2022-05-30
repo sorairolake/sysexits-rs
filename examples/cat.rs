@@ -10,11 +10,11 @@
 use std::env;
 use std::fs;
 use std::io::{self, Read};
-use std::process::ExitCode;
+use std::process::ExitCode as StdExitCode;
 
-use sysexits::SysExits;
+use sysexits::ExitCode;
 
-fn main() -> ExitCode {
+fn main() -> StdExitCode {
     let args: Vec<_> = env::args().skip(1).collect();
 
     let contents = if args.is_empty() {
@@ -25,7 +25,7 @@ fn main() -> ExitCode {
             Err(err) => {
                 eprintln!("{err}");
 
-                return SysExits::DataErr.into();
+                return ExitCode::DataErr.into();
             }
         }
     } else {
@@ -39,10 +39,10 @@ fn main() -> ExitCode {
                 eprintln!("{err}");
 
                 match err.kind() {
-                    io::ErrorKind::NotFound => return SysExits::NoInput.into(),
-                    io::ErrorKind::PermissionDenied => return SysExits::NoPerm.into(),
-                    io::ErrorKind::InvalidData => return SysExits::DataErr.into(),
-                    _ => return ExitCode::FAILURE,
+                    io::ErrorKind::NotFound => return ExitCode::NoInput.into(),
+                    io::ErrorKind::PermissionDenied => return ExitCode::NoPerm.into(),
+                    io::ErrorKind::InvalidData => return ExitCode::DataErr.into(),
+                    _ => return StdExitCode::FAILURE,
                 }
             }
         }
@@ -52,5 +52,5 @@ fn main() -> ExitCode {
         print!("{output}");
     }
 
-    ExitCode::SUCCESS
+    StdExitCode::SUCCESS
 }

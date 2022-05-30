@@ -9,23 +9,23 @@
 //!
 //! [sysexits-man-url]: https://man.openbsd.org/sysexits
 
-use std::process::{ExitCode, Termination};
+use std::process::{ExitCode as StdExitCode, Termination};
 
-/// `SysExits` is a type that represents the system exit code constants as
+/// `ExitCode` is a type that represents the system exit code constants as
 /// defined by [`<sysexits.h>`][sysexits-man-url].
 ///
 /// [sysexits-man-url]: https://man.openbsd.org/sysexits
 #[derive(Clone, Copy, Debug)]
 #[repr(u8)]
-pub enum SysExits {
+pub enum ExitCode {
     /// The successful exit.
     ///
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::Ok as u8, 0);
+    /// assert_eq!(ExitCode::Ok as u8, 0);
     /// ```
     Ok,
 
@@ -35,9 +35,9 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::Usage as u8, 64);
+    /// assert_eq!(ExitCode::Usage as u8, 64);
     /// ```
     Usage = 64,
 
@@ -47,9 +47,9 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::DataErr as u8, 65);
+    /// assert_eq!(ExitCode::DataErr as u8, 65);
     /// ```
     DataErr,
 
@@ -60,9 +60,9 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::NoInput as u8, 66);
+    /// assert_eq!(ExitCode::NoInput as u8, 66);
     /// ```
     NoInput,
 
@@ -72,9 +72,9 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::NoUser as u8, 67);
+    /// assert_eq!(ExitCode::NoUser as u8, 67);
     /// ```
     NoUser,
 
@@ -84,9 +84,9 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::NoHost as u8, 68);
+    /// assert_eq!(ExitCode::NoHost as u8, 68);
     /// ```
     NoHost,
 
@@ -98,9 +98,9 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::Unavailable as u8, 69);
+    /// assert_eq!(ExitCode::Unavailable as u8, 69);
     /// ```
     Unavailable,
 
@@ -111,9 +111,9 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::Software as u8, 70);
+    /// assert_eq!(ExitCode::Software as u8, 70);
     /// ```
     Software,
 
@@ -126,9 +126,9 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::OsErr as u8, 71);
+    /// assert_eq!(ExitCode::OsErr as u8, 71);
     /// ```
     ///
     /// [getuid-2-man-url]: https://man.openbsd.org/getuid.2
@@ -140,9 +140,9 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::OsFile as u8, 72);
+    /// assert_eq!(ExitCode::OsFile as u8, 72);
     /// ```
     OsFile,
 
@@ -151,9 +151,9 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::CantCreat as u8, 73);
+    /// assert_eq!(ExitCode::CantCreat as u8, 73);
     /// ```
     CantCreat,
 
@@ -162,9 +162,9 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::IoErr as u8, 74);
+    /// assert_eq!(ExitCode::IoErr as u8, 74);
     /// ```
     IoErr,
 
@@ -175,9 +175,9 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::TempFail as u8, 75);
+    /// assert_eq!(ExitCode::TempFail as u8, 75);
     /// ```
     TempFail,
 
@@ -187,9 +187,9 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::Protocol as u8, 76);
+    /// assert_eq!(ExitCode::Protocol as u8, 76);
     /// ```
     Protocol,
 
@@ -201,9 +201,9 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::NoPerm as u8, 77);
+    /// assert_eq!(ExitCode::NoPerm as u8, 77);
     /// ```
     NoPerm,
 
@@ -212,24 +212,24 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::Config as u8, 78);
+    /// assert_eq!(ExitCode::Config as u8, 78);
     /// ```
     Config,
 }
 
-impl SysExits {
+impl ExitCode {
     /// Returns `true` if this system exit code represents successful
     /// termination.
     ///
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::Ok.is_success(), true);
-    /// assert_eq!(SysExits::Usage.is_success(), false);
+    /// assert_eq!(ExitCode::Ok.is_success(), true);
+    /// assert_eq!(ExitCode::Usage.is_success(), false);
     /// ```
     #[must_use]
     pub const fn is_success(self) -> bool {
@@ -242,10 +242,10 @@ impl SysExits {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::SysExits;
+    /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(SysExits::Ok.is_failure(), false);
-    /// assert_eq!(SysExits::Usage.is_failure(), true);
+    /// assert_eq!(ExitCode::Ok.is_failure(), false);
+    /// assert_eq!(ExitCode::Usage.is_failure(), true);
     /// ```
     #[must_use]
     pub const fn is_failure(self) -> bool {
@@ -253,15 +253,15 @@ impl SysExits {
     }
 }
 
-impl From<SysExits> for ExitCode {
-    fn from(code: SysExits) -> Self {
+impl From<ExitCode> for StdExitCode {
+    fn from(code: ExitCode) -> Self {
         code.report()
     }
 }
 
-impl Termination for SysExits {
-    fn report(self) -> ExitCode {
-        ExitCode::from(self as u8)
+impl Termination for ExitCode {
+    fn report(self) -> StdExitCode {
+        StdExitCode::from(self as u8)
     }
 }
 
@@ -271,185 +271,185 @@ mod tests {
 
     #[test]
     fn test_is_success_for_successful_termination() {
-        assert!(SysExits::Ok.is_success());
+        assert!(ExitCode::Ok.is_success());
     }
 
     #[test]
     fn test_is_success_for_unsuccessful_termination() {
-        assert!(!SysExits::Usage.is_success());
-        assert!(!SysExits::DataErr.is_success());
-        assert!(!SysExits::NoInput.is_success());
-        assert!(!SysExits::NoUser.is_success());
-        assert!(!SysExits::NoHost.is_success());
-        assert!(!SysExits::Unavailable.is_success());
-        assert!(!SysExits::Software.is_success());
-        assert!(!SysExits::OsErr.is_success());
-        assert!(!SysExits::OsFile.is_success());
-        assert!(!SysExits::CantCreat.is_success());
-        assert!(!SysExits::IoErr.is_success());
-        assert!(!SysExits::TempFail.is_success());
-        assert!(!SysExits::Protocol.is_success());
-        assert!(!SysExits::NoPerm.is_success());
-        assert!(!SysExits::Config.is_success());
+        assert!(!ExitCode::Usage.is_success());
+        assert!(!ExitCode::DataErr.is_success());
+        assert!(!ExitCode::NoInput.is_success());
+        assert!(!ExitCode::NoUser.is_success());
+        assert!(!ExitCode::NoHost.is_success());
+        assert!(!ExitCode::Unavailable.is_success());
+        assert!(!ExitCode::Software.is_success());
+        assert!(!ExitCode::OsErr.is_success());
+        assert!(!ExitCode::OsFile.is_success());
+        assert!(!ExitCode::CantCreat.is_success());
+        assert!(!ExitCode::IoErr.is_success());
+        assert!(!ExitCode::TempFail.is_success());
+        assert!(!ExitCode::Protocol.is_success());
+        assert!(!ExitCode::NoPerm.is_success());
+        assert!(!ExitCode::Config.is_success());
     }
 
     #[test]
     fn test_is_failure_for_successful_termination() {
-        assert!(!SysExits::Ok.is_failure());
+        assert!(!ExitCode::Ok.is_failure());
     }
 
     #[test]
     fn test_is_failure_for_unsuccessful_termination() {
-        assert!(SysExits::Usage.is_failure());
-        assert!(SysExits::DataErr.is_failure());
-        assert!(SysExits::NoInput.is_failure());
-        assert!(SysExits::NoUser.is_failure());
-        assert!(SysExits::NoHost.is_failure());
-        assert!(SysExits::Unavailable.is_failure());
-        assert!(SysExits::Software.is_failure());
-        assert!(SysExits::OsErr.is_failure());
-        assert!(SysExits::OsFile.is_failure());
-        assert!(SysExits::CantCreat.is_failure());
-        assert!(SysExits::IoErr.is_failure());
-        assert!(SysExits::TempFail.is_failure());
-        assert!(SysExits::Protocol.is_failure());
-        assert!(SysExits::NoPerm.is_failure());
-        assert!(SysExits::Config.is_failure());
+        assert!(ExitCode::Usage.is_failure());
+        assert!(ExitCode::DataErr.is_failure());
+        assert!(ExitCode::NoInput.is_failure());
+        assert!(ExitCode::NoUser.is_failure());
+        assert!(ExitCode::NoHost.is_failure());
+        assert!(ExitCode::Unavailable.is_failure());
+        assert!(ExitCode::Software.is_failure());
+        assert!(ExitCode::OsErr.is_failure());
+        assert!(ExitCode::OsFile.is_failure());
+        assert!(ExitCode::CantCreat.is_failure());
+        assert!(ExitCode::IoErr.is_failure());
+        assert!(ExitCode::TempFail.is_failure());
+        assert!(ExitCode::Protocol.is_failure());
+        assert!(ExitCode::NoPerm.is_failure());
+        assert!(ExitCode::Config.is_failure());
     }
 
     #[test]
     fn test_from_sys_exits_to_exit_code() {
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::Ok)),
-            format!("{:?}", ExitCode::from(0))
+            format!("{:?}", StdExitCode::from(ExitCode::Ok)),
+            format!("{:?}", StdExitCode::from(0))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::Usage)),
-            format!("{:?}", ExitCode::from(64))
+            format!("{:?}", StdExitCode::from(ExitCode::Usage)),
+            format!("{:?}", StdExitCode::from(64))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::DataErr)),
-            format!("{:?}", ExitCode::from(65))
+            format!("{:?}", StdExitCode::from(ExitCode::DataErr)),
+            format!("{:?}", StdExitCode::from(65))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::NoInput)),
-            format!("{:?}", ExitCode::from(66))
+            format!("{:?}", StdExitCode::from(ExitCode::NoInput)),
+            format!("{:?}", StdExitCode::from(66))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::NoUser)),
-            format!("{:?}", ExitCode::from(67))
+            format!("{:?}", StdExitCode::from(ExitCode::NoUser)),
+            format!("{:?}", StdExitCode::from(67))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::NoHost)),
-            format!("{:?}", ExitCode::from(68))
+            format!("{:?}", StdExitCode::from(ExitCode::NoHost)),
+            format!("{:?}", StdExitCode::from(68))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::Unavailable)),
-            format!("{:?}", ExitCode::from(69))
+            format!("{:?}", StdExitCode::from(ExitCode::Unavailable)),
+            format!("{:?}", StdExitCode::from(69))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::Software)),
-            format!("{:?}", ExitCode::from(70))
+            format!("{:?}", StdExitCode::from(ExitCode::Software)),
+            format!("{:?}", StdExitCode::from(70))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::OsErr)),
-            format!("{:?}", ExitCode::from(71))
+            format!("{:?}", StdExitCode::from(ExitCode::OsErr)),
+            format!("{:?}", StdExitCode::from(71))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::OsFile)),
-            format!("{:?}", ExitCode::from(72))
+            format!("{:?}", StdExitCode::from(ExitCode::OsFile)),
+            format!("{:?}", StdExitCode::from(72))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::CantCreat)),
-            format!("{:?}", ExitCode::from(73))
+            format!("{:?}", StdExitCode::from(ExitCode::CantCreat)),
+            format!("{:?}", StdExitCode::from(73))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::IoErr)),
-            format!("{:?}", ExitCode::from(74))
+            format!("{:?}", StdExitCode::from(ExitCode::IoErr)),
+            format!("{:?}", StdExitCode::from(74))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::TempFail)),
-            format!("{:?}", ExitCode::from(75))
+            format!("{:?}", StdExitCode::from(ExitCode::TempFail)),
+            format!("{:?}", StdExitCode::from(75))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::Protocol)),
-            format!("{:?}", ExitCode::from(76))
+            format!("{:?}", StdExitCode::from(ExitCode::Protocol)),
+            format!("{:?}", StdExitCode::from(76))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::NoPerm)),
-            format!("{:?}", ExitCode::from(77))
+            format!("{:?}", StdExitCode::from(ExitCode::NoPerm)),
+            format!("{:?}", StdExitCode::from(77))
         );
         assert_eq!(
-            format!("{:?}", ExitCode::from(SysExits::Config)),
-            format!("{:?}", ExitCode::from(78))
+            format!("{:?}", StdExitCode::from(ExitCode::Config)),
+            format!("{:?}", StdExitCode::from(78))
         );
     }
 
     #[test]
     fn test_report_status_code() {
         assert_eq!(
-            format!("{:?}", SysExits::Ok.report()),
-            format!("{:?}", ExitCode::from(0))
+            format!("{:?}", ExitCode::Ok.report()),
+            format!("{:?}", StdExitCode::from(0))
         );
         assert_eq!(
-            format!("{:?}", SysExits::Usage.report()),
-            format!("{:?}", ExitCode::from(64))
+            format!("{:?}", ExitCode::Usage.report()),
+            format!("{:?}", StdExitCode::from(64))
         );
         assert_eq!(
-            format!("{:?}", SysExits::DataErr.report()),
-            format!("{:?}", ExitCode::from(65))
+            format!("{:?}", ExitCode::DataErr.report()),
+            format!("{:?}", StdExitCode::from(65))
         );
         assert_eq!(
-            format!("{:?}", SysExits::NoInput.report()),
-            format!("{:?}", ExitCode::from(66))
+            format!("{:?}", ExitCode::NoInput.report()),
+            format!("{:?}", StdExitCode::from(66))
         );
         assert_eq!(
-            format!("{:?}", SysExits::NoUser.report()),
-            format!("{:?}", ExitCode::from(67))
+            format!("{:?}", ExitCode::NoUser.report()),
+            format!("{:?}", StdExitCode::from(67))
         );
         assert_eq!(
-            format!("{:?}", SysExits::NoHost.report()),
-            format!("{:?}", ExitCode::from(68))
+            format!("{:?}", ExitCode::NoHost.report()),
+            format!("{:?}", StdExitCode::from(68))
         );
         assert_eq!(
-            format!("{:?}", SysExits::Unavailable.report()),
-            format!("{:?}", ExitCode::from(69))
+            format!("{:?}", ExitCode::Unavailable.report()),
+            format!("{:?}", StdExitCode::from(69))
         );
         assert_eq!(
-            format!("{:?}", SysExits::Software.report()),
-            format!("{:?}", ExitCode::from(70))
+            format!("{:?}", ExitCode::Software.report()),
+            format!("{:?}", StdExitCode::from(70))
         );
         assert_eq!(
-            format!("{:?}", SysExits::OsErr.report()),
-            format!("{:?}", ExitCode::from(71))
+            format!("{:?}", ExitCode::OsErr.report()),
+            format!("{:?}", StdExitCode::from(71))
         );
         assert_eq!(
-            format!("{:?}", SysExits::OsFile.report()),
-            format!("{:?}", ExitCode::from(72))
+            format!("{:?}", ExitCode::OsFile.report()),
+            format!("{:?}", StdExitCode::from(72))
         );
         assert_eq!(
-            format!("{:?}", SysExits::CantCreat.report()),
-            format!("{:?}", ExitCode::from(73))
+            format!("{:?}", ExitCode::CantCreat.report()),
+            format!("{:?}", StdExitCode::from(73))
         );
         assert_eq!(
-            format!("{:?}", SysExits::IoErr.report()),
-            format!("{:?}", ExitCode::from(74))
+            format!("{:?}", ExitCode::IoErr.report()),
+            format!("{:?}", StdExitCode::from(74))
         );
         assert_eq!(
-            format!("{:?}", SysExits::TempFail.report()),
-            format!("{:?}", ExitCode::from(75))
+            format!("{:?}", ExitCode::TempFail.report()),
+            format!("{:?}", StdExitCode::from(75))
         );
         assert_eq!(
-            format!("{:?}", SysExits::Protocol.report()),
-            format!("{:?}", ExitCode::from(76))
+            format!("{:?}", ExitCode::Protocol.report()),
+            format!("{:?}", StdExitCode::from(76))
         );
         assert_eq!(
-            format!("{:?}", SysExits::NoPerm.report()),
-            format!("{:?}", ExitCode::from(77))
+            format!("{:?}", ExitCode::NoPerm.report()),
+            format!("{:?}", StdExitCode::from(77))
         );
         assert_eq!(
-            format!("{:?}", SysExits::Config.report()),
-            format!("{:?}", ExitCode::from(78))
+            format!("{:?}", ExitCode::Config.report()),
+            format!("{:?}", StdExitCode::from(78))
         );
     }
 }
