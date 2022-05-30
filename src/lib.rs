@@ -7,63 +7,63 @@
 //! The `sysexits` crate provides the system exit code constants as defined by
 //! [`<sysexits.h>`][sysexits-man-url].
 //!
-//! The [`SysExits`] type implements the
+//! The [`ExitCode`] type implements the
 //! [`Termination`](std::process::Termination) trait, so this can be returned
 //! from the `main` function.
 //!
 //! # Examples
 //!
-//! Return the [`SysExits`] from the `main` function:
+//! Return the [`ExitCode`] from the `main` function:
 //!
 //! ```no_run
-//! # use std::io::{self, Read};
-//! #
-//! use sysexits::SysExits;
+//! use std::io::{self, Read};
 //!
-//! fn main() -> SysExits {
+//! use sysexits::ExitCode;
+//!
+//! fn main() -> ExitCode {
 //!     let mut buf = String::new();
 //!
 //!     match io::stdin().read_to_string(&mut buf) {
 //!         Ok(_) => {
 //!             print!("{buf}");
 //!
-//!             SysExits::Ok
+//!             ExitCode::Ok
 //!         }
 //!         Err(err) => {
 //!             eprintln!("{err}");
 //!
-//!             SysExits::DataErr
+//!             ExitCode::DataErr
 //!         }
 //!     }
 //! }
 //! ```
 //!
-//! Return the [`ExitCode`](std::process::ExitCode) from the `main` function:
+//! Return the [`std::process::ExitCode`] from the `main` function:
 //!
 //! ```no_run
-//! # use std::fs;
-//! # use std::io;
-//! # use std::process::ExitCode;
-//! #
-//! use sysexits::SysExits;
+//! use std::fs;
+//! use std::io;
+//! use std::process::ExitCode as StdExitCode;
 //!
-//! fn main() -> ExitCode {
-//! #     let path = "/path/to/file.txt";
-//! #
+//! use sysexits::ExitCode;
+//!
+//! fn main() -> StdExitCode {
+//!     let path = "/path/to/file.txt";
+//!
 //!     match fs::read_to_string(path) {
 //!         Ok(contents) => {
 //!             print!("{contents}");
 //!
-//!             ExitCode::SUCCESS
+//!             StdExitCode::SUCCESS
 //!         }
 //!         Err(err) => {
 //!             eprintln!("{err}");
 //!
 //!             match err.kind() {
-//!                 io::ErrorKind::NotFound => SysExits::NoInput.into(),
-//!                 io::ErrorKind::PermissionDenied => SysExits::NoPerm.into(),
-//!                 io::ErrorKind::InvalidData => SysExits::DataErr.into(),
-//!                 _ => ExitCode::FAILURE,
+//!                 io::ErrorKind::NotFound => ExitCode::NoInput.into(),
+//!                 io::ErrorKind::PermissionDenied => ExitCode::NoPerm.into(),
+//!                 io::ErrorKind::InvalidData => ExitCode::DataErr.into(),
+//!                 _ => StdExitCode::FAILURE,
 //!             }
 //!         }
 //!     }
@@ -72,7 +72,7 @@
 //!
 //! [sysexits-man-url]: https://man.openbsd.org/sysexits
 
-#![doc(html_root_url = "https://docs.rs/sysexits/0.1.1/")]
+#![doc(html_root_url = "https://docs.rs/sysexits/0.2.0/")]
 // Lint levels of rustc.
 #![warn(rust_2018_idioms)]
 #![deny(missing_debug_implementations, missing_docs)]
@@ -80,6 +80,6 @@
 // Lint levels of Clippy.
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
-mod sysexits;
+mod exit_code;
 
-pub use crate::sysexits::SysExits;
+pub use crate::exit_code::ExitCode;
