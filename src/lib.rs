@@ -80,6 +80,6 @@
 // Lint levels of Clippy.
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
-mod sysexits;
+mod exit_code;
 
-pub use crate::sysexits::ExitCode;
+pub use crate::exit_code::ExitCode;
