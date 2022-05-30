@@ -11,6 +11,19 @@ system exit code constants as defined by [`<sysexits.h>`][sysexits-man-url].
 This library implements the [`Termination`][termination-docs-url] trait, so
 this can be returned from the `main` function.
 
+## Usage
+
+Add this to your `Cargo.toml`:
+
+```toml
+[dependencies]
+sysexits = "0.1.1"
+```
+
+### Documentation
+
+See the [documentation][docs-url] for usage and examples.
+
 ## Minimum supported Rust version
 
 The minimum supported Rust version (MSRV) of this library is v1.61.0 or later.
