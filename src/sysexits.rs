@@ -23,8 +23,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::Ok as u8, 0);
     /// ```
     Ok,
@@ -35,8 +35,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::Usage as u8, 64);
     /// ```
     Usage = 64,
@@ -47,8 +47,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::DataErr as u8, 65);
     /// ```
     DataErr,
@@ -60,8 +60,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::NoInput as u8, 66);
     /// ```
     NoInput,
@@ -72,8 +72,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::NoUser as u8, 67);
     /// ```
     NoUser,
@@ -84,8 +84,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::NoHost as u8, 68);
     /// ```
     NoHost,
@@ -98,8 +98,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::Unavailable as u8, 69);
     /// ```
     Unavailable,
@@ -111,8 +111,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::Software as u8, 70);
     /// ```
     Software,
@@ -126,8 +126,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::OsErr as u8, 71);
     /// ```
     ///
@@ -140,8 +140,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::OsFile as u8, 72);
     /// ```
     OsFile,
@@ -151,8 +151,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::CantCreat as u8, 73);
     /// ```
     CantCreat,
@@ -162,8 +162,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::IoErr as u8, 74);
     /// ```
     IoErr,
@@ -175,8 +175,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::TempFail as u8, 75);
     /// ```
     TempFail,
@@ -187,8 +187,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::Protocol as u8, 76);
     /// ```
     Protocol,
@@ -201,8 +201,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::NoPerm as u8, 77);
     /// ```
     NoPerm,
@@ -212,8 +212,8 @@ pub enum SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::Config as u8, 78);
     /// ```
     Config,
@@ -226,8 +226,8 @@ impl SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::Ok.is_success(), true);
     /// assert_eq!(SysExits::Usage.is_success(), false);
     /// ```
@@ -242,8 +242,8 @@ impl SysExits {
     /// # Examples
     ///
     /// ```
-    /// use sysexits::SysExits;
-    ///
+    /// # use sysexits::SysExits;
+    /// #
     /// assert_eq!(SysExits::Ok.is_failure(), false);
     /// assert_eq!(SysExits::Usage.is_failure(), true);
     /// ```
