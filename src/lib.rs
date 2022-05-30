@@ -13,19 +13,60 @@
 //!
 //! # Examples
 //!
-//! ```
+//! Return the [`SysExits`] from the `main` function:
+//!
+//! ```no_run
+//! # use std::io::{self, Read};
+//! #
 //! use sysexits::SysExits;
 //!
-//! # fn is_input_exist() -> bool {
-//! #     true
-//! # }
-//! #
 //! fn main() -> SysExits {
-//!     if !is_input_exist() {
-//!         return SysExits::NoInput;
-//!     }
+//!     let mut buf = String::new();
 //!
-//!     SysExits::Ok
+//!     match io::stdin().read_to_string(&mut buf) {
+//!         Ok(_) => {
+//!             print!("{buf}");
+//!
+//!             SysExits::Ok
+//!         }
+//!         Err(err) => {
+//!             eprintln!("{err}");
+//!
+//!             SysExits::DataErr
+//!         }
+//!     }
+//! }
+//! ```
+//!
+//! Return the [`ExitCode`](std::process::ExitCode) from the `main` function:
+//!
+//! ```no_run
+//! # use std::fs;
+//! # use std::io;
+//! # use std::process::ExitCode;
+//! #
+//! use sysexits::SysExits;
+//!
+//! fn main() -> ExitCode {
+//! #     let path = "/path/to/file.txt";
+//! #
+//!     match fs::read_to_string(path) {
+//!         Ok(contents) => {
+//!             print!("{contents}");
+//!
+//!             ExitCode::SUCCESS
+//!         }
+//!         Err(err) => {
+//!             eprintln!("{err}");
+//!
+//!             match err.kind() {
+//!                 io::ErrorKind::NotFound => SysExits::NoInput.into(),
+//!                 io::ErrorKind::PermissionDenied => SysExits::NoPerm.into(),
+//!                 io::ErrorKind::InvalidData => SysExits::DataErr.into(),
+//!                 _ => ExitCode::FAILURE,
+//!             }
+//!         }
+//!     }
 //! }
 //! ```
 //!
