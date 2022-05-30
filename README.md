@@ -20,6 +20,10 @@ Add this to your `Cargo.toml`:
 sysexits = "0.1.0"
 ```
 
+### Documentation
+
+See the [documentation][docs-url] for usage and examples.
+
 ## Minimum supported Rust version
 
 The minimum supported Rust version (MSRV) of this library is v1.61.0 or later.
