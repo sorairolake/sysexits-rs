@@ -17,12 +17,33 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-sysexits = "0.2.0"
+sysexits = "0.2.1"
+```
+
+### Example
+
+```rust
+fn main() -> sysexits::ExitCode {
+    let bytes = [0xf0, 0x9f, 0x92, 0x96];
+
+    match std::str::from_utf8(&bytes) {
+        Ok(string) => {
+            println!("{string}");
+
+            sysexits::ExitCode::Ok
+        }
+        Err(err) => {
+            eprintln!("{err}");
+
+            sysexits::ExitCode::DataErr
+        }
+    }
+}
 ```
 
 ### Documentation
 
-See the [documentation][docs-url] for usage and examples.
+See the [documentation][docs-url] for more details.
 
 ## Minimum supported Rust version
 

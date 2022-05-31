@@ -13,66 +13,61 @@
 //!
 //! # Examples
 //!
-//! Return the [`ExitCode`] from the `main` function:
+//! ## Returns the exit code as defined by <sysexits.h>
 //!
-//! ```no_run
-//! use std::io::{self, Read};
+//! If you only use the exit code as defined by `<sysexits.h>`, you can return
+//! this from the `main` function.
 //!
-//! use sysexits::ExitCode;
+//! ```
+//! fn main() -> sysexits::ExitCode {
+//!     let bytes = [0xf0, 0x9f, 0x92, 0x96];
 //!
-//! fn main() -> ExitCode {
-//!     let mut buf = String::new();
+//!     match std::str::from_utf8(&bytes) {
+//!         Ok(string) => {
+//!             println!("{string}");
 //!
-//!     match io::stdin().read_to_string(&mut buf) {
-//!         Ok(_) => {
-//!             print!("{buf}");
-//!
-//!             ExitCode::Ok
+//!             sysexits::ExitCode::Ok
 //!         }
 //!         Err(err) => {
 //!             eprintln!("{err}");
 //!
-//!             ExitCode::DataErr
+//!             sysexits::ExitCode::DataErr
 //!         }
 //!     }
 //! }
 //! ```
 //!
-//! Return the [`std::process::ExitCode`] from the `main` function:
+//! ## Combine with other exit codes
 //!
-//! ```no_run
-//! use std::fs;
-//! use std::io;
-//! use std::process::ExitCode as StdExitCode;
+//! The `ExitCode` can be converted to the [`ExitCode`](std::process::ExitCode)
+//! of `std` by the [`From`] trait, so you can combine it with your own exit
+//! codes or the `ExitCode` of `std`.
 //!
-//! use sysexits::ExitCode;
+//! ```
+//! use std::io::Read;
 //!
-//! fn main() -> StdExitCode {
-//!     let path = "/path/to/file.txt";
+//! fn main() -> std::process::ExitCode {
+//!     let mut buf = String::new();
 //!
-//!     match fs::read_to_string(path) {
-//!         Ok(contents) => {
-//!             print!("{contents}");
+//!     if let Err(err) = std::io::stdin().read_to_string(&mut buf) {
+//!         eprintln!("{err}");
 //!
-//!             StdExitCode::SUCCESS
+//!         if let std::io::ErrorKind::InvalidData = err.kind() {
+//!             sysexits::ExitCode::DataErr.into()
+//!         } else {
+//!             std::process::ExitCode::FAILURE
 //!         }
-//!         Err(err) => {
-//!             eprintln!("{err}");
+//!     } else {
+//!         print!("{buf}");
 //!
-//!             match err.kind() {
-//!                 io::ErrorKind::NotFound => ExitCode::NoInput.into(),
-//!                 io::ErrorKind::PermissionDenied => ExitCode::NoPerm.into(),
-//!                 io::ErrorKind::InvalidData => ExitCode::DataErr.into(),
-//!                 _ => StdExitCode::FAILURE,
-//!             }
-//!         }
+//!         std::process::ExitCode::SUCCESS
 //!     }
 //! }
 //! ```
 //!
 //! [sysexits-man-url]: https://man.openbsd.org/sysexits
 
-#![doc(html_root_url = "https://docs.rs/sysexits/0.2.0/")]
+#![doc(html_root_url = "https://docs.rs/sysexits/0.2.1/")]
 // Lint levels of rustc.
 #![warn(rust_2018_idioms)]
 #![deny(missing_debug_implementations, missing_docs)]
