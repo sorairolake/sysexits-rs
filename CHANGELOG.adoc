@@ -12,6 +12,16 @@ project adheres to https://semver.org/[Semantic Versioning].
 
 toc::[]
 
+== {compare-url}/v0.2.0\...v0.2.1[0.2.1] - 2022-05-31
+
+=== Added
+
+* Add code example to README
+
+=== Changed
+
+* Update documentation examples inside the crate root file
+
 == {compare-url}/v0.1.1\...v0.2.0[0.2.0] - 2022-05-30
 
 === Changed
