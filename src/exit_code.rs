@@ -232,6 +232,7 @@ impl ExitCode {
     /// assert_eq!(ExitCode::Usage.is_success(), false);
     /// ```
     #[must_use]
+    #[inline]
     pub const fn is_success(self) -> bool {
         matches!(self, Self::Ok)
     }
@@ -248,18 +249,21 @@ impl ExitCode {
     /// assert_eq!(ExitCode::Usage.is_failure(), true);
     /// ```
     #[must_use]
+    #[inline]
     pub const fn is_failure(self) -> bool {
         !self.is_success()
     }
 }
 
 impl From<ExitCode> for StdExitCode {
+    #[inline]
     fn from(code: ExitCode) -> Self {
         code.report()
     }
 }
 
 impl Termination for ExitCode {
+    #[inline]
     fn report(self) -> StdExitCode {
         StdExitCode::from(self as u8)
     }

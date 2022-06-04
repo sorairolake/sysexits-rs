@@ -17,7 +17,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-sysexits = "0.2.1"
+sysexits = "0.2.2"
 ```
 
 ### Example
@@ -64,8 +64,8 @@ Copyright (C) 2022 Shun Sakai (see [AUTHORS.adoc](AUTHORS.adoc))
 This library is distributed under the terms of either the _Apache License 2.0_
 or the _MIT License_.
 
-See [COPYING](COPYING), [APACHE-2.0](license/APACHE-2.0) and [MIT](license/MIT)
-for more details.
+See [COPYING](COPYING), [LICENSE-APACHE](LICENSE-APACHE) and
+[LICENSE-MIT](LICENSE-MIT) for more details.
 
 [ci-badge]: https://github.com/sorairolake/sysexits-rs/workflows/CI/badge.svg
 [ci-url]: https://github.com/sorairolake/sysexits-rs/actions?query=workflow%3ACI
