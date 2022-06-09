@@ -23,11 +23,7 @@ fn main() -> std::process::ExitCode {
             vec![buf]
         }
     } else {
-        match args
-            .into_iter()
-            .map(|file| std::fs::read_to_string(file))
-            .collect()
-        {
+        match args.into_iter().map(std::fs::read_to_string).collect() {
             Ok(strings) => strings,
             Err(err) => {
                 eprintln!("{err}");
