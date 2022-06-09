@@ -59,7 +59,8 @@ Please see [CONTRIBUTING.adoc](CONTRIBUTING.adoc).
 
 ## License
 
-Copyright (C) 2022 Shun Sakai (see [AUTHORS.adoc](AUTHORS.adoc))
+Copyright (C) 2022 Shun Sakai and Contributors (see
+[AUTHORS.adoc](AUTHORS.adoc))
 
 This library is distributed under the terms of either the _Apache License 2.0_
 or the _MIT License_.
