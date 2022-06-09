@@ -9,6 +9,7 @@
 //!
 //! [sysexits-man-url]: https://man.openbsd.org/sysexits
 
+use std::fmt;
 use std::process::{ExitCode as StdExitCode, Termination};
 
 /// `ExitCode` is a type that represents the system exit code constants as
@@ -255,7 +256,7 @@ impl ExitCode {
     }
 }
 
-impl std::fmt::Display for ExitCode {
+impl fmt::Display for ExitCode {
     /// Implements the `Display` trait.
     ///
     /// `sysexits::ExitCode` implements the `Display` trait such that it can be
@@ -271,7 +272,7 @@ impl std::fmt::Display for ExitCode {
     /// assert_eq!(&format!("{}", ExitCode::Ok), "0");
     /// assert_eq!(&format!("{}", ExitCode::Usage), "64");
     /// ```
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", *self as u8)
     }
 }
