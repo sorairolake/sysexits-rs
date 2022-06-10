@@ -1,7 +1,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
-// Copyright (C) 2022 Shun Sakai
+// Copyright (C) 2022 Shun Sakai and Contributors
 //
 
 //! The system exit code constants as defined by
@@ -9,6 +9,7 @@
 //!
 //! [sysexits-man-url]: https://man.openbsd.org/sysexits
 
+use std::fmt;
 use std::process::{ExitCode as StdExitCode, Termination};
 
 /// `ExitCode` is a type that represents the system exit code constants as
@@ -255,6 +256,27 @@ impl ExitCode {
     }
 }
 
+impl fmt::Display for ExitCode {
+    /// Implements the `Display` trait.
+    ///
+    /// `sysexits::ExitCode` implements the `Display` trait such that it can be
+    /// formatted using the given formatter.  Thereby, the respective variant
+    /// will be casted to its integer representation `u8`, at first, before
+    /// being processed by the given formatter.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use sysexits::ExitCode;
+    /// #
+    /// assert_eq!(format!("{}", ExitCode::Ok), "0");
+    /// assert_eq!(format!("{}", ExitCode::Usage), "64");
+    /// ```
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", *self as u8)
+    }
+}
+
 impl From<ExitCode> for StdExitCode {
     #[inline]
     fn from(code: ExitCode) -> Self {
@@ -272,6 +294,26 @@ impl Termination for ExitCode {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_display_trait_implementation() {
+        assert_eq!(format!("{}", ExitCode::Ok), format!("{}", 0));
+        assert_eq!(format!("{}", ExitCode::Usage), format!("{}", 64));
+        assert_eq!(format!("{}", ExitCode::DataErr), format!("{}", 65));
+        assert_eq!(format!("{}", ExitCode::NoInput), format!("{}", 66));
+        assert_eq!(format!("{}", ExitCode::NoUser), format!("{}", 67));
+        assert_eq!(format!("{}", ExitCode::NoHost), format!("{}", 68));
+        assert_eq!(format!("{}", ExitCode::Unavailable), format!("{}", 69));
+        assert_eq!(format!("{}", ExitCode::Software), format!("{}", 70));
+        assert_eq!(format!("{}", ExitCode::OsErr), format!("{}", 71));
+        assert_eq!(format!("{}", ExitCode::OsFile), format!("{}", 72));
+        assert_eq!(format!("{}", ExitCode::CantCreat), format!("{}", 73));
+        assert_eq!(format!("{}", ExitCode::IoErr), format!("{}", 74));
+        assert_eq!(format!("{}", ExitCode::TempFail), format!("{}", 75));
+        assert_eq!(format!("{}", ExitCode::Protocol), format!("{}", 76));
+        assert_eq!(format!("{}", ExitCode::NoPerm), format!("{}", 77));
+        assert_eq!(format!("{}", ExitCode::Config), format!("{}", 78));
+    }
 
     #[test]
     fn test_is_success_for_successful_termination() {

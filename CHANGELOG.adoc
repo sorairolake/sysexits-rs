@@ -12,6 +12,13 @@ project adheres to https://semver.org/[Semantic Versioning].
 
 toc::[]
 
+== {compare-url}/v0.2.2\...v0.3.0[0.3.0] - 2022-06-10
+
+=== Added
+
+* Implement `Display` trait and corresponding test ({pull-request-url}/1[#1])
+* Add the example that returns `sysexits::ExitCode`
+
 == {compare-url}/v0.2.1\...v0.2.2[0.2.2] - 2022-06-04
 
 === Added

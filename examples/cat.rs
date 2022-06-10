@@ -1,7 +1,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
-// Copyright (C) 2022 Shun Sakai
+// Copyright (C) 2022 Shun Sakai and Contributors
 //
 
 //! An example of concatenating files and print on the standard output.
@@ -23,11 +23,7 @@ fn main() -> std::process::ExitCode {
             vec![buf]
         }
     } else {
-        match args
-            .into_iter()
-            .map(|file| std::fs::read_to_string(file))
-            .collect()
-        {
+        match args.into_iter().map(std::fs::read_to_string).collect() {
             Ok(strings) => strings,
             Err(err) => {
                 eprintln!("{err}");

@@ -17,7 +17,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-sysexits = "0.2.2"
+sysexits = "0.3.0"
 ```
 
 ### Example
@@ -59,12 +59,13 @@ Please see [CONTRIBUTING.adoc](CONTRIBUTING.adoc).
 
 ## License
 
-Copyright (C) 2022 Shun Sakai (see [AUTHORS.adoc](AUTHORS.adoc))
+Copyright (C) 2022 Shun Sakai and Contributors (see
+[AUTHORS.adoc](AUTHORS.adoc))
 
 This library is distributed under the terms of either the _Apache License 2.0_
 or the _MIT License_.
 
-See [COPYING](COPYING), [LICENSE-APACHE](LICENSE-APACHE) and
+See [COPYRIGHT](COPYRIGHT), [LICENSE-APACHE](LICENSE-APACHE) and
 [LICENSE-MIT](LICENSE-MIT) for more details.
 
 [ci-badge]: https://github.com/sorairolake/sysexits-rs/workflows/CI/badge.svg

@@ -1,7 +1,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
-// Copyright (C) 2022 Shun Sakai
+// Copyright (C) 2022 Shun Sakai and Contributors
 //
 
 //! The `sysexits` crate provides the system exit code constants as defined by
@@ -67,7 +67,7 @@
 //!
 //! [sysexits-man-url]: https://man.openbsd.org/sysexits
 
-#![doc(html_root_url = "https://docs.rs/sysexits/0.2.2/")]
+#![doc(html_root_url = "https://docs.rs/sysexits/0.3.0/")]
 // Lint levels of rustc.
 #![warn(rust_2018_idioms)]
 #![deny(missing_debug_implementations, missing_docs)]
