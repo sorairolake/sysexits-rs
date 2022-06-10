@@ -16,15 +16,11 @@ jobs:
       matrix:
         target:
           - x86_64-unknown-linux-gnu
-          - x86_64-unknown-linux-musl
           - x86_64-apple-darwin
           - x86_64-pc-windows-msvc
         include:
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-20.04
-          - target: x86_64-unknown-linux-musl
-            os: ubuntu-20.04
-            use-cross: true
           - target: x86_64-apple-darwin
             os: macos-11
           - target: x86_64-pc-windows-msvc
@@ -44,13 +40,11 @@ jobs:
       with:
         command: build
         args: --target ${{ matrix.target }}
-        use-cross: ${{ matrix.use-cross }}
     - name: Run tests
       uses: actions-rs/cargo@v1.0.1
       with:
         command: test
         args: --target ${{ matrix.target }}
-        use-cross: ${{ matrix.use-cross }}
 
   rustfmt:
     name: Rustfmt
