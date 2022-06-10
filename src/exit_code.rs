@@ -269,8 +269,8 @@ impl fmt::Display for ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(&format!("{}", ExitCode::Ok), "0");
-    /// assert_eq!(&format!("{}", ExitCode::Usage), "64");
+    /// assert_eq!(format!("{}", ExitCode::Ok), "0");
+    /// assert_eq!(format!("{}", ExitCode::Usage), "64");
     /// ```
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", *self as u8)
