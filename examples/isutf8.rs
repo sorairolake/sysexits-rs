@@ -10,7 +10,7 @@
 use std::io::Read;
 
 fn main() -> sysexits::ExitCode {
-    let input = if let Some(file) = std::env::args().skip(1).next() {
+    let input = if let Some(file) = std::env::args().nth(1) {
         std::fs::read(file).unwrap()
     } else {
         let mut buf = Vec::new();
