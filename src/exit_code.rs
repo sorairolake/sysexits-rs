@@ -17,7 +17,6 @@ use std::process::{ExitCode as StdExitCode, Termination};
 ///
 /// [sysexits-man-url]: https://man.openbsd.org/sysexits
 #[derive(Clone, Copy, Debug)]
-#[repr(u8)]
 pub enum ExitCode {
     /// The successful exit.
     ///

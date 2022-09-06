@@ -67,11 +67,11 @@
 //!
 //! [sysexits-man-url]: https://man.openbsd.org/sysexits
 
-#![doc(html_root_url = "https://docs.rs/sysexits/0.3.0/")]
+#![doc(html_root_url = "https://docs.rs/sysexits/0.3.1/")]
 // Lint levels of rustc.
-#![warn(rust_2018_idioms)]
-#![deny(missing_debug_implementations, missing_docs)]
 #![forbid(unsafe_code)]
+#![deny(missing_debug_implementations, missing_docs)]
+#![warn(rust_2018_idioms)]
 // Lint levels of Clippy.
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 

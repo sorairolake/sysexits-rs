@@ -1,0 +1,30 @@
+#
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+#
+# Copyright (C) 2022 Shun Sakai and Contributors
+#
+
+name: cffconvert
+
+on:
+  push:
+    paths:
+      - CITATION.cff
+
+permissions:
+  contents: read
+
+jobs:
+  validation:
+    name: validate
+    runs-on: ubuntu-20.04
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: cffconvert
+        uses: citation-file-format/cffconvert-github-action@2.0.0
+        with:
+          args: "--validate"
