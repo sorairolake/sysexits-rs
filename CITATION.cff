@@ -1,0 +1,29 @@
+#
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+#
+# Copyright (C) 2022 Shun Sakai and Contributors
+#
+
+# Parser settings.
+cff-version: 1.2.0
+message: Please cite this software using these meta data.
+
+# Version information.
+date-released: 2022-06-10
+version: 0.3.0
+
+# Project information.
+abstract: The system exit codes as defined by <sysexits.h> for Rust
+authors:
+  - alias: sorairolake
+    family-names: Sakai
+    given-names: Shun
+  - alias: kevinmatthes
+    family-names: Matthes
+    given-names: Kevin
+license:
+  - Apache-2.0
+  - MIT
+repository-code: https://github.com/sorairolake/sysexits-rs
+title: sysexits-rs
+url: https://github.com/sorairolake/sysexits-rs
