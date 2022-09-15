@@ -7,6 +7,13 @@
 //! An example of concatenating files and print on the standard output.
 //! The contents of the file must be valid UTF-8.
 
+// Lint levels of rustc.
+#![forbid(unsafe_code)]
+#![deny(missing_debug_implementations)]
+#![warn(rust_2018_idioms)]
+// Lint levels of Clippy.
+#![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
+
 use std::io::Read;
 
 fn main() -> std::process::ExitCode {
@@ -19,9 +26,8 @@ fn main() -> std::process::ExitCode {
             eprintln!("{err}");
 
             return sysexits::ExitCode::DataErr.into();
-        } else {
-            vec![buf]
         }
+        vec![buf]
     } else {
         match args.into_iter().map(std::fs::read_to_string).collect() {
             Ok(strings) => strings,
