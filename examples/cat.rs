@@ -21,10 +21,8 @@ fn main() -> std::process::ExitCode {
 
     let contents = if args.is_empty() {
         let mut buf = String::new();
-
         if let Err(err) = std::io::stdin().read_to_string(&mut buf) {
             eprintln!("{err}");
-
             return sysexits::ExitCode::DataErr.into();
         }
         vec![buf]
@@ -33,7 +31,6 @@ fn main() -> std::process::ExitCode {
             Ok(strings) => strings,
             Err(err) => {
                 eprintln!("{err}");
-
                 match err.kind() {
                     std::io::ErrorKind::NotFound => return sysexits::ExitCode::NoInput.into(),
                     std::io::ErrorKind::PermissionDenied => {
@@ -49,6 +46,5 @@ fn main() -> std::process::ExitCode {
     for output in contents {
         print!("{output}");
     }
-
     std::process::ExitCode::SUCCESS
 }

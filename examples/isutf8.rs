@@ -22,11 +22,8 @@ fn main() -> sysexits::ExitCode {
         std::fs::read(file).unwrap()
     } else {
         let mut buf = Vec::new();
-
         std::io::stdin().read_to_end(&mut buf).unwrap();
-
         buf
     };
-
     std::str::from_utf8(&input).map_or(sysexits::ExitCode::DataErr, |_| sysexits::ExitCode::Ok)
 }

@@ -25,16 +25,13 @@ sysexits = "0.3.1"
 ```rust
 fn main() -> sysexits::ExitCode {
     let bytes = [0xf0, 0x9f, 0x92, 0x96];
-
     match std::str::from_utf8(&bytes) {
         Ok(string) => {
             println!("{string}");
-
             sysexits::ExitCode::Ok
         }
         Err(err) => {
             eprintln!("{err}");
-
             sysexits::ExitCode::DataErr
         }
     }

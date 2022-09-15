@@ -21,16 +21,13 @@
 //! ```
 //! fn main() -> sysexits::ExitCode {
 //!     let bytes = [0xf0, 0x9f, 0x92, 0x96];
-//!
 //!     match std::str::from_utf8(&bytes) {
 //!         Ok(string) => {
 //!             println!("{string}");
-//!
 //!             sysexits::ExitCode::Ok
 //!         }
 //!         Err(err) => {
 //!             eprintln!("{err}");
-//!
 //!             sysexits::ExitCode::DataErr
 //!         }
 //!     }
@@ -48,10 +45,8 @@
 //!
 //! fn main() -> std::process::ExitCode {
 //!     let mut buf = String::new();
-//!
 //!     if let Err(err) = std::io::stdin().read_to_string(&mut buf) {
 //!         eprintln!("{err}");
-//!
 //!         if let std::io::ErrorKind::InvalidData = err.kind() {
 //!             sysexits::ExitCode::DataErr.into()
 //!         } else {
@@ -59,7 +54,6 @@
 //!         }
 //!     } else {
 //!         print!("{buf}");
-//!
 //!         std::process::ExitCode::SUCCESS
 //!     }
 //! }
