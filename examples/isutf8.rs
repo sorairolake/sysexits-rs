@@ -17,13 +17,21 @@
 use std::io::Read;
 
 fn main() -> sysexits::ExitCode {
-    #[allow(clippy::option_if_let_else)]
-    let input = if let Some(file) = std::env::args().nth(1) {
-        std::fs::read(file).unwrap()
+    let input = std::env::args_os()
+        .nth(1)
+        .map_or_else(
+            || {
+                let mut buf = Vec::new();
+                std::io::stdin().read_to_end(&mut buf).map(|_| buf)
+            },
+            std::fs::read,
+        )
+        .unwrap_or_else(|err| panic!("{err}"));
+    if let Err(err) = std::str::from_utf8(&input) {
+        eprintln!("Error: {err}");
+        sysexits::ExitCode::DataErr
     } else {
-        let mut buf = Vec::new();
-        std::io::stdin().read_to_end(&mut buf).unwrap();
-        buf
-    };
-    std::str::from_utf8(&input).map_or(sysexits::ExitCode::DataErr, |_| sysexits::ExitCode::Ok)
+        println!("OK");
+        sysexits::ExitCode::Ok
+    }
 }
