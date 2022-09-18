@@ -5,3 +5,6 @@ link:isutf8.rs[]::
 
 link:cat.rs[]::
   An example that returns `std::process::ExitCode`.
+
+link:cmp.rs[]::
+  An example that returns original exit code.

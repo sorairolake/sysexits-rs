@@ -12,6 +12,13 @@ project adheres to https://semver.org/[Semantic Versioning].
 
 toc::[]
 
+== {compare-url}/v0.3.1\...v0.3.2[0.3.2] - 2022-09-18
+
+=== Added
+
+* Add lint attributes to examples
+* Add the example that returns original exit code
+
 == {compare-url}/v0.3.0\...v0.3.1[0.3.1] - 2022-09-06
 
 === Removed
