@@ -17,6 +17,7 @@ toc::[]
 === Added
 
 * Add lint attributes to examples
+* Add the example that returns original exit code
 
 == {compare-url}/v0.3.0\...v0.3.1[0.3.1] - 2022-09-06
 
