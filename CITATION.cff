@@ -24,6 +24,7 @@ authors:
 license:
   - Apache-2.0
   - MIT
+repository-artifact: https://crates.io/crates/sysexits
 repository-code: https://github.com/sorairolake/sysexits-rs
 title: sysexits-rs
-url: https://github.com/sorairolake/sysexits-rs
+url: https://docs.rs/sysexits
