@@ -41,3 +41,7 @@ default: build
 # Run the formatter for the README
 @fmt-readme:
     npx prettier -w README.md
+
+# Prepare the version increment
+@new-version version part:
+    bump2version --new-version {{version}} {{part}}
