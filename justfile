@@ -42,6 +42,6 @@ default: build
 @fmt-readme:
     npx prettier -w README.md
 
-# Prepare the version increment
-@new-version version part:
-    bump2version --new-version {{version}} {{part}}
+# Increment the version
+@bump part:
+    bump2version {{part}}
