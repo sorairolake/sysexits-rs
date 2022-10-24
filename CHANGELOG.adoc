@@ -12,6 +12,12 @@ project adheres to https://semver.org/[Semantic Versioning].
 
 toc::[]
 
+== {compare-url}/v0.3.2\...v0.3.3[0.3.3] - 2022-10-24
+
+=== Added
+
+* Add `inline` attribute to `Display` trait
+
 == {compare-url}/v0.3.1\...v0.3.2[0.3.2] - 2022-09-18
 
 === Added
