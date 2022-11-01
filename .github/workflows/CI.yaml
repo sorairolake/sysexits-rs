@@ -38,12 +38,12 @@ jobs:
         override: true
         profile: minimal
     - name: Build a package
-      uses: actions-rs/cargo@v1.0.1
+      uses: actions-rs/cargo@v1.0.3
       with:
         command: build
         args: --target ${{ matrix.target }}
     - name: Run tests
-      uses: actions-rs/cargo@v1.0.1
+      uses: actions-rs/cargo@v1.0.3
       with:
         command: test
         args: --target ${{ matrix.target }}
@@ -62,7 +62,7 @@ jobs:
         profile: minimal
         components: rustfmt
     - name: Check code formatted
-      uses: actions-rs/cargo@v1.0.1
+      uses: actions-rs/cargo@v1.0.3
       with:
         command: fmt
         args: -- --check
@@ -81,7 +81,7 @@ jobs:
         profile: minimal
         components: clippy
     - name: Check no lint warnings
-      uses: actions-rs/cargo@v1.0.1
+      uses: actions-rs/cargo@v1.0.3
       with:
         command: clippy
         args: -- -D warnings
