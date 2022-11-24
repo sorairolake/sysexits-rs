@@ -61,7 +61,7 @@
 //!
 //! [sysexits-man-url]: https://man.openbsd.org/sysexits
 
-#![doc(html_root_url = "https://docs.rs/sysexits/0.3.3/")]
+#![doc(html_root_url = "https://docs.rs/sysexits/0.3.4/")]
 // Lint levels of rustc.
 #![forbid(unsafe_code)]
 #![deny(missing_debug_implementations, missing_docs)]
