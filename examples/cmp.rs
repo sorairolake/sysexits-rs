@@ -45,7 +45,7 @@ fn main() -> ExitCode {
     let files = if let (Some(from), Some(to)) = (args.get(0), args.get(1)) {
         (std::path::PathBuf::from(from), std::path::PathBuf::from(to))
     } else {
-        eprintln!("Error: Files are missing");
+        eprintln!("Error: files are missing");
         return ExitCode::Trouble;
     };
     let contents: std::io::Result<Vec<_>> = args.into_iter().map(std::fs::read).collect();
