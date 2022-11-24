@@ -31,19 +31,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
     - name: Setup Rust toolchain
-      uses: actions-rs/toolchain@v1.0.6
+      uses: actions-rs/toolchain@v1.0.7
       with:
         toolchain: 1.61.0 # MSRV
         target: ${{ matrix.target }}
         override: true
         profile: minimal
     - name: Build a package
-      uses: actions-rs/cargo@v1.0.1
+      uses: actions-rs/cargo@v1.0.3
       with:
         command: build
         args: --target ${{ matrix.target }}
     - name: Run tests
-      uses: actions-rs/cargo@v1.0.1
+      uses: actions-rs/cargo@v1.0.3
       with:
         command: test
         args: --target ${{ matrix.target }}
@@ -55,14 +55,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
     - name: Setup Rust toolchain
-      uses: actions-rs/toolchain@v1.0.6
+      uses: actions-rs/toolchain@v1.0.7
       with:
         toolchain: stable
         override: true
         profile: minimal
         components: rustfmt
     - name: Check code formatted
-      uses: actions-rs/cargo@v1.0.1
+      uses: actions-rs/cargo@v1.0.3
       with:
         command: fmt
         args: -- --check
@@ -74,14 +74,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
     - name: Setup Rust toolchain
-      uses: actions-rs/toolchain@v1.0.6
+      uses: actions-rs/toolchain@v1.0.7
       with:
         toolchain: stable
         override: true
         profile: minimal
         components: clippy
     - name: Check no lint warnings
-      uses: actions-rs/cargo@v1.0.1
+      uses: actions-rs/cargo@v1.0.3
       with:
         command: clippy
         args: -- -D warnings

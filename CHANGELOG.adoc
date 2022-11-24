@@ -12,6 +12,16 @@ project adheres to https://semver.org/[Semantic Versioning].
 
 toc::[]
 
+== {compare-url}/v0.3.3\...v0.3.4[0.3.4] - 2022-11-24
+
+=== Added
+
+* Add `dependabot.yml`
+
+=== Fixed
+
+* Fix CITATION.cff and bump2version Settings ({pull-request-url}/10[#10])
+
 == {compare-url}/v0.3.2\...v0.3.3[0.3.3] - 2022-10-24
 
 === Added
