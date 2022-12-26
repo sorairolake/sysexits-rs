@@ -278,6 +278,29 @@ impl fmt::Display for ExitCode {
     }
 }
 
+#[cfg(feature = "std")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
+impl From<std::io::ErrorKind> for ExitCode {
+    fn from(kind: std::io::ErrorKind) -> Self {
+        use std::io::ErrorKind;
+
+        match kind {
+            ErrorKind::NotFound => Self::OsFile,
+            ErrorKind::PermissionDenied => Self::NoPerm,
+            ErrorKind::ConnectionRefused
+            | ErrorKind::ConnectionReset
+            | ErrorKind::ConnectionAborted
+            | ErrorKind::NotConnected => Self::Protocol,
+            ErrorKind::AddrInUse | ErrorKind::AddrNotAvailable => Self::Unavailable,
+            ErrorKind::AlreadyExists => Self::CantCreat,
+            ErrorKind::InvalidInput | ErrorKind::InvalidData | ErrorKind::UnexpectedEof => {
+                Self::DataErr
+            }
+            _ => Self::IoErr,
+        }
+    }
+}
+
 macro_rules! impl_from_exit_code_for_integer {
     ($T:ty) => {
         impl From<ExitCode> for $T {
@@ -380,6 +403,91 @@ mod tests {
         assert!(ExitCode::Protocol.is_failure());
         assert!(ExitCode::NoPerm.is_failure());
         assert!(ExitCode::Config.is_failure());
+    }
+
+    #[cfg(feature = "std")]
+    #[allow(clippy::cognitive_complexity)]
+    #[test]
+    fn test_from_io_error_kind_for_exit_code() {
+        use std::io::ErrorKind;
+
+        assert!(matches!(
+            ExitCode::from(ErrorKind::NotFound),
+            ExitCode::OsFile
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::PermissionDenied),
+            ExitCode::NoPerm
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::ConnectionRefused),
+            ExitCode::Protocol
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::ConnectionReset),
+            ExitCode::Protocol
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::ConnectionAborted),
+            ExitCode::Protocol
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::NotConnected),
+            ExitCode::Protocol
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::AddrInUse),
+            ExitCode::Unavailable
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::AddrNotAvailable),
+            ExitCode::Unavailable
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::BrokenPipe),
+            ExitCode::IoErr
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::AlreadyExists),
+            ExitCode::CantCreat
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::WouldBlock),
+            ExitCode::IoErr
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::InvalidInput),
+            ExitCode::DataErr
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::InvalidData),
+            ExitCode::DataErr
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::TimedOut),
+            ExitCode::IoErr
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::WriteZero),
+            ExitCode::IoErr
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::Interrupted),
+            ExitCode::IoErr
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::Unsupported),
+            ExitCode::IoErr
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::UnexpectedEof),
+            ExitCode::DataErr
+        ));
+        assert!(matches!(
+            ExitCode::from(ErrorKind::OutOfMemory),
+            ExitCode::IoErr
+        ));
+        assert!(matches!(ExitCode::from(ErrorKind::Other), ExitCode::IoErr));
     }
 
     macro_rules! test_from_exit_code_for_integer {
