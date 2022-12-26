@@ -17,6 +17,7 @@ toc::[]
 === Added
 
 * Add conversions to primitive integer types
+* Add `no_std` support
 
 == {compare-url}/v0.3.3\...v0.3.4[0.3.4] - 2022-11-24
 

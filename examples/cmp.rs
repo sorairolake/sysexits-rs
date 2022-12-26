@@ -13,8 +13,10 @@
 // Lint levels of Clippy.
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
+#[cfg(feature = "std")]
 use std::process::Termination;
 
+#[cfg(feature = "std")]
 enum ExitCode {
     Same,
     Different,
@@ -22,12 +24,14 @@ enum ExitCode {
     Other(sysexits::ExitCode),
 }
 
+#[cfg(feature = "std")]
 impl From<sysexits::ExitCode> for ExitCode {
     fn from(code: sysexits::ExitCode) -> Self {
         Self::Other(code)
     }
 }
 
+#[cfg(feature = "std")]
 impl Termination for ExitCode {
     fn report(self) -> std::process::ExitCode {
         match self {
@@ -39,6 +43,7 @@ impl Termination for ExitCode {
     }
 }
 
+#[cfg(feature = "std")]
 fn main() -> ExitCode {
     let args: Vec<_> = std::env::args_os().skip(1).take(2).collect();
 
@@ -77,4 +82,9 @@ fn main() -> ExitCode {
         );
         ExitCode::Different
     }
+}
+
+#[cfg(not(feature = "std"))]
+fn main() -> Result<(), &'static str> {
+    Err("`std` feature is required")
 }

@@ -42,11 +42,31 @@ jobs:
       with:
         command: build
         args: --target ${{ matrix.target }}
+    - name: Build a package (all features)
+      uses: actions-rs/cargo@v1.0.3
+      with:
+        command: build
+        args: --target ${{ matrix.target }} --all-features
+    - name: Build a package (no default features)
+      uses: actions-rs/cargo@v1.0.3
+      with:
+        command: build
+        args: --target ${{ matrix.target }} --no-default-features
     - name: Run tests
       uses: actions-rs/cargo@v1.0.3
       with:
         command: test
         args: --target ${{ matrix.target }}
+    - name: Run tests (all features)
+      uses: actions-rs/cargo@v1.0.3
+      with:
+        command: test
+        args: --target ${{ matrix.target }} --all-features
+    - name: Run tests (no default features)
+      uses: actions-rs/cargo@v1.0.3
+      with:
+        command: test
+        args: --target ${{ matrix.target }} --no-default-features
 
   rustfmt:
     name: Rustfmt
@@ -85,3 +105,13 @@ jobs:
       with:
         command: clippy
         args: -- -D warnings
+    - name: Check no lint warnings (all features)
+      uses: actions-rs/cargo@v1.0.3
+      with:
+        command: clippy
+        args: --all-features -- -D warnings
+    - name: Check no lint warnings (no default features)
+      uses: actions-rs/cargo@v1.0.3
+      with:
+        command: clippy
+        args: --no-default-features -- -D warnings
