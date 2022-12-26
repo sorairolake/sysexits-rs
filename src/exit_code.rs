@@ -257,12 +257,12 @@ impl ExitCode {
 }
 
 impl fmt::Display for ExitCode {
-    /// Implements the `Display` trait.
+    /// Implements the [`Display`](fmt::Display) trait.
     ///
-    /// `sysexits::ExitCode` implements the `Display` trait such that it can be
-    /// formatted using the given formatter.  Thereby, the respective variant
-    /// will be casted to its integer representation `u8`, at first, before
-    /// being processed by the given formatter.
+    /// The `ExitCode` implements the [`Display`](fmt::Display) trait such that
+    /// it can be formatted using the given formatter. Thereby, the
+    /// respective variant will be casted to its integer representation [`u8`],
+    /// at first, before being processed by the given formatter.
     ///
     /// # Examples
     ///
