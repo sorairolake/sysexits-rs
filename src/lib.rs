@@ -89,3 +89,5 @@ extern crate std;
 mod exit_code;
 
 pub use crate::exit_code::ExitCode;
+#[cfg(feature = "std")]
+pub use crate::exit_code::FromExitStatusError;

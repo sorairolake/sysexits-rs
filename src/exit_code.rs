@@ -326,6 +326,47 @@ impl From<ExitCode> for std::process::ExitCode {
 
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
+impl TryFrom<std::process::ExitStatus> for ExitCode {
+    type Error = FromExitStatusError;
+
+    fn try_from(status: std::process::ExitStatus) -> Result<Self, Self::Error> {
+        #[cfg(unix)]
+        fn code(status: std::process::ExitStatus) -> Option<i32> {
+            use std::os::unix::process::ExitStatusExt;
+
+            status.code().or_else(|| status.signal())
+        }
+
+        #[cfg(not(unix))]
+        fn code(status: std::process::ExitStatus) -> Option<i32> {
+            status.code()
+        }
+
+        match code(status) {
+            Some(0) => Ok(Self::Ok),
+            Some(64) => Ok(Self::Usage),
+            Some(65) => Ok(Self::DataErr),
+            Some(66) => Ok(Self::NoInput),
+            Some(67) => Ok(Self::NoUser),
+            Some(68) => Ok(Self::NoHost),
+            Some(69) => Ok(Self::Unavailable),
+            Some(70) => Ok(Self::Software),
+            Some(71) => Ok(Self::OsErr),
+            Some(72) => Ok(Self::OsFile),
+            Some(73) => Ok(Self::CantCreat),
+            Some(74) => Ok(Self::IoErr),
+            Some(75) => Ok(Self::TempFail),
+            Some(76) => Ok(Self::Protocol),
+            Some(77) => Ok(Self::NoPerm),
+            Some(78) => Ok(Self::Config),
+            Some(code) => Err(FromExitStatusError(Some(code))),
+            None => Err(FromExitStatusError(None)),
+        }
+    }
+}
+
+#[cfg(feature = "std")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 impl Termination for ExitCode {
     #[inline]
     fn report(self) -> std::process::ExitCode {
@@ -333,9 +374,44 @@ impl Termination for ExitCode {
     }
 }
 
+/// An error which can be returned when converting the [`ExitCode`] from an
+/// [`ExitStatus`](std::process::ExitStatus).
+#[cfg(feature = "std")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
+#[derive(Debug)]
+pub struct FromExitStatusError(Option<i32>);
+
+#[cfg(feature = "std")]
+impl fmt::Display for FromExitStatusError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if let Some(code) = self.0 {
+            write!(f, "invalid exit code `{code}`")
+        } else {
+            write!(f, "exit code is unknown")
+        }
+    }
+}
+
+#[cfg(feature = "std")]
+impl std::error::Error for FromExitStatusError {}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[cfg(all(feature = "std", unix))]
+    fn code(raw: i32) -> std::process::ExitStatus {
+        use std::os::unix::process::ExitStatusExt;
+
+        std::process::ExitStatus::from_raw(raw)
+    }
+
+    #[cfg(all(feature = "std", windows))]
+    fn code(raw: u32) -> std::process::ExitStatus {
+        use std::os::windows::process::ExitStatusExt;
+
+        std::process::ExitStatus::from_raw(raw)
+    }
 
     #[test]
     fn test_display_trait_implementation() {
@@ -519,7 +595,7 @@ mod tests {
 
     #[cfg(feature = "std")]
     #[test]
-    fn test_from_sys_exits_to_exit_code() {
+    fn test_from_exit_code_for_process_exit_code() {
         assert_eq!(
             format!("{:?}", std::process::ExitCode::from(ExitCode::Ok)),
             format!("{:?}", std::process::ExitCode::from(0))
@@ -584,6 +660,92 @@ mod tests {
             format!("{:?}", std::process::ExitCode::from(ExitCode::Config)),
             format!("{:?}", std::process::ExitCode::from(78))
         );
+    }
+
+    #[cfg(feature = "std")]
+    #[cfg(any(unix, windows))]
+    #[allow(clippy::cognitive_complexity)]
+    #[test]
+    fn test_try_from_process_exit_status_for_exit_code() {
+        assert!(matches!(ExitCode::try_from(code(0)).unwrap(), ExitCode::Ok));
+        assert!(matches!(
+            ExitCode::try_from(code(64)).unwrap(),
+            ExitCode::Usage
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(65)).unwrap(),
+            ExitCode::DataErr
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(66)).unwrap(),
+            ExitCode::NoInput
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(67)).unwrap(),
+            ExitCode::NoUser
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(68)).unwrap(),
+            ExitCode::NoHost
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(69)).unwrap(),
+            ExitCode::Unavailable
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(70)).unwrap(),
+            ExitCode::Software
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(71)).unwrap(),
+            ExitCode::OsErr
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(72)).unwrap(),
+            ExitCode::OsFile
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(73)).unwrap(),
+            ExitCode::CantCreat
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(74)).unwrap(),
+            ExitCode::IoErr
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(75)).unwrap(),
+            ExitCode::TempFail
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(76)).unwrap(),
+            ExitCode::Protocol
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(77)).unwrap(),
+            ExitCode::NoPerm
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(78)).unwrap(),
+            ExitCode::Config
+        ));
+    }
+
+    #[cfg(feature = "std")]
+    #[cfg(any(unix, windows))]
+    #[test]
+    fn test_try_from_process_exit_status_for_exit_code_when_out_of_range() {
+        assert!(matches!(
+            ExitCode::try_from(code(1)).unwrap_err(),
+            FromExitStatusError(Some(1))
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(63)).unwrap_err(),
+            FromExitStatusError(Some(63))
+        ));
+        assert!(matches!(
+            ExitCode::try_from(code(79)).unwrap_err(),
+            FromExitStatusError(Some(79))
+        ));
     }
 
     #[cfg(feature = "std")]
@@ -652,6 +814,19 @@ mod tests {
         assert_eq!(
             format!("{:?}", ExitCode::Config.report()),
             format!("{:?}", std::process::ExitCode::from(78))
+        );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn test_display_for_from_exit_status_error() {
+        assert_eq!(
+            format!("{}", FromExitStatusError(Some(1))),
+            "invalid exit code `1`"
+        );
+        assert_eq!(
+            format!("{}", FromExitStatusError(None)),
+            "exit code is unknown"
         );
     }
 }
