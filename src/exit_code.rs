@@ -275,9 +275,23 @@ impl fmt::Display for ExitCode {
     /// ```
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", *self as u8)
+        u8::from(*self).fmt(f)
     }
 }
+
+macro_rules! impl_from_exit_code_for_integer {
+    ($T:ty) => {
+        impl From<ExitCode> for $T {
+            #[inline]
+            fn from(code: ExitCode) -> Self {
+                code as Self
+            }
+        }
+    };
+}
+impl_from_exit_code_for_integer!(i32);
+impl_from_exit_code_for_integer!(u8);
+impl_from_exit_code_for_integer!(u32);
 
 impl From<ExitCode> for StdExitCode {
     #[inline]
@@ -289,7 +303,7 @@ impl From<ExitCode> for StdExitCode {
 impl Termination for ExitCode {
     #[inline]
     fn report(self) -> StdExitCode {
-        StdExitCode::from(self as u8)
+        StdExitCode::from(u8::from(self))
     }
 }
 
@@ -364,6 +378,33 @@ mod tests {
         assert!(ExitCode::NoPerm.is_failure());
         assert!(ExitCode::Config.is_failure());
     }
+
+    macro_rules! test_from_exit_code_for_integer {
+        ($T:ty, $name:ident) => {
+            #[test]
+            fn $name() {
+                assert_eq!(<$T>::from(ExitCode::Ok), 0);
+                assert_eq!(<$T>::from(ExitCode::Usage), 64);
+                assert_eq!(<$T>::from(ExitCode::DataErr), 65);
+                assert_eq!(<$T>::from(ExitCode::NoInput), 66);
+                assert_eq!(<$T>::from(ExitCode::NoUser), 67);
+                assert_eq!(<$T>::from(ExitCode::NoHost), 68);
+                assert_eq!(<$T>::from(ExitCode::Unavailable), 69);
+                assert_eq!(<$T>::from(ExitCode::Software), 70);
+                assert_eq!(<$T>::from(ExitCode::OsErr), 71);
+                assert_eq!(<$T>::from(ExitCode::OsFile), 72);
+                assert_eq!(<$T>::from(ExitCode::CantCreat), 73);
+                assert_eq!(<$T>::from(ExitCode::IoErr), 74);
+                assert_eq!(<$T>::from(ExitCode::TempFail), 75);
+                assert_eq!(<$T>::from(ExitCode::Protocol), 76);
+                assert_eq!(<$T>::from(ExitCode::NoPerm), 77);
+                assert_eq!(<$T>::from(ExitCode::Config), 78);
+            }
+        };
+    }
+    test_from_exit_code_for_integer!(i32, test_from_exit_code_for_i32);
+    test_from_exit_code_for_integer!(u8, test_from_exit_code_for_u8);
+    test_from_exit_code_for_integer!(u32, test_from_exit_code_for_u32);
 
     #[test]
     fn test_from_sys_exits_to_exit_code() {

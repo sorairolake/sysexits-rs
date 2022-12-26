@@ -12,6 +12,12 @@ project adheres to https://semver.org/[Semantic Versioning].
 
 toc::[]
 
+== {compare-url}/v0.3.4\...HEAD[Unreleased]
+
+=== Added
+
+* Add conversions to primitive integer types
+
 == {compare-url}/v0.3.3\...v0.3.4[0.3.4] - 2022-11-24
 
 === Added
