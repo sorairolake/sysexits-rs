@@ -20,6 +20,7 @@ toc::[]
 * Add `no_std` support
 * Add conversion from `std::io::ErrorKind`
 * Add conversion from `std::process::ExitStatus`
+* Add `ExitCode::exit()`
 
 == {compare-url}/v0.3.3\...v0.3.4[0.3.4] - 2022-11-24
 

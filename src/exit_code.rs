@@ -254,6 +254,26 @@ impl ExitCode {
     pub const fn is_failure(self) -> bool {
         !self.is_success()
     }
+
+    /// Terminates the current process with the exit code defined by `ExitCode`.
+    ///
+    /// This method is equivalent to [`std::process::exit`] with a restricted
+    /// exit code.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use sysexits::ExitCode;
+    /// #
+    /// fn main() {
+    ///     ExitCode::Ok.exit();
+    /// }
+    /// ```
+    #[cfg(feature = "std")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
+    pub fn exit(self) -> ! {
+        std::process::exit(self.into())
+    }
 }
 
 impl fmt::Display for ExitCode {
