@@ -279,10 +279,10 @@ impl ExitCode {
 impl fmt::Display for ExitCode {
     /// Implements the [`Display`](fmt::Display) trait.
     ///
-    /// The `ExitCode` implements the [`Display`](fmt::Display) trait such that
-    /// it can be formatted using the given formatter. Thereby, the
-    /// respective variant will be casted to its integer representation [`u8`],
-    /// at first, before being processed by the given formatter.
+    /// `ExitCode` implements the [`Display`](fmt::Display) trait such that it
+    /// can be formatted using the given formatter. Thereby, the respective
+    /// variant will be casted to its integer representation [`u8`], at first,
+    /// before being processed by the given formatter.
     ///
     /// # Examples
     ///
@@ -301,6 +301,10 @@ impl fmt::Display for ExitCode {
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 impl From<std::io::ErrorKind> for ExitCode {
+    /// Converts an [`ErrorKind`](std::io::ErrorKind) into an `ExitCode`.
+    ///
+    /// This method returns [`ExitCode::IoErr`] if there is not a suitable
+    /// `ExitCode` to represent an [`ErrorKind`](std::io::ErrorKind).
     fn from(kind: std::io::ErrorKind) -> Self {
         use std::io::ErrorKind;
 
@@ -324,6 +328,18 @@ impl From<std::io::ErrorKind> for ExitCode {
 macro_rules! impl_from_exit_code_for_integer {
     ($T:ty) => {
         impl From<ExitCode> for $T {
+            /// Converts an `ExitCode` into the raw underlying integer value.
+            ///
+            /// The resulting value is `0` or `64..=78`.
+            ///
+            /// # Examples
+            ///
+            /// ```
+            /// # use sysexits::ExitCode;
+            /// #
+            #[doc = concat!("assert_eq!(", stringify!($T), "::from(ExitCode::Ok), 0);")]
+            #[doc = concat!("assert_eq!(", stringify!($T), "::from(ExitCode::Usage), 64);")]
+            /// ```
             #[inline]
             fn from(code: ExitCode) -> Self {
                 code as Self
@@ -338,6 +354,9 @@ impl_from_exit_code_for_integer!(u32);
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 impl From<ExitCode> for std::process::ExitCode {
+    /// Converts an `sysexits::ExitCode` into an [`std::process::ExitCode`].
+    ///
+    /// This method is equivalent to [`ExitCode::report`].
     #[inline]
     fn from(code: ExitCode) -> Self {
         code.report()
@@ -349,6 +368,14 @@ impl From<ExitCode> for std::process::ExitCode {
 impl TryFrom<std::process::ExitStatus> for ExitCode {
     type Error = FromExitStatusError;
 
+    /// Converts an [`ExitStatus`](std::process::ExitStatus) into an `ExitCode`.
+    ///
+    /// # Errors
+    ///
+    /// This method returns [`Err`] in the following situations:
+    ///
+    /// - The raw underlying integer value is not `0` or `64..=78`.
+    /// - The raw underlying integer value is unknown.
     fn try_from(status: std::process::ExitStatus) -> Result<Self, Self::Error> {
         #[cfg(unix)]
         fn code(status: std::process::ExitStatus) -> Option<i32> {
@@ -394,7 +421,7 @@ impl Termination for ExitCode {
     }
 }
 
-/// An error which can be returned when converting the [`ExitCode`] from an
+/// An error which can be returned when converting an [`ExitCode`] from an
 /// [`ExitStatus`](std::process::ExitStatus).
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
