@@ -58,8 +58,8 @@ fn main() -> ExitCode {
         Ok(bytes) => bytes,
         Err(err) => {
             eprintln!("Error: {err}");
-            let code = sysexits::ExitCode::from(err.kind());
-            return code.into();
+            return sysexits::ExitCode::try_from(err.kind())
+                .map_or(ExitCode::Trouble, ExitCode::from);
         }
     };
 

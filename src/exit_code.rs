@@ -298,33 +298,6 @@ impl fmt::Display for ExitCode {
     }
 }
 
-#[cfg(feature = "std")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
-impl From<std::io::ErrorKind> for ExitCode {
-    /// Converts an [`ErrorKind`](std::io::ErrorKind) into an `ExitCode`.
-    ///
-    /// This method returns [`ExitCode::IoErr`] if there is not a suitable
-    /// `ExitCode` to represent an [`ErrorKind`](std::io::ErrorKind).
-    fn from(kind: std::io::ErrorKind) -> Self {
-        use std::io::ErrorKind;
-
-        match kind {
-            ErrorKind::NotFound => Self::OsFile,
-            ErrorKind::PermissionDenied => Self::NoPerm,
-            ErrorKind::ConnectionRefused
-            | ErrorKind::ConnectionReset
-            | ErrorKind::ConnectionAborted
-            | ErrorKind::NotConnected => Self::Protocol,
-            ErrorKind::AddrInUse | ErrorKind::AddrNotAvailable => Self::Unavailable,
-            ErrorKind::AlreadyExists => Self::CantCreat,
-            ErrorKind::InvalidInput | ErrorKind::InvalidData | ErrorKind::UnexpectedEof => {
-                Self::DataErr
-            }
-            _ => Self::IoErr,
-        }
-    }
-}
-
 macro_rules! impl_from_exit_code_for_integer {
     ($T:ty) => {
         impl From<ExitCode> for $T {
@@ -360,6 +333,37 @@ impl From<ExitCode> for std::process::ExitCode {
     #[inline]
     fn from(code: ExitCode) -> Self {
         code.report()
+    }
+}
+
+#[cfg(feature = "std")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
+impl TryFrom<std::io::ErrorKind> for ExitCode {
+    type Error = FromErrorKindError;
+
+    /// Converts an [`ErrorKind`](std::io::ErrorKind) into an `ExitCode`.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`Err`] if there is not a suitable `ExitCode` to represent an
+    /// [`ErrorKind`](std::io::ErrorKind).
+    fn try_from(kind: std::io::ErrorKind) -> Result<Self, Self::Error> {
+        use std::io::ErrorKind;
+
+        match kind {
+            ErrorKind::NotFound => Ok(Self::OsFile),
+            ErrorKind::PermissionDenied => Ok(Self::NoPerm),
+            ErrorKind::ConnectionRefused
+            | ErrorKind::ConnectionReset
+            | ErrorKind::ConnectionAborted
+            | ErrorKind::NotConnected => Ok(Self::Protocol),
+            ErrorKind::AddrInUse | ErrorKind::AddrNotAvailable => Ok(Self::Unavailable),
+            ErrorKind::AlreadyExists => Ok(Self::CantCreat),
+            ErrorKind::InvalidInput | ErrorKind::InvalidData | ErrorKind::UnexpectedEof => {
+                Ok(Self::DataErr)
+            }
+            k => Err(FromErrorKindError(k)),
+        }
     }
 }
 
@@ -420,6 +424,23 @@ impl Termination for ExitCode {
         std::process::ExitCode::from(u8::from(self))
     }
 }
+
+/// An error which can be returned when converting an [`ExitCode`] from an
+/// [`ErrorKind`](std::io::ErrorKind).
+#[cfg(feature = "std")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
+#[derive(Debug)]
+pub struct FromErrorKindError(std::io::ErrorKind);
+
+#[cfg(feature = "std")]
+impl fmt::Display for FromErrorKindError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "no exit code to represent error kind `{}`", self.0)
+    }
+}
+
+#[cfg(feature = "std")]
+impl std::error::Error for FromErrorKindError {}
 
 /// An error which can be returned when converting an [`ExitCode`] from an
 /// [`ExitStatus`](std::process::ExitStatus).
@@ -531,86 +552,89 @@ mod tests {
     #[cfg(feature = "std")]
     #[allow(clippy::cognitive_complexity)]
     #[test]
-    fn test_from_io_error_kind_for_exit_code() {
+    fn test_try_from_io_error_kind_for_exit_code() {
         use std::io::ErrorKind;
 
         assert!(matches!(
-            ExitCode::from(ErrorKind::NotFound),
+            ExitCode::try_from(ErrorKind::NotFound).unwrap(),
             ExitCode::OsFile
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::PermissionDenied),
+            ExitCode::try_from(ErrorKind::PermissionDenied).unwrap(),
             ExitCode::NoPerm
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::ConnectionRefused),
+            ExitCode::try_from(ErrorKind::ConnectionRefused).unwrap(),
             ExitCode::Protocol
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::ConnectionReset),
+            ExitCode::try_from(ErrorKind::ConnectionReset).unwrap(),
             ExitCode::Protocol
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::ConnectionAborted),
+            ExitCode::try_from(ErrorKind::ConnectionAborted).unwrap(),
             ExitCode::Protocol
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::NotConnected),
+            ExitCode::try_from(ErrorKind::NotConnected).unwrap(),
             ExitCode::Protocol
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::AddrInUse),
+            ExitCode::try_from(ErrorKind::AddrInUse).unwrap(),
             ExitCode::Unavailable
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::AddrNotAvailable),
+            ExitCode::try_from(ErrorKind::AddrNotAvailable).unwrap(),
             ExitCode::Unavailable
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::BrokenPipe),
-            ExitCode::IoErr
+            ExitCode::try_from(ErrorKind::BrokenPipe).unwrap_err(),
+            FromErrorKindError(ErrorKind::BrokenPipe)
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::AlreadyExists),
+            ExitCode::try_from(ErrorKind::AlreadyExists).unwrap(),
             ExitCode::CantCreat
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::WouldBlock),
-            ExitCode::IoErr
+            ExitCode::try_from(ErrorKind::WouldBlock).unwrap_err(),
+            FromErrorKindError(ErrorKind::WouldBlock)
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::InvalidInput),
+            ExitCode::try_from(ErrorKind::InvalidInput).unwrap(),
             ExitCode::DataErr
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::InvalidData),
+            ExitCode::try_from(ErrorKind::InvalidData).unwrap(),
             ExitCode::DataErr
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::TimedOut),
-            ExitCode::IoErr
+            ExitCode::try_from(ErrorKind::TimedOut).unwrap_err(),
+            FromErrorKindError(ErrorKind::TimedOut)
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::WriteZero),
-            ExitCode::IoErr
+            ExitCode::try_from(ErrorKind::WriteZero).unwrap_err(),
+            FromErrorKindError(ErrorKind::WriteZero)
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::Interrupted),
-            ExitCode::IoErr
+            ExitCode::try_from(ErrorKind::Interrupted).unwrap_err(),
+            FromErrorKindError(ErrorKind::Interrupted)
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::Unsupported),
-            ExitCode::IoErr
+            ExitCode::try_from(ErrorKind::Unsupported).unwrap_err(),
+            FromErrorKindError(ErrorKind::Unsupported)
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::UnexpectedEof),
+            ExitCode::try_from(ErrorKind::UnexpectedEof).unwrap(),
             ExitCode::DataErr
         ));
         assert!(matches!(
-            ExitCode::from(ErrorKind::OutOfMemory),
-            ExitCode::IoErr
+            ExitCode::try_from(ErrorKind::OutOfMemory).unwrap_err(),
+            FromErrorKindError(ErrorKind::OutOfMemory)
         ));
-        assert!(matches!(ExitCode::from(ErrorKind::Other), ExitCode::IoErr));
+        assert!(matches!(
+            ExitCode::try_from(ErrorKind::Other).unwrap_err(),
+            FromErrorKindError(ErrorKind::Other)
+        ));
     }
 
     macro_rules! test_from_exit_code_for_integer {
@@ -861,6 +885,17 @@ mod tests {
         assert_eq!(
             format!("{:?}", ExitCode::Config.report()),
             format!("{:?}", std::process::ExitCode::from(78))
+        );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn test_display_for_from_error_kind_error() {
+        use std::io::ErrorKind;
+
+        assert_eq!(
+            format!("{}", FromErrorKindError(ErrorKind::BrokenPipe)),
+            "no exit code to represent error kind `broken pipe`"
         );
     }
 

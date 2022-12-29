@@ -33,8 +33,10 @@ fn main() -> std::process::ExitCode {
         Ok(strings) => strings,
         Err(err) => {
             eprintln!("Error: {err}");
-            let code = sysexits::ExitCode::from(err.kind());
-            return code.into();
+            return sysexits::ExitCode::try_from(err.kind()).map_or(
+                std::process::ExitCode::FAILURE,
+                std::process::ExitCode::from,
+            );
         }
     };
 

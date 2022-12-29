@@ -40,9 +40,9 @@
 //!
 //! ## Combine with other exit codes
 //!
-//! The `ExitCode` can be converted to the [`ExitCode`](std::process::ExitCode)
-//! of `std` by the [`From`] trait, so you can combine it with your own exit
-//! codes or the `ExitCode` of `std`.
+//! [`ExitCode`] can be converted to [`std::process::ExitCode`] by the [`From`]
+//! trait, so you can combine it with your own exit codes or
+//! [`std::process::ExitCode`].
 //!
 //! ```
 //! # #[cfg(feature = "std")]
@@ -53,11 +53,10 @@
 //!     let mut buf = String::new();
 //!     if let Err(err) = std::io::stdin().read_to_string(&mut buf) {
 //!         eprintln!("{err}");
-//!         if let std::io::ErrorKind::InvalidData = err.kind() {
-//!             sysexits::ExitCode::DataErr.into()
-//!         } else {
-//!             std::process::ExitCode::FAILURE
-//!         }
+//!         sysexits::ExitCode::try_from(err.kind()).map_or(
+//!             std::process::ExitCode::FAILURE,
+//!             std::process::ExitCode::from,
+//!         )
 //!     } else {
 //!         print!("{buf}");
 //!         std::process::ExitCode::SUCCESS
@@ -90,4 +89,4 @@ mod exit_code;
 
 pub use crate::exit_code::ExitCode;
 #[cfg(feature = "std")]
-pub use crate::exit_code::FromExitStatusError;
+pub use crate::exit_code::{FromErrorKindError, FromExitStatusError};
