@@ -58,12 +58,8 @@ fn main() -> ExitCode {
         Ok(bytes) => bytes,
         Err(err) => {
             eprintln!("Error: {err}");
-            match err.kind() {
-                std::io::ErrorKind::NotFound => return sysexits::ExitCode::NoInput.into(),
-                std::io::ErrorKind::PermissionDenied => return sysexits::ExitCode::NoPerm.into(),
-                std::io::ErrorKind::InvalidData => return sysexits::ExitCode::DataErr.into(),
-                _ => return ExitCode::Trouble,
-            }
+            let code = sysexits::ExitCode::from(err.kind());
+            return code.into();
         }
     };
 

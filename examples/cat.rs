@@ -33,12 +33,8 @@ fn main() -> std::process::ExitCode {
         Ok(strings) => strings,
         Err(err) => {
             eprintln!("Error: {err}");
-            match err.kind() {
-                std::io::ErrorKind::NotFound => return sysexits::ExitCode::NoInput.into(),
-                std::io::ErrorKind::PermissionDenied => return sysexits::ExitCode::NoPerm.into(),
-                std::io::ErrorKind::InvalidData => return sysexits::ExitCode::DataErr.into(),
-                _ => return std::process::ExitCode::FAILURE,
-            }
+            let code = sysexits::ExitCode::from(err.kind());
+            return code.into();
         }
     };
 
