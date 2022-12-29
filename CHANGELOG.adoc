@@ -12,6 +12,16 @@ project adheres to https://semver.org/[Semantic Versioning].
 
 toc::[]
 
+== {compare-url}/v0.3.4\...v0.4.0[0.4.0] - 2022-12-29
+
+=== Added
+
+* Add conversions to primitive integer types
+* Add `no_std` support
+* Add conversion from `std::io::ErrorKind`
+* Add conversion from `std::process::ExitStatus`
+* Add `ExitCode::exit()`
+
 == {compare-url}/v0.3.3\...v0.3.4[0.3.4] - 2022-11-24
 
 === Added

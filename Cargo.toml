@@ -1,6 +1,6 @@
 [package]
 name = "sysexits"
-version = "0.3.4"
+version = "0.4.0"
 authors = ["Shun Sakai <sorairolake@protonmail.ch>"]
 edition = "2021"
 rust-version = "1.61.0"
@@ -10,8 +10,16 @@ readme = "README.md"
 repository = "https://github.com/sorairolake/sysexits-rs"
 license = "Apache-2.0 OR MIT"
 keywords = ["exitcode", "sysexits"]
-categories = ["command-line-interface", "os"]
+categories = ["command-line-interface", "no-std", "os"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
+[features]
+default = ["std"]
+std = []
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]

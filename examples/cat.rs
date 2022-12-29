@@ -14,8 +14,10 @@
 // Lint levels of Clippy.
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
+#[cfg(feature = "std")]
 use std::io::Read;
 
+#[cfg(feature = "std")]
 fn main() -> std::process::ExitCode {
     let args: Vec<_> = std::env::args_os().skip(1).collect();
 
@@ -31,12 +33,10 @@ fn main() -> std::process::ExitCode {
         Ok(strings) => strings,
         Err(err) => {
             eprintln!("Error: {err}");
-            match err.kind() {
-                std::io::ErrorKind::NotFound => return sysexits::ExitCode::NoInput.into(),
-                std::io::ErrorKind::PermissionDenied => return sysexits::ExitCode::NoPerm.into(),
-                std::io::ErrorKind::InvalidData => return sysexits::ExitCode::DataErr.into(),
-                _ => return std::process::ExitCode::FAILURE,
-            }
+            return sysexits::ExitCode::try_from(err.kind()).map_or(
+                std::process::ExitCode::FAILURE,
+                std::process::ExitCode::from,
+            );
         }
     };
 
@@ -44,4 +44,9 @@ fn main() -> std::process::ExitCode {
         print!("{output}");
     }
     std::process::ExitCode::SUCCESS
+}
+
+#[cfg(not(feature = "std"))]
+fn main() -> Result<(), &'static str> {
+    Err("`std` feature is required")
 }

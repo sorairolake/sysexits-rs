@@ -14,8 +14,10 @@
 // Lint levels of Clippy.
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
+#[cfg(feature = "std")]
 use std::io::Read;
 
+#[cfg(feature = "std")]
 fn main() -> sysexits::ExitCode {
     let input = std::env::args_os()
         .nth(1)
@@ -34,4 +36,9 @@ fn main() -> sysexits::ExitCode {
         println!("OK");
         sysexits::ExitCode::Ok
     }
+}
+
+#[cfg(not(feature = "std"))]
+fn main() -> Result<(), &'static str> {
+    Err("`std` feature is required")
 }

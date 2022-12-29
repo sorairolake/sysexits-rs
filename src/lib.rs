@@ -19,6 +19,7 @@
 //! this from the `main` function.
 //!
 //! ```
+//! # #[cfg(feature = "std")]
 //! fn main() -> sysexits::ExitCode {
 //!     let bytes = [0xf0, 0x9f, 0x92, 0x96];
 //!     match std::str::from_utf8(&bytes) {
@@ -32,36 +33,45 @@
 //!         }
 //!     }
 //! }
+//! #
+//! # #[cfg(not(feature = "std"))]
+//! # fn main() {}
 //! ```
 //!
 //! ## Combine with other exit codes
 //!
-//! The `ExitCode` can be converted to the [`ExitCode`](std::process::ExitCode)
-//! of `std` by the [`From`] trait, so you can combine it with your own exit
-//! codes or the `ExitCode` of `std`.
+//! [`ExitCode`] can be converted to [`std::process::ExitCode`] by the [`From`]
+//! trait, so you can combine it with your own exit codes or
+//! [`std::process::ExitCode`].
 //!
 //! ```
+//! # #[cfg(feature = "std")]
 //! use std::io::Read;
 //!
+//! # #[cfg(feature = "std")]
 //! fn main() -> std::process::ExitCode {
 //!     let mut buf = String::new();
 //!     if let Err(err) = std::io::stdin().read_to_string(&mut buf) {
 //!         eprintln!("{err}");
-//!         if let std::io::ErrorKind::InvalidData = err.kind() {
-//!             sysexits::ExitCode::DataErr.into()
-//!         } else {
-//!             std::process::ExitCode::FAILURE
-//!         }
+//!         sysexits::ExitCode::try_from(err.kind()).map_or(
+//!             std::process::ExitCode::FAILURE,
+//!             std::process::ExitCode::from,
+//!         )
 //!     } else {
 //!         print!("{buf}");
 //!         std::process::ExitCode::SUCCESS
 //!     }
 //! }
+//! #
+//! # #[cfg(not(feature = "std"))]
+//! # fn main() {}
 //! ```
 //!
 //! [sysexits-man-url]: https://man.openbsd.org/sysexits
 
-#![doc(html_root_url = "https://docs.rs/sysexits/0.3.4/")]
+#![doc(html_root_url = "https://docs.rs/sysexits/0.4.0/")]
+#![no_std]
+#![cfg_attr(doc_cfg, feature(doc_cfg))]
 // Lint levels of rustc.
 #![forbid(unsafe_code)]
 #![deny(missing_debug_implementations, missing_docs)]
@@ -69,6 +79,14 @@
 // Lint levels of Clippy.
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
+#[cfg(test)]
+#[macro_use]
+extern crate alloc;
+#[cfg(feature = "std")]
+extern crate std;
+
 mod exit_code;
 
 pub use crate::exit_code::ExitCode;
+#[cfg(feature = "std")]
+pub use crate::exit_code::{FromErrorKindError, FromExitStatusError};
