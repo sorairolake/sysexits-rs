@@ -12,6 +12,13 @@ project adheres to https://semver.org/[Semantic Versioning].
 
 toc::[]
 
+== {compare-url}/v0.4.0\...HEAD[Unreleased]
+
+=== Fixed
+
+* Fix conversion from `std::process::ExitStatus` if the process was terminated
+  by a signal
+
 == {compare-url}/v0.3.4\...v0.4.0[0.4.0] - 2022-12-29
 
 === Added
