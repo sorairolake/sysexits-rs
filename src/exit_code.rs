@@ -351,7 +351,7 @@ impl TryFrom<std::io::ErrorKind> for ExitCode {
         use std::io::ErrorKind;
 
         match kind {
-            ErrorKind::NotFound => Ok(Self::OsFile),
+            ErrorKind::NotFound => Ok(Self::NoInput),
             ErrorKind::PermissionDenied => Ok(Self::NoPerm),
             ErrorKind::ConnectionRefused
             | ErrorKind::ConnectionReset
@@ -554,7 +554,7 @@ mod tests {
 
         assert!(matches!(
             ExitCode::try_from(ErrorKind::NotFound).unwrap(),
-            ExitCode::OsFile
+            ExitCode::NoInput
         ));
         assert!(matches!(
             ExitCode::try_from(ErrorKind::PermissionDenied).unwrap(),

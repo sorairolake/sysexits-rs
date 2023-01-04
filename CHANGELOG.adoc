@@ -18,6 +18,8 @@ toc::[]
 
 * Fix conversion from `std::process::ExitStatus` if the process was terminated
   by a signal
+* Fix conversion from `std::io::ErrorKind` to return `ExitCode::NoInput` if
+  error kind is `ErrorKind::NotFound`
 
 == {compare-url}/v0.3.4\...v0.4.0[0.4.0] - 2022-12-29
 
