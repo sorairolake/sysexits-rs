@@ -299,7 +299,7 @@ impl fmt::Display for ExitCode {
 }
 
 macro_rules! impl_from_exit_code_for_integer {
-    ($T:ty) => {
+    ($T:ty, $ok:expr, $usage:expr) => {
         impl From<ExitCode> for $T {
             /// Converts an `ExitCode` into the raw underlying integer value.
             ///
@@ -310,14 +310,25 @@ macro_rules! impl_from_exit_code_for_integer {
             /// ```
             /// # use sysexits::ExitCode;
             /// #
-            #[doc = concat!("assert_eq!(", stringify!($T), "::from(ExitCode::Ok), 0);")]
-            #[doc = concat!("assert_eq!(", stringify!($T), "::from(ExitCode::Usage), 64);")]
+            #[doc = $ok]
+            #[doc = $usage]
             /// ```
             #[inline]
             fn from(code: ExitCode) -> Self {
                 code as Self
             }
         }
+    };
+    ($T:ty) => {
+        impl_from_exit_code_for_integer!(
+            $T,
+            concat!("assert_eq!(", stringify!($T), "::from(ExitCode::Ok), 0);"),
+            concat!(
+                "assert_eq!(",
+                stringify!($T),
+                "::from(ExitCode::Usage), 64);"
+            )
+        );
     };
 }
 impl_from_exit_code_for_integer!(i32);
