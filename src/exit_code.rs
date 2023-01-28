@@ -1,7 +1,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
-// Copyright (C) 2022 Shun Sakai and Contributors
+// Copyright (C) 2022-2023 Shun Sakai and Contributors
 //
 
 //! The system exit code constants as defined by
@@ -299,7 +299,7 @@ impl fmt::Display for ExitCode {
 }
 
 macro_rules! impl_from_exit_code_for_integer {
-    ($T:ty) => {
+    ($T:ty, $ok:expr, $usage:expr) => {
         impl From<ExitCode> for $T {
             /// Converts an `ExitCode` into the raw underlying integer value.
             ///
@@ -310,14 +310,25 @@ macro_rules! impl_from_exit_code_for_integer {
             /// ```
             /// # use sysexits::ExitCode;
             /// #
-            #[doc = concat!("assert_eq!(", stringify!($T), "::from(ExitCode::Ok), 0);")]
-            #[doc = concat!("assert_eq!(", stringify!($T), "::from(ExitCode::Usage), 64);")]
+            #[doc = $ok]
+            #[doc = $usage]
             /// ```
             #[inline]
             fn from(code: ExitCode) -> Self {
                 code as Self
             }
         }
+    };
+    ($T:ty) => {
+        impl_from_exit_code_for_integer!(
+            $T,
+            concat!("assert_eq!(", stringify!($T), "::from(ExitCode::Ok), 0);"),
+            concat!(
+                "assert_eq!(",
+                stringify!($T),
+                "::from(ExitCode::Usage), 64);"
+            )
+        );
     };
 }
 impl_from_exit_code_for_integer!(i32);
@@ -351,7 +362,7 @@ impl TryFrom<std::io::ErrorKind> for ExitCode {
         use std::io::ErrorKind;
 
         match kind {
-            ErrorKind::NotFound => Ok(Self::OsFile),
+            ErrorKind::NotFound => Ok(Self::NoInput),
             ErrorKind::PermissionDenied => Ok(Self::NoPerm),
             ErrorKind::ConnectionRefused
             | ErrorKind::ConnectionReset
@@ -378,22 +389,11 @@ impl TryFrom<std::process::ExitStatus> for ExitCode {
     ///
     /// This method returns [`Err`] in the following situations:
     ///
-    /// - The raw underlying integer value is not `0` or `64..=78`.
-    /// - The raw underlying integer value is unknown.
+    /// - The exit code is not `0` or `64..=78`.
+    /// - The exit code is unknown (e.g., the process was terminated by a
+    ///   signal).
     fn try_from(status: std::process::ExitStatus) -> Result<Self, Self::Error> {
-        #[cfg(unix)]
-        fn code(status: std::process::ExitStatus) -> Option<i32> {
-            use std::os::unix::process::ExitStatusExt;
-
-            status.code().or_else(|| status.signal())
-        }
-
-        #[cfg(not(unix))]
-        fn code(status: std::process::ExitStatus) -> Option<i32> {
-            status.code()
-        }
-
-        match code(status) {
+        match status.code() {
             Some(0) => Ok(Self::Ok),
             Some(64) => Ok(Self::Usage),
             Some(65) => Ok(Self::DataErr),
@@ -468,17 +468,25 @@ mod tests {
     use super::*;
 
     #[cfg(all(feature = "std", unix))]
-    fn code(raw: i32) -> std::process::ExitStatus {
-        use std::os::unix::process::ExitStatusExt;
+    fn get_exit_status(status: i32) -> std::process::ExitStatus {
+        use std::process::Command;
 
-        std::process::ExitStatus::from_raw(raw)
+        Command::new("sh")
+            .arg("-c")
+            .arg(format!("exit {status}"))
+            .status()
+            .unwrap()
     }
 
     #[cfg(all(feature = "std", windows))]
-    fn code(raw: u32) -> std::process::ExitStatus {
-        use std::os::windows::process::ExitStatusExt;
+    fn get_exit_status(status: u32) -> std::process::ExitStatus {
+        use std::process::Command;
 
-        std::process::ExitStatus::from_raw(raw)
+        Command::new("cmd")
+            .arg("/c")
+            .arg(format!("exit {status}"))
+            .status()
+            .unwrap()
     }
 
     #[test]
@@ -557,7 +565,7 @@ mod tests {
 
         assert!(matches!(
             ExitCode::try_from(ErrorKind::NotFound).unwrap(),
-            ExitCode::OsFile
+            ExitCode::NoInput
         ));
         assert!(matches!(
             ExitCode::try_from(ErrorKind::PermissionDenied).unwrap(),
@@ -738,65 +746,68 @@ mod tests {
     #[allow(clippy::cognitive_complexity)]
     #[test]
     fn test_try_from_process_exit_status_for_exit_code() {
-        assert!(matches!(ExitCode::try_from(code(0)).unwrap(), ExitCode::Ok));
         assert!(matches!(
-            ExitCode::try_from(code(64)).unwrap(),
+            ExitCode::try_from(get_exit_status(0)).unwrap(),
+            ExitCode::Ok
+        ));
+        assert!(matches!(
+            ExitCode::try_from(get_exit_status(64)).unwrap(),
             ExitCode::Usage
         ));
         assert!(matches!(
-            ExitCode::try_from(code(65)).unwrap(),
+            ExitCode::try_from(get_exit_status(65)).unwrap(),
             ExitCode::DataErr
         ));
         assert!(matches!(
-            ExitCode::try_from(code(66)).unwrap(),
+            ExitCode::try_from(get_exit_status(66)).unwrap(),
             ExitCode::NoInput
         ));
         assert!(matches!(
-            ExitCode::try_from(code(67)).unwrap(),
+            ExitCode::try_from(get_exit_status(67)).unwrap(),
             ExitCode::NoUser
         ));
         assert!(matches!(
-            ExitCode::try_from(code(68)).unwrap(),
+            ExitCode::try_from(get_exit_status(68)).unwrap(),
             ExitCode::NoHost
         ));
         assert!(matches!(
-            ExitCode::try_from(code(69)).unwrap(),
+            ExitCode::try_from(get_exit_status(69)).unwrap(),
             ExitCode::Unavailable
         ));
         assert!(matches!(
-            ExitCode::try_from(code(70)).unwrap(),
+            ExitCode::try_from(get_exit_status(70)).unwrap(),
             ExitCode::Software
         ));
         assert!(matches!(
-            ExitCode::try_from(code(71)).unwrap(),
+            ExitCode::try_from(get_exit_status(71)).unwrap(),
             ExitCode::OsErr
         ));
         assert!(matches!(
-            ExitCode::try_from(code(72)).unwrap(),
+            ExitCode::try_from(get_exit_status(72)).unwrap(),
             ExitCode::OsFile
         ));
         assert!(matches!(
-            ExitCode::try_from(code(73)).unwrap(),
+            ExitCode::try_from(get_exit_status(73)).unwrap(),
             ExitCode::CantCreat
         ));
         assert!(matches!(
-            ExitCode::try_from(code(74)).unwrap(),
+            ExitCode::try_from(get_exit_status(74)).unwrap(),
             ExitCode::IoErr
         ));
         assert!(matches!(
-            ExitCode::try_from(code(75)).unwrap(),
+            ExitCode::try_from(get_exit_status(75)).unwrap(),
             ExitCode::TempFail
         ));
         assert!(matches!(
-            ExitCode::try_from(code(76)).unwrap(),
+            ExitCode::try_from(get_exit_status(76)).unwrap(),
             ExitCode::Protocol
         ));
         assert!(matches!(
-            ExitCode::try_from(code(77)).unwrap(),
+            ExitCode::try_from(get_exit_status(77)).unwrap(),
             ExitCode::NoPerm
         ));
         assert!(matches!(
-            ExitCode::try_from(code(78)).unwrap(),
+            ExitCode::try_from(get_exit_status(78)).unwrap(),
             ExitCode::Config
         ));
     }
@@ -806,16 +817,38 @@ mod tests {
     #[test]
     fn test_try_from_process_exit_status_for_exit_code_when_out_of_range() {
         assert!(matches!(
-            ExitCode::try_from(code(1)).unwrap_err(),
+            ExitCode::try_from(get_exit_status(1)).unwrap_err(),
             FromExitStatusError(Some(1))
         ));
         assert!(matches!(
-            ExitCode::try_from(code(63)).unwrap_err(),
+            ExitCode::try_from(get_exit_status(63)).unwrap_err(),
             FromExitStatusError(Some(63))
         ));
         assert!(matches!(
-            ExitCode::try_from(code(79)).unwrap_err(),
+            ExitCode::try_from(get_exit_status(79)).unwrap_err(),
             FromExitStatusError(Some(79))
+        ));
+    }
+
+    #[cfg(all(feature = "std", unix))]
+    #[test]
+    fn test_try_from_process_exit_status_for_exit_code_when_terminated_by_signal() {
+        fn get_exit_status() -> std::process::ExitStatus {
+            use std::process::{Command, Stdio};
+
+            let mut child = Command::new("sh")
+                .arg("-c")
+                .arg("read a")
+                .stdin(Stdio::piped())
+                .spawn()
+                .unwrap();
+            child.kill().unwrap();
+            child.wait().unwrap()
+        }
+
+        assert!(matches!(
+            ExitCode::try_from(get_exit_status()).unwrap_err(),
+            FromExitStatusError(None)
         ));
     }
 
