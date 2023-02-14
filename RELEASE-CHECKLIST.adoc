@@ -1,0 +1,23 @@
+= Release Checklist
+:project-url: https://github.com/sorairolake/sysexits-rs
+:bump2version-pypi-url: https://pypi.org/project/bump2version/
+:just-official-url: https://just.systems/
+:crates-io-url: https://crates.io/
+
+* [ ] Create the release branch (e.g. `release/v0.1.0`) from the `develop`
+      branch, and switch to it
+* [ ] Update `link:CHANGELOG.adoc[]` (rename unreleased header to the current
+      date, add any missing changes)
+* [ ] Bump up the version in `link:Cargo.toml[]`, `link:CITATION.cff[]`,
+      `link:README.md[]` and `link:src/lib.rs[]` (should use
+      `{bump2version-pypi-url}[bump2version]` via `{just-official-url}[just]`)
+* [ ] Update the release date in `link:CITATION.cff[]` to the current date
+* [ ] Switch to the `master` branch, and merge the release branch into it (with
+      `--no-ff`)
+* [ ] Make a GPG-signed tag (e.g. `git tag -s v0.1.0 -m "Release version
+      0.1.0"`)
+* [ ] Switch to the `develop` branch, and merge the release branch into it
+      (with `--no-ff`)
+* [ ] Push the `master` branch, the `develop` branch and the local tags
+* [ ] Checkout the latest tag, and publish to {crates-io-url}[crates.io] using
+      `cargo publish`
