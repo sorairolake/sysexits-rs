@@ -17,7 +17,7 @@ use std::process::Termination;
 /// defined by [`<sysexits.h>`][sysexits-man-url].
 ///
 /// [sysexits-man-url]: https://man.openbsd.org/sysexits
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ExitCode {
     /// The successful exit.
     ///
