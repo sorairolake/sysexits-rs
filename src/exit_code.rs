@@ -509,6 +509,7 @@ mod tests {
         assert_eq!(format!("{}", ExitCode::Config), format!("{}", 78));
     }
 
+    #[allow(clippy::cognitive_complexity, clippy::too_many_lines)]
     #[test]
     fn test_equality() {
         assert_eq!(ExitCode::Ok, ExitCode::Ok);
