@@ -13,6 +13,12 @@ use core::fmt;
 #[cfg(feature = "std")]
 use std::process::Termination;
 
+/// An `ExitCode` based result type.
+///
+/// In case of an error, an appropriate variant of `ExitCode` can describe
+/// the exact cause in further detail.
+pub type Result<T> = std::result::Result<T, ExitCode>;
+
 /// `ExitCode` is a type that represents the system exit code constants as
 /// defined by [`<sysexits.h>`][sysexits-man-url].
 ///
@@ -347,6 +353,18 @@ impl From<ExitCode> for std::process::ExitCode {
     }
 }
 
+impl<T> From<Result<T>> for ExitCode {
+    /// Convert an `ExitCode` based result into an `ExitCode`.
+    ///
+    /// The `Err` variant of the given result already contains a proper
+    /// `ExitCode` which only needs to be unpacked.  The `Ok` variant expresses
+    /// the success of an operation and can thus be mapped to `ExitCode::Ok` in
+    /// any case.
+    fn from(result: Result<T>) -> Self {
+        result.map_or_else(|code| code, |_| Self::Ok)
+    }
+}
+
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 impl TryFrom<std::io::ErrorKind> for ExitCode {
@@ -358,7 +376,7 @@ impl TryFrom<std::io::ErrorKind> for ExitCode {
     ///
     /// Returns [`Err`] if there is not a suitable `ExitCode` to represent an
     /// [`ErrorKind`](std::io::ErrorKind).
-    fn try_from(kind: std::io::ErrorKind) -> Result<Self, Self::Error> {
+    fn try_from(kind: std::io::ErrorKind) -> std::result::Result<Self, Self::Error> {
         use std::io::ErrorKind;
 
         match kind {
@@ -392,7 +410,7 @@ impl TryFrom<std::process::ExitStatus> for ExitCode {
     /// - The exit code is not `0` or `64..=78`.
     /// - The exit code is unknown (e.g., the process was terminated by a
     ///   signal).
-    fn try_from(status: std::process::ExitStatus) -> Result<Self, Self::Error> {
+    fn try_from(status: std::process::ExitStatus) -> std::result::Result<Self, Self::Error> {
         match status.code() {
             Some(0) => Ok(Self::Ok),
             Some(64) => Ok(Self::Usage),
@@ -816,6 +834,133 @@ mod tests {
         assert!(ExitCode::Protocol.is_failure());
         assert!(ExitCode::NoPerm.is_failure());
         assert!(ExitCode::Config.is_failure());
+    }
+
+    #[test]
+    fn test_result_type() {
+        assert_eq!(Into::<ExitCode>::into(Ok::<(), ExitCode>(())), ExitCode::Ok);
+        assert_eq!(Into::<ExitCode>::into(Ok::<u8, ExitCode>(42)), ExitCode::Ok);
+
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Usage)),
+            ExitCode::Usage
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::DataErr)),
+            ExitCode::DataErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::NoInput)),
+            ExitCode::NoInput
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::NoUser)),
+            ExitCode::NoUser
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::NoHost)),
+            ExitCode::NoHost
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Unavailable)),
+            ExitCode::Unavailable
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Software)),
+            ExitCode::Software
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::OsErr)),
+            ExitCode::OsErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::OsFile)),
+            ExitCode::OsFile
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::CantCreat)),
+            ExitCode::CantCreat
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::IoErr)),
+            ExitCode::IoErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::TempFail)),
+            ExitCode::TempFail
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Protocol)),
+            ExitCode::Protocol
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::NoPerm)),
+            ExitCode::NoPerm
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Config)),
+            ExitCode::Config
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Usage)),
+            ExitCode::Usage
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::DataErr)),
+            ExitCode::DataErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::NoInput)),
+            ExitCode::NoInput
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::NoUser)),
+            ExitCode::NoUser
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::NoHost)),
+            ExitCode::NoHost
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Unavailable)),
+            ExitCode::Unavailable
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Software)),
+            ExitCode::Software
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::OsErr)),
+            ExitCode::OsErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::OsFile)),
+            ExitCode::OsFile
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::CantCreat)),
+            ExitCode::CantCreat
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::IoErr)),
+            ExitCode::IoErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::TempFail)),
+            ExitCode::TempFail
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Protocol)),
+            ExitCode::Protocol
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::NoPerm)),
+            ExitCode::NoPerm
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Config)),
+            ExitCode::Config
+        );
     }
 
     #[cfg(feature = "std")]
