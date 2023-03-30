@@ -11,12 +11,14 @@
 
 use core::fmt;
 #[cfg(feature = "std")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 use std::process::Termination;
 
 /// An `ExitCode` based result type.
 ///
 /// In case of an error, an appropriate variant of `ExitCode` can describe
 /// the exact cause in further detail.
+#[cfg(feature = "std")]
 pub type Result<T> = std::result::Result<T, ExitCode>;
 
 /// `ExitCode` is a type that represents the system exit code constants as
@@ -353,6 +355,8 @@ impl From<ExitCode> for std::process::ExitCode {
     }
 }
 
+#[cfg(feature = "std")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 impl<T> From<Result<T>> for ExitCode {
     /// Convert an `ExitCode` based result into an `ExitCode`.
     ///
@@ -836,6 +840,7 @@ mod tests {
         assert!(ExitCode::Config.is_failure());
     }
 
+    #[cfg(feature = "std")]
     #[test]
     fn test_result_type() {
         assert_eq!(Into::<ExitCode>::into(Ok::<(), ExitCode>(())), ExitCode::Ok);
