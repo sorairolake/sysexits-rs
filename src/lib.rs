@@ -69,7 +69,7 @@
 //!
 //! [sysexits-man-url]: https://man.openbsd.org/sysexits
 
-#![doc(html_root_url = "https://docs.rs/sysexits/0.4.1/")]
+#![doc(html_root_url = "https://docs.rs/sysexits/0.5.0/")]
 #![no_std]
 #![cfg_attr(doc_cfg, feature(doc_cfg))]
 // Lint levels of rustc.
@@ -89,4 +89,4 @@ mod exit_code;
 
 pub use crate::exit_code::ExitCode;
 #[cfg(feature = "std")]
-pub use crate::exit_code::{FromErrorKindError, FromExitStatusError};
+pub use crate::exit_code::{Result, TryFromErrorKindError, TryFromExitStatusError};

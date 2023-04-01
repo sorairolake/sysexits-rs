@@ -13,11 +13,19 @@ use core::fmt;
 #[cfg(feature = "std")]
 use std::process::Termination;
 
+/// An `ExitCode` based result type.
+///
+/// In case of an error, an appropriate variant of `ExitCode` can describe the
+/// exact cause in further detail.
+#[cfg(feature = "std")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
+pub type Result<T> = std::result::Result<T, ExitCode>;
+
 /// `ExitCode` is a type that represents the system exit code constants as
 /// defined by [`<sysexits.h>`][sysexits-man-url].
 ///
 /// [sysexits-man-url]: https://man.openbsd.org/sysexits
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ExitCode {
     /// The successful exit.
     ///
@@ -349,8 +357,22 @@ impl From<ExitCode> for std::process::ExitCode {
 
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
+impl<T> From<Result<T>> for ExitCode {
+    /// Convert an `ExitCode` based result into an `ExitCode`.
+    ///
+    /// The [`Err`] variant of the given result already contains a proper
+    /// `ExitCode` which only needs to be unpacked. The [`Ok`] variant
+    /// expresses the success of an operation and can thus be mapped to
+    /// [`ExitCode::Ok`] in any case.
+    fn from(result: Result<T>) -> Self {
+        result.map_or_else(|code| code, |_| Self::Ok)
+    }
+}
+
+#[cfg(feature = "std")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 impl TryFrom<std::io::ErrorKind> for ExitCode {
-    type Error = FromErrorKindError;
+    type Error = TryFromErrorKindError;
 
     /// Converts an [`ErrorKind`](std::io::ErrorKind) into an `ExitCode`.
     ///
@@ -358,7 +380,7 @@ impl TryFrom<std::io::ErrorKind> for ExitCode {
     ///
     /// Returns [`Err`] if there is not a suitable `ExitCode` to represent an
     /// [`ErrorKind`](std::io::ErrorKind).
-    fn try_from(kind: std::io::ErrorKind) -> Result<Self, Self::Error> {
+    fn try_from(kind: std::io::ErrorKind) -> std::result::Result<Self, Self::Error> {
         use std::io::ErrorKind;
 
         match kind {
@@ -373,7 +395,7 @@ impl TryFrom<std::io::ErrorKind> for ExitCode {
             ErrorKind::InvalidInput | ErrorKind::InvalidData | ErrorKind::UnexpectedEof => {
                 Ok(Self::DataErr)
             }
-            k => Err(FromErrorKindError(k)),
+            k => Err(TryFromErrorKindError(k)),
         }
     }
 }
@@ -381,7 +403,7 @@ impl TryFrom<std::io::ErrorKind> for ExitCode {
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 impl TryFrom<std::process::ExitStatus> for ExitCode {
-    type Error = FromExitStatusError;
+    type Error = TryFromExitStatusError;
 
     /// Converts an [`ExitStatus`](std::process::ExitStatus) into an `ExitCode`.
     ///
@@ -392,7 +414,7 @@ impl TryFrom<std::process::ExitStatus> for ExitCode {
     /// - The exit code is not `0` or `64..=78`.
     /// - The exit code is unknown (e.g., the process was terminated by a
     ///   signal).
-    fn try_from(status: std::process::ExitStatus) -> Result<Self, Self::Error> {
+    fn try_from(status: std::process::ExitStatus) -> std::result::Result<Self, Self::Error> {
         match status.code() {
             Some(0) => Ok(Self::Ok),
             Some(64) => Ok(Self::Usage),
@@ -410,11 +432,15 @@ impl TryFrom<std::process::ExitStatus> for ExitCode {
             Some(76) => Ok(Self::Protocol),
             Some(77) => Ok(Self::NoPerm),
             Some(78) => Ok(Self::Config),
-            Some(code) => Err(FromExitStatusError(Some(code))),
-            None => Err(FromExitStatusError(None)),
+            Some(code) => Err(TryFromExitStatusError(Some(code))),
+            None => Err(TryFromExitStatusError(None)),
         }
     }
 }
+
+#[cfg(feature = "std")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
+impl std::error::Error for ExitCode {}
 
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
@@ -429,28 +455,28 @@ impl Termination for ExitCode {
 /// [`ErrorKind`](std::io::ErrorKind).
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
-#[derive(Debug)]
-pub struct FromErrorKindError(std::io::ErrorKind);
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct TryFromErrorKindError(std::io::ErrorKind);
 
 #[cfg(feature = "std")]
-impl fmt::Display for FromErrorKindError {
+impl fmt::Display for TryFromErrorKindError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "no exit code to represent error kind `{}`", self.0)
     }
 }
 
 #[cfg(feature = "std")]
-impl std::error::Error for FromErrorKindError {}
+impl std::error::Error for TryFromErrorKindError {}
 
 /// An error which can be returned when converting an [`ExitCode`] from an
 /// [`ExitStatus`](std::process::ExitStatus).
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
-#[derive(Debug)]
-pub struct FromExitStatusError(Option<i32>);
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct TryFromExitStatusError(Option<i32>);
 
 #[cfg(feature = "std")]
-impl fmt::Display for FromExitStatusError {
+impl fmt::Display for TryFromExitStatusError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(code) = self.0 {
             write!(f, "invalid exit code `{code}`")
@@ -461,7 +487,7 @@ impl fmt::Display for FromExitStatusError {
 }
 
 #[cfg(feature = "std")]
-impl std::error::Error for FromExitStatusError {}
+impl std::error::Error for TryFromExitStatusError {}
 
 #[cfg(test)]
 mod tests {
@@ -490,7 +516,7 @@ mod tests {
     }
 
     #[test]
-    fn test_display_trait_implementation() {
+    fn display_exit_code() {
         assert_eq!(format!("{}", ExitCode::Ok), format!("{}", 0));
         assert_eq!(format!("{}", ExitCode::Usage), format!("{}", 64));
         assert_eq!(format!("{}", ExitCode::DataErr), format!("{}", 65));
@@ -510,12 +536,305 @@ mod tests {
     }
 
     #[test]
-    fn test_is_success_for_successful_termination() {
+    fn clone_exit_code() {
+        assert_eq!(ExitCode::Ok.clone(), ExitCode::Ok);
+    }
+
+    #[test]
+    fn copy_exit_code() {
+        let a = ExitCode::Ok;
+        let b = a;
+        assert_eq!(a, b);
+    }
+
+    #[test]
+    fn debug_exit_code() {
+        assert_eq!(format!("{:?}", ExitCode::Ok), "Ok");
+        assert_eq!(format!("{:?}", ExitCode::Usage), "Usage");
+        assert_eq!(format!("{:?}", ExitCode::DataErr), "DataErr");
+        assert_eq!(format!("{:?}", ExitCode::NoInput), "NoInput");
+        assert_eq!(format!("{:?}", ExitCode::NoUser), "NoUser");
+        assert_eq!(format!("{:?}", ExitCode::NoHost), "NoHost");
+        assert_eq!(format!("{:?}", ExitCode::Unavailable), "Unavailable");
+        assert_eq!(format!("{:?}", ExitCode::Software), "Software");
+        assert_eq!(format!("{:?}", ExitCode::OsErr), "OsErr");
+        assert_eq!(format!("{:?}", ExitCode::OsFile), "OsFile");
+        assert_eq!(format!("{:?}", ExitCode::CantCreat), "CantCreat");
+        assert_eq!(format!("{:?}", ExitCode::IoErr), "IoErr");
+        assert_eq!(format!("{:?}", ExitCode::TempFail), "TempFail");
+        assert_eq!(format!("{:?}", ExitCode::Protocol), "Protocol");
+        assert_eq!(format!("{:?}", ExitCode::NoPerm), "NoPerm");
+        assert_eq!(format!("{:?}", ExitCode::Config), "Config");
+    }
+
+    #[allow(clippy::cognitive_complexity, clippy::too_many_lines)]
+    #[test]
+    fn exit_code_equality() {
+        assert_eq!(ExitCode::Ok, ExitCode::Ok);
+        assert_ne!(ExitCode::Ok, ExitCode::Usage);
+        assert_ne!(ExitCode::Ok, ExitCode::DataErr);
+        assert_ne!(ExitCode::Ok, ExitCode::NoInput);
+        assert_ne!(ExitCode::Ok, ExitCode::NoUser);
+        assert_ne!(ExitCode::Ok, ExitCode::NoHost);
+        assert_ne!(ExitCode::Ok, ExitCode::Unavailable);
+        assert_ne!(ExitCode::Ok, ExitCode::Software);
+        assert_ne!(ExitCode::Ok, ExitCode::OsErr);
+        assert_ne!(ExitCode::Ok, ExitCode::OsFile);
+        assert_ne!(ExitCode::Ok, ExitCode::CantCreat);
+        assert_ne!(ExitCode::Ok, ExitCode::IoErr);
+        assert_ne!(ExitCode::Ok, ExitCode::TempFail);
+        assert_ne!(ExitCode::Ok, ExitCode::Protocol);
+        assert_ne!(ExitCode::Ok, ExitCode::NoPerm);
+        assert_ne!(ExitCode::Ok, ExitCode::Config);
+        assert_ne!(ExitCode::Usage, ExitCode::Ok);
+        assert_eq!(ExitCode::Usage, ExitCode::Usage);
+        assert_ne!(ExitCode::Usage, ExitCode::DataErr);
+        assert_ne!(ExitCode::Usage, ExitCode::NoInput);
+        assert_ne!(ExitCode::Usage, ExitCode::NoUser);
+        assert_ne!(ExitCode::Usage, ExitCode::NoHost);
+        assert_ne!(ExitCode::Usage, ExitCode::Unavailable);
+        assert_ne!(ExitCode::Usage, ExitCode::Software);
+        assert_ne!(ExitCode::Usage, ExitCode::OsErr);
+        assert_ne!(ExitCode::Usage, ExitCode::OsFile);
+        assert_ne!(ExitCode::Usage, ExitCode::CantCreat);
+        assert_ne!(ExitCode::Usage, ExitCode::IoErr);
+        assert_ne!(ExitCode::Usage, ExitCode::TempFail);
+        assert_ne!(ExitCode::Usage, ExitCode::Protocol);
+        assert_ne!(ExitCode::Usage, ExitCode::NoPerm);
+        assert_ne!(ExitCode::Usage, ExitCode::Config);
+        assert_ne!(ExitCode::DataErr, ExitCode::Ok);
+        assert_ne!(ExitCode::DataErr, ExitCode::Usage);
+        assert_eq!(ExitCode::DataErr, ExitCode::DataErr);
+        assert_ne!(ExitCode::DataErr, ExitCode::NoInput);
+        assert_ne!(ExitCode::DataErr, ExitCode::NoUser);
+        assert_ne!(ExitCode::DataErr, ExitCode::NoHost);
+        assert_ne!(ExitCode::DataErr, ExitCode::Unavailable);
+        assert_ne!(ExitCode::DataErr, ExitCode::Software);
+        assert_ne!(ExitCode::DataErr, ExitCode::OsErr);
+        assert_ne!(ExitCode::DataErr, ExitCode::OsFile);
+        assert_ne!(ExitCode::DataErr, ExitCode::CantCreat);
+        assert_ne!(ExitCode::DataErr, ExitCode::IoErr);
+        assert_ne!(ExitCode::DataErr, ExitCode::TempFail);
+        assert_ne!(ExitCode::DataErr, ExitCode::Protocol);
+        assert_ne!(ExitCode::DataErr, ExitCode::NoPerm);
+        assert_ne!(ExitCode::DataErr, ExitCode::Config);
+        assert_ne!(ExitCode::NoInput, ExitCode::Ok);
+        assert_ne!(ExitCode::NoInput, ExitCode::Usage);
+        assert_ne!(ExitCode::NoInput, ExitCode::DataErr);
+        assert_eq!(ExitCode::NoInput, ExitCode::NoInput);
+        assert_ne!(ExitCode::NoInput, ExitCode::NoUser);
+        assert_ne!(ExitCode::NoInput, ExitCode::NoHost);
+        assert_ne!(ExitCode::NoInput, ExitCode::Unavailable);
+        assert_ne!(ExitCode::NoInput, ExitCode::Software);
+        assert_ne!(ExitCode::NoInput, ExitCode::OsErr);
+        assert_ne!(ExitCode::NoInput, ExitCode::OsFile);
+        assert_ne!(ExitCode::NoInput, ExitCode::CantCreat);
+        assert_ne!(ExitCode::NoInput, ExitCode::IoErr);
+        assert_ne!(ExitCode::NoInput, ExitCode::TempFail);
+        assert_ne!(ExitCode::NoInput, ExitCode::Protocol);
+        assert_ne!(ExitCode::NoInput, ExitCode::NoPerm);
+        assert_ne!(ExitCode::NoInput, ExitCode::Config);
+        assert_ne!(ExitCode::NoUser, ExitCode::Ok);
+        assert_ne!(ExitCode::NoUser, ExitCode::Usage);
+        assert_ne!(ExitCode::NoUser, ExitCode::DataErr);
+        assert_ne!(ExitCode::NoUser, ExitCode::NoInput);
+        assert_eq!(ExitCode::NoUser, ExitCode::NoUser);
+        assert_ne!(ExitCode::NoUser, ExitCode::NoHost);
+        assert_ne!(ExitCode::NoUser, ExitCode::Unavailable);
+        assert_ne!(ExitCode::NoUser, ExitCode::Software);
+        assert_ne!(ExitCode::NoUser, ExitCode::OsErr);
+        assert_ne!(ExitCode::NoUser, ExitCode::OsFile);
+        assert_ne!(ExitCode::NoUser, ExitCode::CantCreat);
+        assert_ne!(ExitCode::NoUser, ExitCode::IoErr);
+        assert_ne!(ExitCode::NoUser, ExitCode::TempFail);
+        assert_ne!(ExitCode::NoUser, ExitCode::Protocol);
+        assert_ne!(ExitCode::NoUser, ExitCode::NoPerm);
+        assert_ne!(ExitCode::NoUser, ExitCode::Config);
+        assert_ne!(ExitCode::NoHost, ExitCode::Ok);
+        assert_ne!(ExitCode::NoHost, ExitCode::Usage);
+        assert_ne!(ExitCode::NoHost, ExitCode::DataErr);
+        assert_ne!(ExitCode::NoHost, ExitCode::NoInput);
+        assert_ne!(ExitCode::NoHost, ExitCode::NoUser);
+        assert_eq!(ExitCode::NoHost, ExitCode::NoHost);
+        assert_ne!(ExitCode::NoHost, ExitCode::Unavailable);
+        assert_ne!(ExitCode::NoHost, ExitCode::Software);
+        assert_ne!(ExitCode::NoHost, ExitCode::OsErr);
+        assert_ne!(ExitCode::NoHost, ExitCode::OsFile);
+        assert_ne!(ExitCode::NoHost, ExitCode::CantCreat);
+        assert_ne!(ExitCode::NoHost, ExitCode::IoErr);
+        assert_ne!(ExitCode::NoHost, ExitCode::TempFail);
+        assert_ne!(ExitCode::NoHost, ExitCode::Protocol);
+        assert_ne!(ExitCode::NoHost, ExitCode::NoPerm);
+        assert_ne!(ExitCode::NoHost, ExitCode::Config);
+        assert_ne!(ExitCode::Unavailable, ExitCode::Ok);
+        assert_ne!(ExitCode::Unavailable, ExitCode::Usage);
+        assert_ne!(ExitCode::Unavailable, ExitCode::DataErr);
+        assert_ne!(ExitCode::Unavailable, ExitCode::NoInput);
+        assert_ne!(ExitCode::Unavailable, ExitCode::NoUser);
+        assert_ne!(ExitCode::Unavailable, ExitCode::NoHost);
+        assert_eq!(ExitCode::Unavailable, ExitCode::Unavailable);
+        assert_ne!(ExitCode::Unavailable, ExitCode::Software);
+        assert_ne!(ExitCode::Unavailable, ExitCode::OsErr);
+        assert_ne!(ExitCode::Unavailable, ExitCode::OsFile);
+        assert_ne!(ExitCode::Unavailable, ExitCode::CantCreat);
+        assert_ne!(ExitCode::Unavailable, ExitCode::IoErr);
+        assert_ne!(ExitCode::Unavailable, ExitCode::TempFail);
+        assert_ne!(ExitCode::Unavailable, ExitCode::Protocol);
+        assert_ne!(ExitCode::Unavailable, ExitCode::NoPerm);
+        assert_ne!(ExitCode::Unavailable, ExitCode::Config);
+        assert_ne!(ExitCode::Software, ExitCode::Ok);
+        assert_ne!(ExitCode::Software, ExitCode::Usage);
+        assert_ne!(ExitCode::Software, ExitCode::DataErr);
+        assert_ne!(ExitCode::Software, ExitCode::NoInput);
+        assert_ne!(ExitCode::Software, ExitCode::NoUser);
+        assert_ne!(ExitCode::Software, ExitCode::NoHost);
+        assert_ne!(ExitCode::Software, ExitCode::Unavailable);
+        assert_eq!(ExitCode::Software, ExitCode::Software);
+        assert_ne!(ExitCode::Software, ExitCode::OsErr);
+        assert_ne!(ExitCode::Software, ExitCode::OsFile);
+        assert_ne!(ExitCode::Software, ExitCode::CantCreat);
+        assert_ne!(ExitCode::Software, ExitCode::IoErr);
+        assert_ne!(ExitCode::Software, ExitCode::TempFail);
+        assert_ne!(ExitCode::Software, ExitCode::Protocol);
+        assert_ne!(ExitCode::Software, ExitCode::NoPerm);
+        assert_ne!(ExitCode::Software, ExitCode::Config);
+        assert_ne!(ExitCode::OsErr, ExitCode::Ok);
+        assert_ne!(ExitCode::OsErr, ExitCode::Usage);
+        assert_ne!(ExitCode::OsErr, ExitCode::DataErr);
+        assert_ne!(ExitCode::OsErr, ExitCode::NoInput);
+        assert_ne!(ExitCode::OsErr, ExitCode::NoUser);
+        assert_ne!(ExitCode::OsErr, ExitCode::NoHost);
+        assert_ne!(ExitCode::OsErr, ExitCode::Unavailable);
+        assert_ne!(ExitCode::OsErr, ExitCode::Software);
+        assert_eq!(ExitCode::OsErr, ExitCode::OsErr);
+        assert_ne!(ExitCode::OsErr, ExitCode::OsFile);
+        assert_ne!(ExitCode::OsErr, ExitCode::CantCreat);
+        assert_ne!(ExitCode::OsErr, ExitCode::IoErr);
+        assert_ne!(ExitCode::OsErr, ExitCode::TempFail);
+        assert_ne!(ExitCode::OsErr, ExitCode::Protocol);
+        assert_ne!(ExitCode::OsErr, ExitCode::NoPerm);
+        assert_ne!(ExitCode::OsErr, ExitCode::Config);
+        assert_ne!(ExitCode::OsFile, ExitCode::Ok);
+        assert_ne!(ExitCode::OsFile, ExitCode::Usage);
+        assert_ne!(ExitCode::OsFile, ExitCode::DataErr);
+        assert_ne!(ExitCode::OsFile, ExitCode::NoInput);
+        assert_ne!(ExitCode::OsFile, ExitCode::NoUser);
+        assert_ne!(ExitCode::OsFile, ExitCode::NoHost);
+        assert_ne!(ExitCode::OsFile, ExitCode::Unavailable);
+        assert_ne!(ExitCode::OsFile, ExitCode::Software);
+        assert_ne!(ExitCode::OsFile, ExitCode::OsErr);
+        assert_eq!(ExitCode::OsFile, ExitCode::OsFile);
+        assert_ne!(ExitCode::OsFile, ExitCode::CantCreat);
+        assert_ne!(ExitCode::OsFile, ExitCode::IoErr);
+        assert_ne!(ExitCode::OsFile, ExitCode::TempFail);
+        assert_ne!(ExitCode::OsFile, ExitCode::Protocol);
+        assert_ne!(ExitCode::OsFile, ExitCode::NoPerm);
+        assert_ne!(ExitCode::OsFile, ExitCode::Config);
+        assert_ne!(ExitCode::CantCreat, ExitCode::Ok);
+        assert_ne!(ExitCode::CantCreat, ExitCode::Usage);
+        assert_ne!(ExitCode::CantCreat, ExitCode::DataErr);
+        assert_ne!(ExitCode::CantCreat, ExitCode::NoInput);
+        assert_ne!(ExitCode::CantCreat, ExitCode::NoUser);
+        assert_ne!(ExitCode::CantCreat, ExitCode::NoHost);
+        assert_ne!(ExitCode::CantCreat, ExitCode::Unavailable);
+        assert_ne!(ExitCode::CantCreat, ExitCode::Software);
+        assert_ne!(ExitCode::CantCreat, ExitCode::OsErr);
+        assert_ne!(ExitCode::CantCreat, ExitCode::OsFile);
+        assert_eq!(ExitCode::CantCreat, ExitCode::CantCreat);
+        assert_ne!(ExitCode::CantCreat, ExitCode::IoErr);
+        assert_ne!(ExitCode::CantCreat, ExitCode::TempFail);
+        assert_ne!(ExitCode::CantCreat, ExitCode::Protocol);
+        assert_ne!(ExitCode::CantCreat, ExitCode::NoPerm);
+        assert_ne!(ExitCode::CantCreat, ExitCode::Config);
+        assert_ne!(ExitCode::IoErr, ExitCode::Ok);
+        assert_ne!(ExitCode::IoErr, ExitCode::Usage);
+        assert_ne!(ExitCode::IoErr, ExitCode::DataErr);
+        assert_ne!(ExitCode::IoErr, ExitCode::NoInput);
+        assert_ne!(ExitCode::IoErr, ExitCode::NoUser);
+        assert_ne!(ExitCode::IoErr, ExitCode::NoHost);
+        assert_ne!(ExitCode::IoErr, ExitCode::Unavailable);
+        assert_ne!(ExitCode::IoErr, ExitCode::Software);
+        assert_ne!(ExitCode::IoErr, ExitCode::OsErr);
+        assert_ne!(ExitCode::IoErr, ExitCode::OsFile);
+        assert_ne!(ExitCode::IoErr, ExitCode::CantCreat);
+        assert_eq!(ExitCode::IoErr, ExitCode::IoErr);
+        assert_ne!(ExitCode::IoErr, ExitCode::TempFail);
+        assert_ne!(ExitCode::IoErr, ExitCode::Protocol);
+        assert_ne!(ExitCode::IoErr, ExitCode::NoPerm);
+        assert_ne!(ExitCode::IoErr, ExitCode::Config);
+        assert_ne!(ExitCode::TempFail, ExitCode::Ok);
+        assert_ne!(ExitCode::TempFail, ExitCode::Usage);
+        assert_ne!(ExitCode::TempFail, ExitCode::DataErr);
+        assert_ne!(ExitCode::TempFail, ExitCode::NoInput);
+        assert_ne!(ExitCode::TempFail, ExitCode::NoUser);
+        assert_ne!(ExitCode::TempFail, ExitCode::NoHost);
+        assert_ne!(ExitCode::TempFail, ExitCode::Unavailable);
+        assert_ne!(ExitCode::TempFail, ExitCode::Software);
+        assert_ne!(ExitCode::TempFail, ExitCode::OsErr);
+        assert_ne!(ExitCode::TempFail, ExitCode::OsFile);
+        assert_ne!(ExitCode::TempFail, ExitCode::CantCreat);
+        assert_ne!(ExitCode::TempFail, ExitCode::IoErr);
+        assert_eq!(ExitCode::TempFail, ExitCode::TempFail);
+        assert_ne!(ExitCode::TempFail, ExitCode::Protocol);
+        assert_ne!(ExitCode::TempFail, ExitCode::NoPerm);
+        assert_ne!(ExitCode::TempFail, ExitCode::Config);
+        assert_ne!(ExitCode::Protocol, ExitCode::Ok);
+        assert_ne!(ExitCode::Protocol, ExitCode::Usage);
+        assert_ne!(ExitCode::Protocol, ExitCode::DataErr);
+        assert_ne!(ExitCode::Protocol, ExitCode::NoInput);
+        assert_ne!(ExitCode::Protocol, ExitCode::NoUser);
+        assert_ne!(ExitCode::Protocol, ExitCode::NoHost);
+        assert_ne!(ExitCode::Protocol, ExitCode::Unavailable);
+        assert_ne!(ExitCode::Protocol, ExitCode::Software);
+        assert_ne!(ExitCode::Protocol, ExitCode::OsErr);
+        assert_ne!(ExitCode::Protocol, ExitCode::OsFile);
+        assert_ne!(ExitCode::Protocol, ExitCode::CantCreat);
+        assert_ne!(ExitCode::Protocol, ExitCode::IoErr);
+        assert_ne!(ExitCode::Protocol, ExitCode::TempFail);
+        assert_eq!(ExitCode::Protocol, ExitCode::Protocol);
+        assert_ne!(ExitCode::Protocol, ExitCode::NoPerm);
+        assert_ne!(ExitCode::Protocol, ExitCode::Config);
+        assert_ne!(ExitCode::NoPerm, ExitCode::Ok);
+        assert_ne!(ExitCode::NoPerm, ExitCode::Usage);
+        assert_ne!(ExitCode::NoPerm, ExitCode::DataErr);
+        assert_ne!(ExitCode::NoPerm, ExitCode::NoInput);
+        assert_ne!(ExitCode::NoPerm, ExitCode::NoUser);
+        assert_ne!(ExitCode::NoPerm, ExitCode::NoHost);
+        assert_ne!(ExitCode::NoPerm, ExitCode::Unavailable);
+        assert_ne!(ExitCode::NoPerm, ExitCode::Software);
+        assert_ne!(ExitCode::NoPerm, ExitCode::OsErr);
+        assert_ne!(ExitCode::NoPerm, ExitCode::OsFile);
+        assert_ne!(ExitCode::NoPerm, ExitCode::CantCreat);
+        assert_ne!(ExitCode::NoPerm, ExitCode::IoErr);
+        assert_ne!(ExitCode::NoPerm, ExitCode::TempFail);
+        assert_ne!(ExitCode::NoPerm, ExitCode::Protocol);
+        assert_eq!(ExitCode::NoPerm, ExitCode::NoPerm);
+        assert_ne!(ExitCode::NoPerm, ExitCode::Config);
+        assert_ne!(ExitCode::Config, ExitCode::Ok);
+        assert_ne!(ExitCode::Config, ExitCode::Usage);
+        assert_ne!(ExitCode::Config, ExitCode::DataErr);
+        assert_ne!(ExitCode::Config, ExitCode::NoInput);
+        assert_ne!(ExitCode::Config, ExitCode::NoUser);
+        assert_ne!(ExitCode::Config, ExitCode::NoHost);
+        assert_ne!(ExitCode::Config, ExitCode::Unavailable);
+        assert_ne!(ExitCode::Config, ExitCode::Software);
+        assert_ne!(ExitCode::Config, ExitCode::OsErr);
+        assert_ne!(ExitCode::Config, ExitCode::OsFile);
+        assert_ne!(ExitCode::Config, ExitCode::CantCreat);
+        assert_ne!(ExitCode::Config, ExitCode::IoErr);
+        assert_ne!(ExitCode::Config, ExitCode::TempFail);
+        assert_ne!(ExitCode::Config, ExitCode::Protocol);
+        assert_ne!(ExitCode::Config, ExitCode::NoPerm);
+        assert_eq!(ExitCode::Config, ExitCode::Config);
+    }
+
+    #[test]
+    fn is_success_for_successful_termination() {
         assert!(ExitCode::Ok.is_success());
     }
 
     #[test]
-    fn test_is_success_for_unsuccessful_termination() {
+    fn is_success_for_unsuccessful_termination() {
         assert!(!ExitCode::Usage.is_success());
         assert!(!ExitCode::DataErr.is_success());
         assert!(!ExitCode::NoInput.is_success());
@@ -534,12 +853,12 @@ mod tests {
     }
 
     #[test]
-    fn test_is_failure_for_successful_termination() {
+    fn is_failure_for_successful_termination() {
         assert!(!ExitCode::Ok.is_failure());
     }
 
     #[test]
-    fn test_is_failure_for_unsuccessful_termination() {
+    fn is_failure_for_unsuccessful_termination() {
         assert!(ExitCode::Usage.is_failure());
         assert!(ExitCode::DataErr.is_failure());
         assert!(ExitCode::NoInput.is_failure());
@@ -558,9 +877,138 @@ mod tests {
     }
 
     #[cfg(feature = "std")]
+    #[allow(clippy::cognitive_complexity, clippy::too_many_lines)]
+    #[test]
+    fn result_type() {
+        assert_eq!(Into::<ExitCode>::into(Ok::<(), ExitCode>(())), ExitCode::Ok);
+        assert_eq!(Into::<ExitCode>::into(Ok::<u8, ExitCode>(42)), ExitCode::Ok);
+
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Usage)),
+            ExitCode::Usage
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::DataErr)),
+            ExitCode::DataErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::NoInput)),
+            ExitCode::NoInput
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::NoUser)),
+            ExitCode::NoUser
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::NoHost)),
+            ExitCode::NoHost
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Unavailable)),
+            ExitCode::Unavailable
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Software)),
+            ExitCode::Software
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::OsErr)),
+            ExitCode::OsErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::OsFile)),
+            ExitCode::OsFile
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::CantCreat)),
+            ExitCode::CantCreat
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::IoErr)),
+            ExitCode::IoErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::TempFail)),
+            ExitCode::TempFail
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Protocol)),
+            ExitCode::Protocol
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::NoPerm)),
+            ExitCode::NoPerm
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Config)),
+            ExitCode::Config
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Usage)),
+            ExitCode::Usage
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::DataErr)),
+            ExitCode::DataErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::NoInput)),
+            ExitCode::NoInput
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::NoUser)),
+            ExitCode::NoUser
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::NoHost)),
+            ExitCode::NoHost
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Unavailable)),
+            ExitCode::Unavailable
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Software)),
+            ExitCode::Software
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::OsErr)),
+            ExitCode::OsErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::OsFile)),
+            ExitCode::OsFile
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::CantCreat)),
+            ExitCode::CantCreat
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::IoErr)),
+            ExitCode::IoErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::TempFail)),
+            ExitCode::TempFail
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Protocol)),
+            ExitCode::Protocol
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::NoPerm)),
+            ExitCode::NoPerm
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Config)),
+            ExitCode::Config
+        );
+    }
+
+    #[cfg(feature = "std")]
     #[allow(clippy::cognitive_complexity)]
     #[test]
-    fn test_try_from_io_error_kind_for_exit_code() {
+    fn try_from_io_error_kind_to_exit_code() {
         use std::io::ErrorKind;
 
         assert!(matches!(
@@ -597,7 +1045,7 @@ mod tests {
         ));
         assert!(matches!(
             ExitCode::try_from(ErrorKind::BrokenPipe).unwrap_err(),
-            FromErrorKindError(ErrorKind::BrokenPipe)
+            TryFromErrorKindError(ErrorKind::BrokenPipe)
         ));
         assert!(matches!(
             ExitCode::try_from(ErrorKind::AlreadyExists).unwrap(),
@@ -605,7 +1053,7 @@ mod tests {
         ));
         assert!(matches!(
             ExitCode::try_from(ErrorKind::WouldBlock).unwrap_err(),
-            FromErrorKindError(ErrorKind::WouldBlock)
+            TryFromErrorKindError(ErrorKind::WouldBlock)
         ));
         assert!(matches!(
             ExitCode::try_from(ErrorKind::InvalidInput).unwrap(),
@@ -617,19 +1065,19 @@ mod tests {
         ));
         assert!(matches!(
             ExitCode::try_from(ErrorKind::TimedOut).unwrap_err(),
-            FromErrorKindError(ErrorKind::TimedOut)
+            TryFromErrorKindError(ErrorKind::TimedOut)
         ));
         assert!(matches!(
             ExitCode::try_from(ErrorKind::WriteZero).unwrap_err(),
-            FromErrorKindError(ErrorKind::WriteZero)
+            TryFromErrorKindError(ErrorKind::WriteZero)
         ));
         assert!(matches!(
             ExitCode::try_from(ErrorKind::Interrupted).unwrap_err(),
-            FromErrorKindError(ErrorKind::Interrupted)
+            TryFromErrorKindError(ErrorKind::Interrupted)
         ));
         assert!(matches!(
             ExitCode::try_from(ErrorKind::Unsupported).unwrap_err(),
-            FromErrorKindError(ErrorKind::Unsupported)
+            TryFromErrorKindError(ErrorKind::Unsupported)
         ));
         assert!(matches!(
             ExitCode::try_from(ErrorKind::UnexpectedEof).unwrap(),
@@ -637,15 +1085,15 @@ mod tests {
         ));
         assert!(matches!(
             ExitCode::try_from(ErrorKind::OutOfMemory).unwrap_err(),
-            FromErrorKindError(ErrorKind::OutOfMemory)
+            TryFromErrorKindError(ErrorKind::OutOfMemory)
         ));
         assert!(matches!(
             ExitCode::try_from(ErrorKind::Other).unwrap_err(),
-            FromErrorKindError(ErrorKind::Other)
+            TryFromErrorKindError(ErrorKind::Other)
         ));
     }
 
-    macro_rules! test_from_exit_code_for_integer {
+    macro_rules! from_exit_code_to_integer {
         ($T:ty, $name:ident) => {
             #[test]
             fn $name() {
@@ -668,13 +1116,13 @@ mod tests {
             }
         };
     }
-    test_from_exit_code_for_integer!(i32, test_from_exit_code_for_i32);
-    test_from_exit_code_for_integer!(u8, test_from_exit_code_for_u8);
-    test_from_exit_code_for_integer!(u32, test_from_exit_code_for_u32);
+    from_exit_code_to_integer!(i32, from_exit_code_to_i32);
+    from_exit_code_to_integer!(u8, from_exit_code_to_u8);
+    from_exit_code_to_integer!(u32, from_exit_code_to_u32);
 
     #[cfg(feature = "std")]
     #[test]
-    fn test_from_exit_code_for_process_exit_code() {
+    fn from_exit_code_to_process_exit_code() {
         assert_eq!(
             format!("{:?}", std::process::ExitCode::from(ExitCode::Ok)),
             format!("{:?}", std::process::ExitCode::from(0))
@@ -745,7 +1193,7 @@ mod tests {
     #[cfg(any(unix, windows))]
     #[allow(clippy::cognitive_complexity)]
     #[test]
-    fn test_try_from_process_exit_status_for_exit_code() {
+    fn try_from_process_exit_status_to_exit_code() {
         assert!(matches!(
             ExitCode::try_from(get_exit_status(0)).unwrap(),
             ExitCode::Ok
@@ -815,24 +1263,24 @@ mod tests {
     #[cfg(feature = "std")]
     #[cfg(any(unix, windows))]
     #[test]
-    fn test_try_from_process_exit_status_for_exit_code_when_out_of_range() {
+    fn try_from_process_exit_status_to_exit_code_when_out_of_range() {
         assert!(matches!(
             ExitCode::try_from(get_exit_status(1)).unwrap_err(),
-            FromExitStatusError(Some(1))
+            TryFromExitStatusError(Some(1))
         ));
         assert!(matches!(
             ExitCode::try_from(get_exit_status(63)).unwrap_err(),
-            FromExitStatusError(Some(63))
+            TryFromExitStatusError(Some(63))
         ));
         assert!(matches!(
             ExitCode::try_from(get_exit_status(79)).unwrap_err(),
-            FromExitStatusError(Some(79))
+            TryFromExitStatusError(Some(79))
         ));
     }
 
     #[cfg(all(feature = "std", unix))]
     #[test]
-    fn test_try_from_process_exit_status_for_exit_code_when_terminated_by_signal() {
+    fn try_from_process_exit_status_to_exit_code_when_terminated_by_signal() {
         fn get_exit_status() -> std::process::ExitStatus {
             use std::process::{Command, Stdio};
 
@@ -848,13 +1296,36 @@ mod tests {
 
         assert!(matches!(
             ExitCode::try_from(get_exit_status()).unwrap_err(),
-            FromExitStatusError(None)
+            TryFromExitStatusError(None)
         ));
     }
 
     #[cfg(feature = "std")]
     #[test]
-    fn test_report_status_code() {
+    fn source_exit_code() {
+        use std::error::Error;
+
+        assert!(ExitCode::Ok.source().is_none());
+        assert!(ExitCode::Usage.source().is_none());
+        assert!(ExitCode::DataErr.source().is_none());
+        assert!(ExitCode::NoInput.source().is_none());
+        assert!(ExitCode::NoUser.source().is_none());
+        assert!(ExitCode::NoHost.source().is_none());
+        assert!(ExitCode::Unavailable.source().is_none());
+        assert!(ExitCode::Software.source().is_none());
+        assert!(ExitCode::OsErr.source().is_none());
+        assert!(ExitCode::OsFile.source().is_none());
+        assert!(ExitCode::CantCreat.source().is_none());
+        assert!(ExitCode::IoErr.source().is_none());
+        assert!(ExitCode::TempFail.source().is_none());
+        assert!(ExitCode::Protocol.source().is_none());
+        assert!(ExitCode::NoPerm.source().is_none());
+        assert!(ExitCode::Config.source().is_none());
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn report_exit_code() {
         assert_eq!(
             format!("{:?}", ExitCode::Ok.report()),
             format!("{:?}", std::process::ExitCode::from(0))
@@ -923,25 +1394,150 @@ mod tests {
 
     #[cfg(feature = "std")]
     #[test]
-    fn test_display_for_from_error_kind_error() {
+    fn display_try_from_error_kind_error() {
         use std::io::ErrorKind;
 
         assert_eq!(
-            format!("{}", FromErrorKindError(ErrorKind::BrokenPipe)),
+            format!("{}", TryFromErrorKindError(ErrorKind::BrokenPipe)),
             "no exit code to represent error kind `broken pipe`"
         );
     }
 
     #[cfg(feature = "std")]
     #[test]
-    fn test_display_for_from_exit_status_error() {
+    fn clone_try_from_error_kind_error() {
+        use std::io::ErrorKind;
+
         assert_eq!(
-            format!("{}", FromExitStatusError(Some(1))),
+            TryFromErrorKindError(ErrorKind::BrokenPipe).clone(),
+            TryFromErrorKindError(ErrorKind::BrokenPipe)
+        );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn copy_try_from_error_kind_error() {
+        use std::io::ErrorKind;
+
+        let a = TryFromErrorKindError(ErrorKind::BrokenPipe);
+        let b = a;
+        assert_eq!(a, b);
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn debug_try_from_error_kind_error() {
+        use std::io::ErrorKind;
+
+        assert_eq!(
+            format!("{:?}", TryFromErrorKindError(ErrorKind::BrokenPipe)),
+            "TryFromErrorKindError(BrokenPipe)"
+        );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn try_from_error_kind_error_equality() {
+        use std::io::ErrorKind;
+
+        assert_eq!(
+            TryFromErrorKindError(ErrorKind::BrokenPipe),
+            TryFromErrorKindError(ErrorKind::BrokenPipe)
+        );
+        assert_ne!(
+            TryFromErrorKindError(ErrorKind::BrokenPipe),
+            TryFromErrorKindError(ErrorKind::WouldBlock)
+        );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn source_try_from_error_kind_error() {
+        use std::{error::Error, io::ErrorKind};
+
+        assert!(TryFromErrorKindError(ErrorKind::BrokenPipe)
+            .source()
+            .is_none());
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn display_try_from_exit_status_error() {
+        assert_eq!(
+            format!("{}", TryFromExitStatusError(Some(1))),
             "invalid exit code `1`"
         );
         assert_eq!(
-            format!("{}", FromExitStatusError(None)),
+            format!("{}", TryFromExitStatusError(None)),
             "exit code is unknown"
         );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn clone_try_from_exit_status_error() {
+        assert_eq!(
+            TryFromExitStatusError(Some(1)).clone(),
+            TryFromExitStatusError(Some(1))
+        );
+        assert_eq!(
+            TryFromExitStatusError(None).clone(),
+            TryFromExitStatusError(None)
+        );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn copy_try_from_exit_status_error() {
+        {
+            let a = TryFromExitStatusError(Some(1));
+            let b = a;
+            assert_eq!(a, b);
+        }
+        {
+            let a = TryFromExitStatusError(None);
+            let b = a;
+            assert_eq!(a, b);
+        }
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn debug_try_from_exit_status_error() {
+        assert_eq!(
+            format!("{:?}", TryFromExitStatusError(Some(1))),
+            "TryFromExitStatusError(Some(1))"
+        );
+        assert_eq!(
+            format!("{:?}", TryFromExitStatusError(None)),
+            "TryFromExitStatusError(None)"
+        );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn try_from_exit_status_error_equality() {
+        assert_eq!(
+            TryFromExitStatusError(Some(1)),
+            TryFromExitStatusError(Some(1))
+        );
+        assert_ne!(
+            TryFromExitStatusError(Some(1)),
+            TryFromExitStatusError(None)
+        );
+        assert_ne!(
+            TryFromExitStatusError(None),
+            TryFromExitStatusError(Some(1))
+        );
+        assert_eq!(TryFromExitStatusError(None), TryFromExitStatusError(None));
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn source_try_from_exit_status_error() {
+        use std::error::Error;
+
+        assert!(TryFromExitStatusError(Some(1)).source().is_none());
+        assert!(TryFromExitStatusError(None).source().is_none());
     }
 }
