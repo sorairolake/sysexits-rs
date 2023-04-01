@@ -451,7 +451,7 @@ impl Termination for ExitCode {
 /// [`ErrorKind`](std::io::ErrorKind).
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct TryFromErrorKindError(std::io::ErrorKind);
 
 #[cfg(feature = "std")]
@@ -468,7 +468,7 @@ impl std::error::Error for TryFromErrorKindError {}
 /// [`ExitStatus`](std::process::ExitStatus).
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct TryFromExitStatusError(Option<i32>);
 
 #[cfg(feature = "std")]
@@ -1378,6 +1378,63 @@ mod tests {
 
     #[cfg(feature = "std")]
     #[test]
+    fn clone_try_from_error_kind_error() {
+        use std::io::ErrorKind;
+
+        assert_eq!(
+            TryFromErrorKindError(ErrorKind::BrokenPipe).clone(),
+            TryFromErrorKindError(ErrorKind::BrokenPipe)
+        );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn copy_try_from_error_kind_error() {
+        use std::io::ErrorKind;
+
+        let a = TryFromErrorKindError(ErrorKind::BrokenPipe);
+        let b = a;
+        assert_eq!(a, b);
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn debug_try_from_error_kind_error() {
+        use std::io::ErrorKind;
+
+        assert_eq!(
+            format!("{:?}", TryFromErrorKindError(ErrorKind::BrokenPipe)),
+            "TryFromErrorKindError(BrokenPipe)"
+        );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn try_from_error_kind_error_equality() {
+        use std::io::ErrorKind;
+
+        assert_eq!(
+            TryFromErrorKindError(ErrorKind::BrokenPipe),
+            TryFromErrorKindError(ErrorKind::BrokenPipe)
+        );
+        assert_ne!(
+            TryFromErrorKindError(ErrorKind::BrokenPipe),
+            TryFromErrorKindError(ErrorKind::WouldBlock)
+        );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn source_try_from_error_kind_error() {
+        use std::{error::Error, io::ErrorKind};
+
+        assert!(TryFromErrorKindError(ErrorKind::BrokenPipe)
+            .source()
+            .is_none());
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
     fn display_try_from_exit_status_error() {
         assert_eq!(
             format!("{}", TryFromExitStatusError(Some(1))),
@@ -1387,5 +1444,73 @@ mod tests {
             format!("{}", TryFromExitStatusError(None)),
             "exit code is unknown"
         );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn clone_try_from_exit_status_error() {
+        assert_eq!(
+            TryFromExitStatusError(Some(1)).clone(),
+            TryFromExitStatusError(Some(1))
+        );
+        assert_eq!(
+            TryFromExitStatusError(None).clone(),
+            TryFromExitStatusError(None)
+        );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn copy_try_from_exit_status_error() {
+        {
+            let a = TryFromExitStatusError(Some(1));
+            let b = a;
+            assert_eq!(a, b);
+        }
+        {
+            let a = TryFromExitStatusError(None);
+            let b = a;
+            assert_eq!(a, b);
+        }
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn debug_try_from_exit_status_error() {
+        assert_eq!(
+            format!("{:?}", TryFromExitStatusError(Some(1))),
+            "TryFromExitStatusError(Some(1))"
+        );
+        assert_eq!(
+            format!("{:?}", TryFromExitStatusError(None)),
+            "TryFromExitStatusError(None)"
+        );
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn try_from_exit_status_error_equality() {
+        assert_eq!(
+            TryFromExitStatusError(Some(1)),
+            TryFromExitStatusError(Some(1))
+        );
+        assert_ne!(
+            TryFromExitStatusError(Some(1)),
+            TryFromExitStatusError(None)
+        );
+        assert_ne!(
+            TryFromExitStatusError(None),
+            TryFromExitStatusError(Some(1))
+        );
+        assert_eq!(TryFromExitStatusError(None), TryFromExitStatusError(None));
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn source_try_from_exit_status_error() {
+        use std::error::Error;
+
+        assert!(TryFromExitStatusError(Some(1)).source().is_none());
+        assert!(TryFromExitStatusError(None).source().is_none());
     }
 }
