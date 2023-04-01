@@ -512,7 +512,7 @@ mod tests {
     }
 
     #[test]
-    fn test_display_trait_implementation() {
+    fn display_exit_code() {
         assert_eq!(format!("{}", ExitCode::Ok), format!("{}", 0));
         assert_eq!(format!("{}", ExitCode::Usage), format!("{}", 64));
         assert_eq!(format!("{}", ExitCode::DataErr), format!("{}", 65));
@@ -531,9 +531,41 @@ mod tests {
         assert_eq!(format!("{}", ExitCode::Config), format!("{}", 78));
     }
 
+    #[test]
+    fn clone_exit_code() {
+        assert_eq!(ExitCode::Ok.clone(), ExitCode::Ok);
+    }
+
+    #[test]
+    fn copy_exit_code() {
+        let a = ExitCode::Ok;
+        let b = a;
+        assert_eq!(a, b);
+    }
+
+    #[test]
+    fn debug_exit_code() {
+        assert_eq!(format!("{:?}", ExitCode::Ok), "Ok");
+        assert_eq!(format!("{:?}", ExitCode::Usage), "Usage");
+        assert_eq!(format!("{:?}", ExitCode::DataErr), "DataErr");
+        assert_eq!(format!("{:?}", ExitCode::NoInput), "NoInput");
+        assert_eq!(format!("{:?}", ExitCode::NoUser), "NoUser");
+        assert_eq!(format!("{:?}", ExitCode::NoHost), "NoHost");
+        assert_eq!(format!("{:?}", ExitCode::Unavailable), "Unavailable");
+        assert_eq!(format!("{:?}", ExitCode::Software), "Software");
+        assert_eq!(format!("{:?}", ExitCode::OsErr), "OsErr");
+        assert_eq!(format!("{:?}", ExitCode::OsFile), "OsFile");
+        assert_eq!(format!("{:?}", ExitCode::CantCreat), "CantCreat");
+        assert_eq!(format!("{:?}", ExitCode::IoErr), "IoErr");
+        assert_eq!(format!("{:?}", ExitCode::TempFail), "TempFail");
+        assert_eq!(format!("{:?}", ExitCode::Protocol), "Protocol");
+        assert_eq!(format!("{:?}", ExitCode::NoPerm), "NoPerm");
+        assert_eq!(format!("{:?}", ExitCode::Config), "Config");
+    }
+
     #[allow(clippy::cognitive_complexity, clippy::too_many_lines)]
     #[test]
-    fn test_equality() {
+    fn exit_code_equality() {
         assert_eq!(ExitCode::Ok, ExitCode::Ok);
         assert_ne!(ExitCode::Ok, ExitCode::Usage);
         assert_ne!(ExitCode::Ok, ExitCode::DataErr);
@@ -793,12 +825,12 @@ mod tests {
     }
 
     #[test]
-    fn test_is_success_for_successful_termination() {
+    fn is_success_for_successful_termination() {
         assert!(ExitCode::Ok.is_success());
     }
 
     #[test]
-    fn test_is_success_for_unsuccessful_termination() {
+    fn is_success_for_unsuccessful_termination() {
         assert!(!ExitCode::Usage.is_success());
         assert!(!ExitCode::DataErr.is_success());
         assert!(!ExitCode::NoInput.is_success());
@@ -817,12 +849,12 @@ mod tests {
     }
 
     #[test]
-    fn test_is_failure_for_successful_termination() {
+    fn is_failure_for_successful_termination() {
         assert!(!ExitCode::Ok.is_failure());
     }
 
     #[test]
-    fn test_is_failure_for_unsuccessful_termination() {
+    fn is_failure_for_unsuccessful_termination() {
         assert!(ExitCode::Usage.is_failure());
         assert!(ExitCode::DataErr.is_failure());
         assert!(ExitCode::NoInput.is_failure());
@@ -841,8 +873,9 @@ mod tests {
     }
 
     #[cfg(feature = "std")]
+    #[allow(clippy::cognitive_complexity, clippy::too_many_lines)]
     #[test]
-    fn test_result_type() {
+    fn result_type() {
         assert_eq!(Into::<ExitCode>::into(Ok::<(), ExitCode>(())), ExitCode::Ok);
         assert_eq!(Into::<ExitCode>::into(Ok::<u8, ExitCode>(42)), ExitCode::Ok);
 
@@ -971,7 +1004,7 @@ mod tests {
     #[cfg(feature = "std")]
     #[allow(clippy::cognitive_complexity)]
     #[test]
-    fn test_try_from_io_error_kind_for_exit_code() {
+    fn try_from_io_error_kind_to_exit_code() {
         use std::io::ErrorKind;
 
         assert!(matches!(
@@ -1056,7 +1089,7 @@ mod tests {
         ));
     }
 
-    macro_rules! test_from_exit_code_for_integer {
+    macro_rules! from_exit_code_to_integer {
         ($T:ty, $name:ident) => {
             #[test]
             fn $name() {
@@ -1079,13 +1112,13 @@ mod tests {
             }
         };
     }
-    test_from_exit_code_for_integer!(i32, test_from_exit_code_for_i32);
-    test_from_exit_code_for_integer!(u8, test_from_exit_code_for_u8);
-    test_from_exit_code_for_integer!(u32, test_from_exit_code_for_u32);
+    from_exit_code_to_integer!(i32, from_exit_code_to_i32);
+    from_exit_code_to_integer!(u8, from_exit_code_to_u8);
+    from_exit_code_to_integer!(u32, from_exit_code_to_u32);
 
     #[cfg(feature = "std")]
     #[test]
-    fn test_from_exit_code_for_process_exit_code() {
+    fn from_exit_code_to_process_exit_code() {
         assert_eq!(
             format!("{:?}", std::process::ExitCode::from(ExitCode::Ok)),
             format!("{:?}", std::process::ExitCode::from(0))
@@ -1156,7 +1189,7 @@ mod tests {
     #[cfg(any(unix, windows))]
     #[allow(clippy::cognitive_complexity)]
     #[test]
-    fn test_try_from_process_exit_status_for_exit_code() {
+    fn try_from_process_exit_status_to_exit_code() {
         assert!(matches!(
             ExitCode::try_from(get_exit_status(0)).unwrap(),
             ExitCode::Ok
@@ -1226,7 +1259,7 @@ mod tests {
     #[cfg(feature = "std")]
     #[cfg(any(unix, windows))]
     #[test]
-    fn test_try_from_process_exit_status_for_exit_code_when_out_of_range() {
+    fn try_from_process_exit_status_to_exit_code_when_out_of_range() {
         assert!(matches!(
             ExitCode::try_from(get_exit_status(1)).unwrap_err(),
             TryFromExitStatusError(Some(1))
@@ -1243,7 +1276,7 @@ mod tests {
 
     #[cfg(all(feature = "std", unix))]
     #[test]
-    fn test_try_from_process_exit_status_for_exit_code_when_terminated_by_signal() {
+    fn try_from_process_exit_status_to_exit_code_when_terminated_by_signal() {
         fn get_exit_status() -> std::process::ExitStatus {
             use std::process::{Command, Stdio};
 
@@ -1265,7 +1298,7 @@ mod tests {
 
     #[cfg(feature = "std")]
     #[test]
-    fn test_report_status_code() {
+    fn report_exit_code() {
         assert_eq!(
             format!("{:?}", ExitCode::Ok.report()),
             format!("{:?}", std::process::ExitCode::from(0))
