@@ -18,6 +18,12 @@ toc::[]
 
 * Add release checklist ({pull-request-url}/16[#16])
 * Implement `PartialEq` and `Eq` for `ExitCode` ({pull-request-url}/19[#19])
+* Add `ExitCode` based `Result` type and unit test ({pull-request-url}/21[#21])
+
+=== Changed
+
+* Rename `FromErrorKindError` to `TryFromErrorKindError`
+* Rename `FromExitStatusError` to `TryFromExitStatusError`
 
 == {compare-url}/v0.4.0\...v0.4.1[0.4.1] - 2023-01-28
 
