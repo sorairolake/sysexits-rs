@@ -89,4 +89,4 @@ mod exit_code;
 
 pub use crate::exit_code::ExitCode;
 #[cfg(feature = "std")]
-pub use crate::exit_code::{TryFromErrorKindError, TryFromExitStatusError};
+pub use crate::exit_code::{Result, TryFromErrorKindError, TryFromExitStatusError};
