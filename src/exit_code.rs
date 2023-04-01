@@ -440,6 +440,10 @@ impl TryFrom<std::process::ExitStatus> for ExitCode {
 
 #[cfg(feature = "std")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
+impl std::error::Error for ExitCode {}
+
+#[cfg(feature = "std")]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 impl Termination for ExitCode {
     #[inline]
     fn report(self) -> std::process::ExitCode {
@@ -1294,6 +1298,29 @@ mod tests {
             ExitCode::try_from(get_exit_status()).unwrap_err(),
             TryFromExitStatusError(None)
         ));
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn source_exit_code() {
+        use std::error::Error;
+
+        assert!(ExitCode::Ok.source().is_none());
+        assert!(ExitCode::Usage.source().is_none());
+        assert!(ExitCode::DataErr.source().is_none());
+        assert!(ExitCode::NoInput.source().is_none());
+        assert!(ExitCode::NoUser.source().is_none());
+        assert!(ExitCode::NoHost.source().is_none());
+        assert!(ExitCode::Unavailable.source().is_none());
+        assert!(ExitCode::Software.source().is_none());
+        assert!(ExitCode::OsErr.source().is_none());
+        assert!(ExitCode::OsFile.source().is_none());
+        assert!(ExitCode::CantCreat.source().is_none());
+        assert!(ExitCode::IoErr.source().is_none());
+        assert!(ExitCode::TempFail.source().is_none());
+        assert!(ExitCode::Protocol.source().is_none());
+        assert!(ExitCode::NoPerm.source().is_none());
+        assert!(ExitCode::Config.source().is_none());
     }
 
     #[cfg(feature = "std")]

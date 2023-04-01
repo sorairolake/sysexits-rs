@@ -19,6 +19,7 @@ toc::[]
 * Add release checklist ({pull-request-url}/16[#16])
 * Implement `PartialEq` and `Eq` for `ExitCode` ({pull-request-url}/19[#19])
 * Add `ExitCode` based `Result` type and unit test ({pull-request-url}/21[#21])
+* Implement `Error` for `ExitCode` ({pull-request-url}/23[#23])
 
 === Changed
 
