@@ -18,7 +18,6 @@ use std::process::Termination;
 /// In case of an error, an appropriate variant of `ExitCode` can describe the
 /// exact cause in further detail.
 #[cfg(feature = "std")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 pub type Result<T> = std::result::Result<T, ExitCode>;
 
 /// `ExitCode` is a type that represents the system exit code constants as
@@ -278,7 +277,6 @@ impl ExitCode {
     /// }
     /// ```
     #[cfg(feature = "std")]
-    #[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
     pub fn exit(self) -> ! {
         std::process::exit(self.into())
     }
@@ -344,7 +342,6 @@ impl_from_exit_code_for_integer!(u8);
 impl_from_exit_code_for_integer!(u32);
 
 #[cfg(feature = "std")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 impl From<ExitCode> for std::process::ExitCode {
     /// Converts an `sysexits::ExitCode` into an [`std::process::ExitCode`].
     ///
@@ -356,7 +353,6 @@ impl From<ExitCode> for std::process::ExitCode {
 }
 
 #[cfg(feature = "std")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 impl<T> From<Result<T>> for ExitCode {
     /// Convert an `ExitCode` based result into an `ExitCode`.
     ///
@@ -370,7 +366,6 @@ impl<T> From<Result<T>> for ExitCode {
 }
 
 #[cfg(feature = "std")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 impl TryFrom<std::io::ErrorKind> for ExitCode {
     type Error = TryFromErrorKindError;
 
@@ -401,7 +396,6 @@ impl TryFrom<std::io::ErrorKind> for ExitCode {
 }
 
 #[cfg(feature = "std")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 impl TryFrom<std::process::ExitStatus> for ExitCode {
     type Error = TryFromExitStatusError;
 
@@ -439,11 +433,9 @@ impl TryFrom<std::process::ExitStatus> for ExitCode {
 }
 
 #[cfg(feature = "std")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 impl std::error::Error for ExitCode {}
 
 #[cfg(feature = "std")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 impl Termination for ExitCode {
     #[inline]
     fn report(self) -> std::process::ExitCode {
@@ -454,7 +446,6 @@ impl Termination for ExitCode {
 /// An error which can be returned when converting an [`ExitCode`] from an
 /// [`ErrorKind`](std::io::ErrorKind).
 #[cfg(feature = "std")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct TryFromErrorKindError(std::io::ErrorKind);
 
@@ -471,7 +462,6 @@ impl std::error::Error for TryFromErrorKindError {}
 /// An error which can be returned when converting an [`ExitCode`] from an
 /// [`ExitStatus`](std::process::ExitStatus).
 #[cfg(feature = "std")]
-#[cfg_attr(doc_cfg, doc(cfg(feature = "std")))]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct TryFromExitStatusError(Option<i32>);
 
