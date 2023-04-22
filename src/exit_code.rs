@@ -831,130 +831,143 @@ mod tests {
     }
 
     #[cfg(feature = "std")]
-    #[allow(clippy::cognitive_complexity, clippy::too_many_lines)]
     #[test]
     fn result_type() {
-        assert_eq!(Into::<ExitCode>::into(Ok::<(), ExitCode>(())), ExitCode::Ok);
-        assert_eq!(Into::<ExitCode>::into(Ok::<u8, ExitCode>(42)), ExitCode::Ok);
+        assert_eq!(
+            std::any::type_name::<Result<()>>(),
+            std::any::type_name::<std::result::Result<(), ExitCode>>()
+        );
+        assert_eq!(
+            std::any::type_name::<Result<u8>>(),
+            std::any::type_name::<std::result::Result<u8, ExitCode>>()
+        );
+    }
+
+    #[cfg(feature = "std")]
+    #[allow(clippy::cognitive_complexity, clippy::too_many_lines)]
+    #[test]
+    fn from_result_type_to_exit_code() {
+        assert_eq!(ExitCode::from(Ok::<(), ExitCode>(())), ExitCode::Ok);
+        assert_eq!(ExitCode::from(Ok::<u8, ExitCode>(42)), ExitCode::Ok);
 
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Usage)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::Usage)),
             ExitCode::Usage
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::DataErr)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::DataErr)),
             ExitCode::DataErr
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::NoInput)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::NoInput)),
             ExitCode::NoInput
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::NoUser)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::NoUser)),
             ExitCode::NoUser
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::NoHost)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::NoHost)),
             ExitCode::NoHost
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Unavailable)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::Unavailable)),
             ExitCode::Unavailable
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Software)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::Software)),
             ExitCode::Software
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::OsErr)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::OsErr)),
             ExitCode::OsErr
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::OsFile)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::OsFile)),
             ExitCode::OsFile
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::CantCreat)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::CantCreat)),
             ExitCode::CantCreat
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::IoErr)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::IoErr)),
             ExitCode::IoErr
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::TempFail)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::TempFail)),
             ExitCode::TempFail
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Protocol)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::Protocol)),
             ExitCode::Protocol
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::NoPerm)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::NoPerm)),
             ExitCode::NoPerm
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<(), ExitCode>(ExitCode::Config)),
+            ExitCode::from(Err::<(), ExitCode>(ExitCode::Config)),
             ExitCode::Config
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Usage)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::Usage)),
             ExitCode::Usage
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::DataErr)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::DataErr)),
             ExitCode::DataErr
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::NoInput)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::NoInput)),
             ExitCode::NoInput
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::NoUser)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::NoUser)),
             ExitCode::NoUser
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::NoHost)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::NoHost)),
             ExitCode::NoHost
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Unavailable)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::Unavailable)),
             ExitCode::Unavailable
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Software)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::Software)),
             ExitCode::Software
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::OsErr)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::OsErr)),
             ExitCode::OsErr
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::OsFile)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::OsFile)),
             ExitCode::OsFile
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::CantCreat)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::CantCreat)),
             ExitCode::CantCreat
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::IoErr)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::IoErr)),
             ExitCode::IoErr
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::TempFail)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::TempFail)),
             ExitCode::TempFail
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Protocol)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::Protocol)),
             ExitCode::Protocol
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::NoPerm)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::NoPerm)),
             ExitCode::NoPerm
         );
         assert_eq!(
-            Into::<ExitCode>::into(Err::<u8, ExitCode>(ExitCode::Config)),
+            ExitCode::from(Err::<u8, ExitCode>(ExitCode::Config)),
             ExitCode::Config
         );
     }
