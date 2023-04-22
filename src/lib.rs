@@ -85,8 +85,12 @@ extern crate alloc;
 #[cfg(feature = "std")]
 extern crate std;
 
+#[cfg(feature = "std")]
+mod error;
 mod exit_code;
 
+#[cfg(feature = "std")]
+pub use crate::error::{TryFromErrorKindError, TryFromExitStatusError};
 pub use crate::exit_code::ExitCode;
 #[cfg(feature = "std")]
-pub use crate::exit_code::{Result, TryFromErrorKindError, TryFromExitStatusError};
+pub use crate::exit_code::Result;
