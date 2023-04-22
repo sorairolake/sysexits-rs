@@ -19,11 +19,18 @@ impl TryFromErrorKindError {
     pub(crate) const fn new(kind: io::ErrorKind) -> Self {
         Self(kind)
     }
+
+    /// Returns the corresponding [`ErrorKind`](io::ErrorKind) for this error.
+    #[must_use]
+    #[inline]
+    pub const fn kind(self) -> io::ErrorKind {
+        self.0
+    }
 }
 
 impl fmt::Display for TryFromErrorKindError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "no exit code to represent error kind `{}`", self.0)
+        write!(f, "no exit code to represent error kind `{}`", self.kind())
     }
 }
 
@@ -41,11 +48,20 @@ impl TryFromExitStatusError {
     pub(crate) const fn new(code: Option<i32>) -> Self {
         Self(code)
     }
+
+    /// Returns the corresponding exit code for this error.
+    ///
+    /// Returns [`None`] if the process was terminated by a signal.
+    #[must_use]
+    #[inline]
+    pub const fn code(self) -> Option<i32> {
+        self.0
+    }
 }
 
 impl fmt::Display for TryFromExitStatusError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        if let Some(code) = self.0 {
+        if let Some(code) = self.code() {
             write!(f, "invalid exit code `{code}`")
         } else {
             write!(f, "exit code is unknown")
@@ -58,14 +74,6 @@ impl std::error::Error for TryFromExitStatusError {}
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn display_try_from_error_kind_error() {
-        assert_eq!(
-            format!("{}", TryFromErrorKindError::new(io::ErrorKind::BrokenPipe)),
-            "no exit code to represent error kind `broken pipe`"
-        );
-    }
 
     #[test]
     fn clone_try_from_error_kind_error() {
@@ -106,24 +114,28 @@ mod tests {
     }
 
     #[test]
+    fn kind_try_from_error_kind_error() {
+        assert_eq!(
+            TryFromErrorKindError::new(io::ErrorKind::BrokenPipe).kind(),
+            io::ErrorKind::BrokenPipe
+        );
+    }
+
+    #[test]
+    fn display_try_from_error_kind_error() {
+        assert_eq!(
+            format!("{}", TryFromErrorKindError::new(io::ErrorKind::BrokenPipe)),
+            "no exit code to represent error kind `broken pipe`"
+        );
+    }
+
+    #[test]
     fn source_try_from_error_kind_error() {
         use std::error::Error;
 
         assert!(TryFromErrorKindError::new(io::ErrorKind::BrokenPipe)
             .source()
             .is_none());
-    }
-
-    #[test]
-    fn display_try_from_exit_status_error() {
-        assert_eq!(
-            format!("{}", TryFromExitStatusError::new(Some(1))),
-            "invalid exit code `1`"
-        );
-        assert_eq!(
-            format!("{}", TryFromExitStatusError::new(None)),
-            "exit code is unknown"
-        );
     }
 
     #[test]
@@ -181,6 +193,24 @@ mod tests {
         assert_eq!(
             TryFromExitStatusError::new(None),
             TryFromExitStatusError::new(None)
+        );
+    }
+
+    #[test]
+    fn code_try_from_exit_status_error() {
+        assert_eq!(TryFromExitStatusError::new(Some(1)).code(), Some(1));
+        assert_eq!(TryFromExitStatusError::new(None).code(), None);
+    }
+
+    #[test]
+    fn display_try_from_exit_status_error() {
+        assert_eq!(
+            format!("{}", TryFromExitStatusError::new(Some(1))),
+            "invalid exit code `1`"
+        );
+        assert_eq!(
+            format!("{}", TryFromExitStatusError::new(None)),
+            "exit code is unknown"
         );
     }
 
