@@ -11,7 +11,7 @@
 
 use core::fmt;
 #[cfg(feature = "std")]
-use std::process::Termination;
+use std::{io::ErrorKind, process::Termination};
 
 /// An `ExitCode` based result type.
 ///
@@ -366,6 +366,29 @@ impl<T> From<Result<T>> for ExitCode {
 }
 
 #[cfg(feature = "std")]
+impl From<std::io::Error> for ExitCode {
+    fn from(error: std::io::Error) -> Self {
+        match error.kind() {
+            ErrorKind::AlreadyExists => Self::CantCreat,
+            ErrorKind::InvalidInput | ErrorKind::InvalidData => Self::DataErr,
+            ErrorKind::NotFound => Self::NoInput,
+            ErrorKind::PermissionDenied => Self::NoPerm,
+            ErrorKind::ConnectionRefused | ErrorKind::OutOfMemory => Self::OsErr,
+            ErrorKind::WouldBlock | ErrorKind::Unsupported => Self::Protocol,
+            ErrorKind::WriteZero | ErrorKind::UnexpectedEof => Self::Software,
+            ErrorKind::ConnectionReset
+            | ErrorKind::ConnectionAborted
+            | ErrorKind::NotConnected
+            | ErrorKind::BrokenPipe
+            | ErrorKind::TimedOut
+            | ErrorKind::Interrupted => Self::TempFail,
+            ErrorKind::AddrInUse | ErrorKind::AddrNotAvailable => Self::Unavailable,
+            _ => Self::IoErr,
+        }
+    }
+}
+
+#[cfg(feature = "std")]
 impl TryFrom<std::io::ErrorKind> for ExitCode {
     type Error = crate::error::TryFromErrorKindError;
 
@@ -446,6 +469,7 @@ impl Termination for ExitCode {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::io::Error;
 
     #[cfg(all(feature = "std", unix))]
     fn get_exit_status(status: i32) -> std::process::ExitStatus {
@@ -780,6 +804,90 @@ mod tests {
         assert_ne!(ExitCode::Config, ExitCode::Protocol);
         assert_ne!(ExitCode::Config, ExitCode::NoPerm);
         assert_eq!(ExitCode::Config, ExitCode::Config);
+    }
+
+    #[test]
+    fn from_std_io_error() {
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::NotFound)),
+            ExitCode::NoInput
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::PermissionDenied)),
+            ExitCode::NoPerm
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::ConnectionRefused)),
+            ExitCode::OsErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::ConnectionReset)),
+            ExitCode::TempFail
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::ConnectionAborted)),
+            ExitCode::TempFail
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::NotConnected)),
+            ExitCode::TempFail
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::AddrInUse)),
+            ExitCode::Unavailable
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::AddrNotAvailable)),
+            ExitCode::Unavailable
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::BrokenPipe)),
+            ExitCode::TempFail
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::AlreadyExists)),
+            ExitCode::CantCreat
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::WouldBlock)),
+            ExitCode::Protocol
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::InvalidInput)),
+            ExitCode::DataErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::InvalidData)),
+            ExitCode::DataErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::TimedOut)),
+            ExitCode::TempFail
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::WriteZero)),
+            ExitCode::Software
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::Interrupted)),
+            ExitCode::TempFail
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::Unsupported)),
+            ExitCode::Protocol
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::UnexpectedEof)),
+            ExitCode::Software
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::OutOfMemory)),
+            ExitCode::OsErr
+        );
+        assert_eq!(
+            Into::<ExitCode>::into(Error::from(ErrorKind::Other)),
+            ExitCode::IoErr
+        );
     }
 
     #[test]
