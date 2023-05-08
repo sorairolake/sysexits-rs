@@ -90,7 +90,7 @@ mod error;
 mod exit_code;
 
 #[cfg(feature = "std")]
-pub use crate::error::{TryFromErrorKindError, TryFromExitStatusError};
+pub use crate::error::TryFromExitStatusError;
 pub use crate::exit_code::ExitCode;
 #[cfg(feature = "std")]
 pub use crate::exit_code::Result;
