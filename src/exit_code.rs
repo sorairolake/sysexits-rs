@@ -469,6 +469,7 @@ impl Termination for ExitCode {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(feature = "std")]
     use std::io::Error;
 
     #[cfg(all(feature = "std", unix))]
