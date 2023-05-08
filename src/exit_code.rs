@@ -806,6 +806,7 @@ mod tests {
         assert_eq!(ExitCode::Config, ExitCode::Config);
     }
 
+    #[cfg(feature = "std")]
     #[test]
     fn from_std_io_error() {
         assert_eq!(
