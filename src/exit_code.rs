@@ -11,7 +11,7 @@
 
 use core::fmt;
 #[cfg(feature = "std")]
-use std::{io::ErrorKind, process::Termination};
+use std::process::Termination;
 
 /// An `ExitCode` based result type.
 ///
@@ -368,14 +368,19 @@ impl<T> From<Result<T>> for ExitCode {
 #[cfg(feature = "std")]
 impl From<std::io::Error> for ExitCode {
     fn from(error: std::io::Error) -> Self {
-        match error.kind() {
-            ErrorKind::AlreadyExists => Self::CantCreat,
-            ErrorKind::InvalidInput | ErrorKind::InvalidData => Self::DataErr,
+        error.kind().into()
+    }
+}
+
+#[cfg(feature = "std")]
+impl From<std::io::ErrorKind> for ExitCode {
+    fn from(error_kind: std::io::ErrorKind) -> Self {
+        use std::io::ErrorKind;
+
+        match error_kind {
             ErrorKind::NotFound => Self::NoInput,
             ErrorKind::PermissionDenied => Self::NoPerm,
             ErrorKind::ConnectionRefused | ErrorKind::OutOfMemory => Self::OsErr,
-            ErrorKind::WouldBlock | ErrorKind::Unsupported => Self::Protocol,
-            ErrorKind::WriteZero | ErrorKind::UnexpectedEof => Self::Software,
             ErrorKind::ConnectionReset
             | ErrorKind::ConnectionAborted
             | ErrorKind::NotConnected
@@ -383,37 +388,11 @@ impl From<std::io::Error> for ExitCode {
             | ErrorKind::TimedOut
             | ErrorKind::Interrupted => Self::TempFail,
             ErrorKind::AddrInUse | ErrorKind::AddrNotAvailable => Self::Unavailable,
+            ErrorKind::AlreadyExists => Self::CantCreat,
+            ErrorKind::WouldBlock | ErrorKind::Unsupported => Self::Protocol,
+            ErrorKind::InvalidInput | ErrorKind::InvalidData => Self::DataErr,
+            ErrorKind::WriteZero | ErrorKind::UnexpectedEof => Self::Software,
             _ => Self::IoErr,
-        }
-    }
-}
-
-#[cfg(feature = "std")]
-impl TryFrom<std::io::ErrorKind> for ExitCode {
-    type Error = crate::error::TryFromErrorKindError;
-
-    /// Converts an [`ErrorKind`](std::io::ErrorKind) into an `ExitCode`.
-    ///
-    /// # Errors
-    ///
-    /// Returns [`Err`] if there is not a suitable `ExitCode` to represent an
-    /// [`ErrorKind`](std::io::ErrorKind).
-    fn try_from(kind: std::io::ErrorKind) -> std::result::Result<Self, Self::Error> {
-        use std::io;
-
-        match kind {
-            io::ErrorKind::NotFound => Ok(Self::NoInput),
-            io::ErrorKind::PermissionDenied => Ok(Self::NoPerm),
-            io::ErrorKind::ConnectionRefused
-            | io::ErrorKind::ConnectionReset
-            | io::ErrorKind::ConnectionAborted
-            | io::ErrorKind::NotConnected => Ok(Self::Protocol),
-            io::ErrorKind::AddrInUse | io::ErrorKind::AddrNotAvailable => Ok(Self::Unavailable),
-            io::ErrorKind::AlreadyExists => Ok(Self::CantCreat),
-            io::ErrorKind::InvalidInput
-            | io::ErrorKind::InvalidData
-            | io::ErrorKind::UnexpectedEof => Ok(Self::DataErr),
-            k => Err(Self::Error::new(k)),
         }
     }
 }
@@ -469,8 +448,6 @@ impl Termination for ExitCode {
 #[cfg(test)]
 mod tests {
     use super::*;
-    #[cfg(feature = "std")]
-    use std::io::Error;
 
     #[cfg(all(feature = "std", unix))]
     fn get_exit_status(status: i32) -> std::process::ExitStatus {
@@ -809,85 +786,87 @@ mod tests {
 
     #[cfg(feature = "std")]
     #[test]
-    fn from_std_io_error() {
+    fn from_io_error_to_exit_code() {
+        use std::io::{Error, ErrorKind};
+
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::NotFound)),
+            ExitCode::from(Error::from(ErrorKind::NotFound)),
             ExitCode::NoInput
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::PermissionDenied)),
+            ExitCode::from(Error::from(ErrorKind::PermissionDenied)),
             ExitCode::NoPerm
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::ConnectionRefused)),
+            ExitCode::from(Error::from(ErrorKind::ConnectionRefused)),
             ExitCode::OsErr
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::ConnectionReset)),
+            ExitCode::from(Error::from(ErrorKind::ConnectionReset)),
             ExitCode::TempFail
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::ConnectionAborted)),
+            ExitCode::from(Error::from(ErrorKind::ConnectionAborted)),
             ExitCode::TempFail
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::NotConnected)),
+            ExitCode::from(Error::from(ErrorKind::NotConnected)),
             ExitCode::TempFail
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::AddrInUse)),
+            ExitCode::from(Error::from(ErrorKind::AddrInUse)),
             ExitCode::Unavailable
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::AddrNotAvailable)),
+            ExitCode::from(Error::from(ErrorKind::AddrNotAvailable)),
             ExitCode::Unavailable
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::BrokenPipe)),
+            ExitCode::from(Error::from(ErrorKind::BrokenPipe)),
             ExitCode::TempFail
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::AlreadyExists)),
+            ExitCode::from(Error::from(ErrorKind::AlreadyExists)),
             ExitCode::CantCreat
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::WouldBlock)),
+            ExitCode::from(Error::from(ErrorKind::WouldBlock)),
             ExitCode::Protocol
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::InvalidInput)),
+            ExitCode::from(Error::from(ErrorKind::InvalidInput)),
             ExitCode::DataErr
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::InvalidData)),
+            ExitCode::from(Error::from(ErrorKind::InvalidData)),
             ExitCode::DataErr
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::TimedOut)),
+            ExitCode::from(Error::from(ErrorKind::TimedOut)),
             ExitCode::TempFail
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::WriteZero)),
+            ExitCode::from(Error::from(ErrorKind::WriteZero)),
             ExitCode::Software
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::Interrupted)),
+            ExitCode::from(Error::from(ErrorKind::Interrupted)),
             ExitCode::TempFail
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::Unsupported)),
+            ExitCode::from(Error::from(ErrorKind::Unsupported)),
             ExitCode::Protocol
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::UnexpectedEof)),
+            ExitCode::from(Error::from(ErrorKind::UnexpectedEof)),
             ExitCode::Software
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::OutOfMemory)),
+            ExitCode::from(Error::from(ErrorKind::OutOfMemory)),
             ExitCode::OsErr
         );
         assert_eq!(
-            Into::<ExitCode>::into(Error::from(ErrorKind::Other)),
+            ExitCode::from(Error::from(ErrorKind::Other)),
             ExitCode::IoErr
         );
     }
@@ -1079,96 +1058,6 @@ mod tests {
         assert_eq!(
             ExitCode::from(Err::<u8, ExitCode>(ExitCode::Config)),
             ExitCode::Config
-        );
-    }
-
-    #[cfg(feature = "std")]
-    #[allow(clippy::cognitive_complexity)]
-    #[test]
-    fn try_from_io_error_kind_to_exit_code() {
-        use std::io;
-
-        use crate::error::TryFromErrorKindError;
-
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::NotFound).unwrap(),
-            ExitCode::NoInput
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::PermissionDenied).unwrap(),
-            ExitCode::NoPerm
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::ConnectionRefused).unwrap(),
-            ExitCode::Protocol
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::ConnectionReset).unwrap(),
-            ExitCode::Protocol
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::ConnectionAborted).unwrap(),
-            ExitCode::Protocol
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::NotConnected).unwrap(),
-            ExitCode::Protocol
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::AddrInUse).unwrap(),
-            ExitCode::Unavailable
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::AddrNotAvailable).unwrap(),
-            ExitCode::Unavailable
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::BrokenPipe).unwrap_err(),
-            TryFromErrorKindError::new(io::ErrorKind::BrokenPipe)
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::AlreadyExists).unwrap(),
-            ExitCode::CantCreat
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::WouldBlock).unwrap_err(),
-            TryFromErrorKindError::new(io::ErrorKind::WouldBlock)
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::InvalidInput).unwrap(),
-            ExitCode::DataErr
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::InvalidData).unwrap(),
-            ExitCode::DataErr
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::TimedOut).unwrap_err(),
-            TryFromErrorKindError::new(io::ErrorKind::TimedOut)
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::WriteZero).unwrap_err(),
-            TryFromErrorKindError::new(io::ErrorKind::WriteZero)
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::Interrupted).unwrap_err(),
-            TryFromErrorKindError::new(io::ErrorKind::Interrupted)
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::Unsupported).unwrap_err(),
-            TryFromErrorKindError::new(io::ErrorKind::Unsupported)
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::UnexpectedEof).unwrap(),
-            ExitCode::DataErr
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::OutOfMemory).unwrap_err(),
-            TryFromErrorKindError::new(io::ErrorKind::OutOfMemory)
-        );
-        assert_eq!(
-            ExitCode::try_from(io::ErrorKind::Other).unwrap_err(),
-            TryFromErrorKindError::new(io::ErrorKind::Other)
         );
     }
 
