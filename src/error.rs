@@ -6,35 +6,7 @@
 
 //! Error types for this crate.
 
-use std::{fmt, io};
-
-/// An error which can be returned when converting an
-/// [`ExitCode`](crate::ExitCode) from an [`ErrorKind`](io::ErrorKind).
-#[allow(clippy::module_name_repetitions)]
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct TryFromErrorKindError(io::ErrorKind);
-
-impl TryFromErrorKindError {
-    #[inline]
-    pub(crate) const fn new(kind: io::ErrorKind) -> Self {
-        Self(kind)
-    }
-
-    /// Returns the corresponding [`ErrorKind`](io::ErrorKind) for this error.
-    #[must_use]
-    #[inline]
-    pub const fn kind(self) -> io::ErrorKind {
-        self.0
-    }
-}
-
-impl fmt::Display for TryFromErrorKindError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "no exit code to represent error kind `{}`", self.kind())
-    }
-}
-
-impl std::error::Error for TryFromErrorKindError {}
+use std::fmt;
 
 /// An error which can be returned when converting an
 /// [`ExitCode`](crate::ExitCode) from an
@@ -74,69 +46,6 @@ impl std::error::Error for TryFromExitStatusError {}
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn clone_try_from_error_kind_error() {
-        assert_eq!(
-            TryFromErrorKindError::new(io::ErrorKind::BrokenPipe).clone(),
-            TryFromErrorKindError::new(io::ErrorKind::BrokenPipe)
-        );
-    }
-
-    #[test]
-    fn copy_try_from_error_kind_error() {
-        let a = TryFromErrorKindError::new(io::ErrorKind::BrokenPipe);
-        let b = a;
-        assert_eq!(a, b);
-    }
-
-    #[test]
-    fn debug_try_from_error_kind_error() {
-        assert_eq!(
-            format!(
-                "{:?}",
-                TryFromErrorKindError::new(io::ErrorKind::BrokenPipe)
-            ),
-            "TryFromErrorKindError(BrokenPipe)"
-        );
-    }
-
-    #[test]
-    fn try_from_error_kind_error_equality() {
-        assert_eq!(
-            TryFromErrorKindError::new(io::ErrorKind::BrokenPipe),
-            TryFromErrorKindError::new(io::ErrorKind::BrokenPipe)
-        );
-        assert_ne!(
-            TryFromErrorKindError::new(io::ErrorKind::BrokenPipe),
-            TryFromErrorKindError::new(io::ErrorKind::WouldBlock)
-        );
-    }
-
-    #[test]
-    fn kind_try_from_error_kind_error() {
-        assert_eq!(
-            TryFromErrorKindError::new(io::ErrorKind::BrokenPipe).kind(),
-            io::ErrorKind::BrokenPipe
-        );
-    }
-
-    #[test]
-    fn display_try_from_error_kind_error() {
-        assert_eq!(
-            format!("{}", TryFromErrorKindError::new(io::ErrorKind::BrokenPipe)),
-            "no exit code to represent error kind `broken pipe`"
-        );
-    }
-
-    #[test]
-    fn source_try_from_error_kind_error() {
-        use std::error::Error;
-
-        assert!(TryFromErrorKindError::new(io::ErrorKind::BrokenPipe)
-            .source()
-            .is_none());
-    }
 
     #[test]
     fn clone_try_from_exit_status_error() {
