@@ -13,9 +13,9 @@ use core::fmt;
 #[cfg(feature = "std")]
 use std::process::Termination;
 
-/// An `ExitCode` based result type.
+/// A [`Result`](std::result::Result) type based on [`ExitCode`].
 ///
-/// In case of an error, an appropriate variant of `ExitCode` can describe the
+/// In case of an error, an appropriate variant of [`ExitCode`] can describe the
 /// exact cause in further detail.
 #[cfg(feature = "std")]
 pub type Result<T> = std::result::Result<T, ExitCode>;
@@ -349,12 +349,11 @@ impl From<ExitCode> for std::process::ExitCode {
 
 #[cfg(feature = "std")]
 impl<T> From<Result<T>> for ExitCode {
-    /// Converts an `ExitCode` based result into an `ExitCode`.
+    /// Converts a [`Result<T>`] into an `ExitCode`.
     ///
-    /// The [`Err`] variant of the given result already contains a proper
-    /// `ExitCode` which only needs to be unpacked. The [`Ok`] variant
-    /// expresses the success of an operation and can thus be mapped to
-    /// [`ExitCode::Ok`] in any case.
+    /// This method returns [`ExitCode::Ok`] if the result is [`Ok`], otherwise
+    /// returns the appropriate variant of `ExitCode` contained in the [`Err`]
+    /// variant.
     fn from(result: Result<T>) -> Self {
         result.map_or_else(|code| code, |_| Self::Ok)
     }
