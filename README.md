@@ -17,7 +17,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-sysexits = "0.5.0"
+sysexits = "0.6.0"
 ```
 
 ### Example
@@ -77,12 +77,12 @@ or the _MIT License_.
 See [COPYRIGHT](COPYRIGHT), [LICENSE-APACHE](LICENSE-APACHE) and
 [LICENSE-MIT](LICENSE-MIT) for more details.
 
-[ci-badge]: https://github.com/sorairolake/sysexits-rs/workflows/CI/badge.svg
-[ci-url]: https://github.com/sorairolake/sysexits-rs/actions?query=workflow%3ACI
-[version-badge]: https://img.shields.io/crates/v/sysexits
+[ci-badge]: https://img.shields.io/github/actions/workflow/status/sorairolake/sysexits-rs/CI.yaml?branch=develop&label=CI&logo=github&style=for-the-badge
+[ci-url]: https://github.com/sorairolake/sysexits-rs/actions?query=branch%3Adevelop+workflow%3ACI++
+[version-badge]: https://img.shields.io/crates/v/sysexits?style=for-the-badge
 [version-url]: https://crates.io/crates/sysexits
-[docs-badge]: https://img.shields.io/docsrs/sysexits
+[docs-badge]: https://img.shields.io/docsrs/sysexits?label=Docs.rs&logo=docsdotrs&style=for-the-badge
 [docs-url]: https://docs.rs/sysexits
-[license-badge]: https://img.shields.io/crates/l/sysexits
+[license-badge]: https://img.shields.io/crates/l/sysexits?style=for-the-badge
 [sysexits-man-url]: https://man.openbsd.org/sysexits
 [termination-docs-url]: https://doc.rust-lang.org/std/process/trait.Termination.html

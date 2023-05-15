@@ -69,9 +69,9 @@
 //!
 //! [sysexits-man-url]: https://man.openbsd.org/sysexits
 
-#![doc(html_root_url = "https://docs.rs/sysexits/0.5.0/")]
+#![doc(html_root_url = "https://docs.rs/sysexits/0.6.0/")]
 #![no_std]
-#![cfg_attr(doc_cfg, feature(doc_cfg))]
+#![cfg_attr(doc_cfg, feature(doc_auto_cfg, doc_cfg))]
 // Lint levels of rustc.
 #![forbid(unsafe_code)]
 #![deny(missing_debug_implementations, missing_docs)]
@@ -85,8 +85,12 @@ extern crate alloc;
 #[cfg(feature = "std")]
 extern crate std;
 
+#[cfg(feature = "std")]
+mod error;
 mod exit_code;
 
+#[cfg(feature = "std")]
+pub use crate::error::TryFromExitStatusError;
 pub use crate::exit_code::ExitCode;
 #[cfg(feature = "std")]
-pub use crate::exit_code::{Result, TryFromErrorKindError, TryFromExitStatusError};
+pub use crate::exit_code::Result;

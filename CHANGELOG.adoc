@@ -12,6 +12,22 @@ project adheres to https://semver.org/[Semantic Versioning].
 
 toc::[]
 
+== {compare-url}/v0.5.0\...v0.6.0[0.6.0] - 2023-05-15
+
+=== Added
+
+* Add methods to get error details
+* Add `impl From<std::io::Error> for ExitCode` ({pull-request-url}/28[#28])
+
+=== Changed
+
+* Replace `impl TryFrom<std::io::ErrorKind> for ExitCode` with
+  `impl From<std::io::ErrorKind> for ExitCode`
+
+=== Removed
+
+* Remove `TryFromErrorKindError`
+
 == {compare-url}/v0.4.1\...v0.5.0[0.5.0] - 2023-04-01
 
 === Added
