@@ -1,0 +1,28 @@
+#
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+#
+# Copyright (C) 2022-2023 Shun Sakai and Contributors
+#
+
+name: actionlint
+
+on:
+  push:
+    paths:
+      - .github/workflows/*.yaml
+
+permissions:
+  contents: read
+
+jobs:
+  validation:
+    name: validate
+    runs-on: ubuntu-22.04
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: actionlint
+        uses: devops-actions/actionlint@v0.1.1
