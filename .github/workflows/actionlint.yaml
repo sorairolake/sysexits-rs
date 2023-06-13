@@ -4,15 +4,15 @@
 # Copyright (C) 2022-2023 Shun Sakai and Contributors
 #
 
-name: cffconvert
+name: actionlint
 
 on:
   pull_request:
     paths:
-      - CITATION.cff
+      - .github/workflows/*.yaml
   push:
     paths:
-      - CITATION.cff
+      - .github/workflows/*.yaml
 
 permissions:
   contents: read
@@ -27,7 +27,5 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: cffconvert
-        uses: citation-file-format/cffconvert-github-action@2.0.0
-        with:
-          args: "--validate"
+      - name: actionlint
+        uses: devops-actions/actionlint@v0.1.1
