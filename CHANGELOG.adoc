@@ -12,6 +12,12 @@ project adheres to https://semver.org/[Semantic Versioning].
 
 toc::[]
 
+== {compare-url}/v0.6.1\...HEAD[Unreleased]
+
+=== Changed
+
+* Call Docker images directly ({pull-request-url}/32[#32])
+
 == {compare-url}/v0.6.0\...v0.6.1[0.6.1] - 2023-06-22
 
 === Added
