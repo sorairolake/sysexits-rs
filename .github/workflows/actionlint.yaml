@@ -28,4 +28,6 @@ jobs:
           persist-credentials: false
 
       - name: actionlint
-        uses: devops-actions/actionlint@v0.1.1
+        uses: docker://rhysd/actionlint:latest
+        with:
+          args: -color
