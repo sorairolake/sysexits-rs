@@ -17,6 +17,8 @@ toc::[]
 === Changed
 
 * Call Docker images directly ({pull-request-url}/32[#32])
+* Change the comment header to the format recommended by the REUSE
+  Specification ({pull-request-url}/33[#33])
 
 == {compare-url}/v0.6.0\...v0.6.1[0.6.1] - 2023-06-22
 
