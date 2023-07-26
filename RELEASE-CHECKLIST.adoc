@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
+//
+// SPDX-License-Identifier: Apache-2.0 OR MIT
+
 = Release Checklist
 :project-url: https://github.com/sorairolake/sysexits-rs
 :bump2version-pypi-url: https://pypi.org/project/bump2version/

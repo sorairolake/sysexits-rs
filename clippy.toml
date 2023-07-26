@@ -1,1 +1,5 @@
+# SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
+#
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
 msrv = "1.61.0"

@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
+
+SPDX-License-Identifier: Apache-2.0 OR MIT
+-->
+
 # sysexits-rs
 
 [![CI][ci-badge]][ci-url]
@@ -74,8 +80,7 @@ Copyright &copy; 2022&ndash;2023 Shun Sakai and Contributors (see
 This library is distributed under the terms of either the _Apache License 2.0_
 or the _MIT License_.
 
-See [COPYRIGHT](COPYRIGHT), [LICENSE-APACHE](LICENSE-APACHE) and
-[LICENSE-MIT](LICENSE-MIT) for more details.
+See [COPYING](COPYING) for more details.
 
 [ci-badge]: https://img.shields.io/github/actions/workflow/status/sorairolake/sysexits-rs/CI.yaml?branch=develop&label=CI&logo=github&style=for-the-badge
 [ci-url]: https://github.com/sorairolake/sysexits-rs/actions?query=branch%3Adevelop+workflow%3ACI++
