@@ -1,8 +1,6 @@
+# SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
 #
 # SPDX-License-Identifier: Apache-2.0 OR MIT
-#
-# Copyright (C) 2022-2023 Shun Sakai and Contributors
-#
 
 name: cffconvert
 
@@ -28,6 +26,6 @@ jobs:
           persist-credentials: false
 
       - name: cffconvert
-        uses: citation-file-format/cffconvert-github-action@2.0.0
+        uses: docker://citationcff/cffconvert:latest
         with:
-          args: "--validate"
+          args: --validate

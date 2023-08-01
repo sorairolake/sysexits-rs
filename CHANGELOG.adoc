@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
+//
+// SPDX-License-Identifier: Apache-2.0 OR MIT
+
 = Changelog
 :toc: macro
 :project-url: https://github.com/sorairolake/sysexits-rs
@@ -11,6 +15,15 @@ The format is based on https://keepachangelog.com/[Keep a Changelog], and this
 project adheres to https://semver.org/[Semantic Versioning].
 
 toc::[]
+
+== {compare-url}/v0.6.1\...v0.6.2[0.6.2] - 2023-08-01
+
+=== Changed
+
+* Call Docker images directly ({pull-request-url}/32[#32])
+* Change the comment header to the format recommended by the REUSE
+  Specification ({pull-request-url}/33[#33])
+* Make this project REUSE compliant ({pull-request-url}/34[#34])
 
 == {compare-url}/v0.6.0\...v0.6.1[0.6.1] - 2023-06-22
 

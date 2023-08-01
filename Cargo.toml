@@ -1,6 +1,10 @@
+# SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
+#
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
 [package]
 name = "sysexits"
-version = "0.6.1"
+version = "0.6.2"
 authors = ["Shun Sakai <sorairolake@protonmail.ch>"]
 edition = "2021"
 rust-version = "1.61.0"
@@ -13,6 +17,7 @@ keywords = ["exitcode", "sysexits"]
 categories = ["command-line-interface", "no-std", "os"]
 exclude = [
   "/.bumpversion.cfg",
+  "/.bumpversion.cfg.license",
   "/.github",
   "/CITATION.cff",
   "/clippy.toml",

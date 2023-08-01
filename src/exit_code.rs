@@ -1,8 +1,6 @@
+// SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
-//
-// Copyright (C) 2022-2023 Shun Sakai and Contributors
-//
 
 //! The system exit code constants as defined by
 //! [`<sysexits.h>`][sysexits-man-url].
