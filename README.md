@@ -23,7 +23,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-sysexits = "0.6.2"
+sysexits = "0.6.3"
 ```
 
 ### Example
