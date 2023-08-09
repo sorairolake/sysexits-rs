@@ -352,6 +352,24 @@ impl<T> From<Result<T>> for ExitCode {
     /// This method returns [`ExitCode::Ok`] if the result is [`Ok`], otherwise
     /// returns the appropriate variant of `ExitCode` contained in the [`Err`]
     /// variant.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use sysexits::ExitCode;
+    /// #
+    /// assert_eq!(ExitCode::from(Ok::<(), ExitCode>(())), ExitCode::Ok);
+    /// assert_eq!(ExitCode::from(Ok::<u8, ExitCode>(42)), ExitCode::Ok);
+    ///
+    /// assert_eq!(
+    ///     ExitCode::from(Err::<(), ExitCode>(ExitCode::Usage)),
+    ///     ExitCode::Usage
+    /// );
+    /// assert_eq!(
+    ///     ExitCode::from(Err::<u8, ExitCode>(ExitCode::Usage)),
+    ///     ExitCode::Usage
+    /// );
+    /// ```
     fn from(result: Result<T>) -> Self {
         result.map_or_else(|code| code, |_| Self::Ok)
     }
@@ -360,6 +378,19 @@ impl<T> From<Result<T>> for ExitCode {
 #[cfg(feature = "std")]
 impl From<std::io::Error> for ExitCode {
     /// Converts an [`Error`](std::io::Error) into an `ExitCode`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use std::io::{Error, ErrorKind};
+    /// #
+    /// # use sysexits::ExitCode;
+    /// #
+    /// assert_eq!(
+    ///     ExitCode::from(Error::from(ErrorKind::NotFound)),
+    ///     ExitCode::NoInput
+    /// );
+    /// ```
     fn from(error: std::io::Error) -> Self {
         error.kind().into()
     }
@@ -368,6 +399,16 @@ impl From<std::io::Error> for ExitCode {
 #[cfg(feature = "std")]
 impl From<std::io::ErrorKind> for ExitCode {
     /// Converts an [`ErrorKind`](std::io::ErrorKind) into an `ExitCode`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use std::io;
+    /// #
+    /// # use sysexits::ExitCode;
+    /// #
+    /// assert_eq!(ExitCode::from(io::ErrorKind::NotFound), ExitCode::NoInput);
+    /// ```
     fn from(kind: std::io::ErrorKind) -> Self {
         use std::io::ErrorKind;
 
