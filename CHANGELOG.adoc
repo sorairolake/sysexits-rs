@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
+// SPDX-FileCopyrightText: 2022 Shun Sakai and other contributors
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
@@ -15,6 +15,15 @@ The format is based on https://keepachangelog.com/[Keep a Changelog], and this
 project adheres to https://semver.org/[Semantic Versioning].
 
 toc::[]
+
+== {compare-url}/v0.6.3\...HEAD[Unreleased]
+
+=== Changed
+
+* Change `SPDX-FileCopyrightText` of each file to include only the year of
+  initial publication ({pull-request-url}/38[#38])
+* Change "Contributors" to "other contributors" in the copyright notice
+  ({pull-request-url}/38[#38])
 
 == {compare-url}/v0.6.2\...v0.6.3[0.6.3] - 2023-08-09
 
