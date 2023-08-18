@@ -24,6 +24,7 @@ toc::[]
   initial publication ({pull-request-url}/38[#38])
 * Change "Contributors" to "other contributors" in the copyright notice
   ({pull-request-url}/38[#38])
+* Remove unnecessary newline after period ({pull-request-url}/39[#39])
 
 == {compare-url}/v0.6.2\...v0.6.3[0.6.3] - 2023-08-09
 

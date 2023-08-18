@@ -5,10 +5,13 @@
 = Examples
 
 link:isutf8.rs[]::
+
   An example that returns `sysexits::ExitCode`.
 
 link:cat.rs[]::
+
   An example that returns `std::process::ExitCode`.
 
 link:cmp.rs[]::
+
   An example that returns original exit code.

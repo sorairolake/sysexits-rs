@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-//! An example of checking whether the input is valid UTF-8.
-//! The input is a file or the standard input.
+//! An example of checking whether the input is valid UTF-8. The input is a file
+//! or the standard input.
 
 // Lint levels of rustc.
 #![forbid(unsafe_code)]

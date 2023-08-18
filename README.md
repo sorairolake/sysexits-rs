@@ -48,13 +48,12 @@ fn main() -> sysexits::ExitCode {
 
 #### `std`
 
-Enables features that depend on the standard library.
-This is enabled by default.
+Enables features that depend on the standard library. This is enabled by
+default.
 
 ### `no_std` support
 
-This supports `no_std` mode.
-Disables the `default` feature to enable this.
+This supports `no_std` mode. Disables the `default` feature to enable this.
 
 ### Documentation
 
