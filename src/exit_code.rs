@@ -236,7 +236,7 @@ impl ExitCode {
     /// ```
     #[must_use]
     #[inline]
-    pub const fn is_success(self) -> bool {
+    pub const fn is_success(&self) -> bool {
         matches!(self, Self::Ok)
     }
 
@@ -253,7 +253,7 @@ impl ExitCode {
     /// ```
     #[must_use]
     #[inline]
-    pub const fn is_failure(self) -> bool {
+    pub const fn is_failure(&self) -> bool {
         !self.is_success()
     }
 

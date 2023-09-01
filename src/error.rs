@@ -24,7 +24,7 @@ impl TryFromExitStatusError {
     /// Returns [`None`] if the process was terminated by a signal.
     #[must_use]
     #[inline]
-    pub const fn code(self) -> Option<i32> {
+    pub const fn code(&self) -> Option<i32> {
         self.0
     }
 }
