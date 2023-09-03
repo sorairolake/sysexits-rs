@@ -20,7 +20,7 @@ project adheres to https://semver.org/[Semantic Versioning].
 
 * Fix `Cargo.lock`
 
-== {compare-url}/v0.6.3\...v0.7.0[0.7.0] - 2023-09-03
+== {compare-url}/v0.6.3\...v0.7.0[0.7.0] - 2023-09-03 [YANKED]
 
 === Changed
 
