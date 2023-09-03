@@ -1,14 +1,17 @@
-// SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
+// SPDX-FileCopyrightText: 2022 Shun Sakai and other contributors
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 = Examples
 
 link:isutf8.rs[]::
+
   An example that returns `sysexits::ExitCode`.
 
 link:cat.rs[]::
+
   An example that returns `std::process::ExitCode`.
 
 link:cmp.rs[]::
+
   An example that returns original exit code.

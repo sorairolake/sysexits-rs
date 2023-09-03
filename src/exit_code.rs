@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
+// SPDX-FileCopyrightText: 2022 Shun Sakai and other contributors
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
@@ -47,8 +47,8 @@ pub enum ExitCode {
     /// ```
     Usage = 64,
 
-    /// The input data was incorrect in some way.
-    /// This should only be used for user's data and not system files.
+    /// The input data was incorrect in some way. This should only be used for
+    /// user's data and not system files.
     ///
     /// # Examples
     ///
@@ -72,8 +72,8 @@ pub enum ExitCode {
     /// ```
     NoInput,
 
-    /// The user specified did not exist.
-    /// This might be used for mail addresses or remote logins.
+    /// The user specified did not exist. This might be used for mail addresses
+    /// or remote logins.
     ///
     /// # Examples
     ///
@@ -84,8 +84,8 @@ pub enum ExitCode {
     /// ```
     NoUser,
 
-    /// The host specified did not exist.
-    /// This is used in mail addresses or network requests.
+    /// The host specified did not exist. This is used in mail addresses or
+    /// network requests.
     ///
     /// # Examples
     ///
@@ -96,10 +96,9 @@ pub enum ExitCode {
     /// ```
     NoHost,
 
-    /// A service is unavailable.
-    /// This can occur if a support program or file does not exist.
-    /// This can also be used as a catch-all message when something you wanted
-    /// to do doesn't work, but you don't know why.
+    /// A service is unavailable. This can occur if a support program or file
+    /// does not exist. This can also be used as a catch-all message when
+    /// something you wanted to do doesn't work, but you don't know why.
     ///
     /// # Examples
     ///
@@ -110,9 +109,8 @@ pub enum ExitCode {
     /// ```
     Unavailable,
 
-    /// An internal software error has been detected.
-    /// This should be limited to non-operating system related errors if
-    /// possible.
+    /// An internal software error has been detected. This should be limited to
+    /// non-operating system related errors if possible.
     ///
     /// # Examples
     ///
@@ -123,11 +121,10 @@ pub enum ExitCode {
     /// ```
     Software,
 
-    /// An operating system error has been detected.
-    /// This is intended to be used for such things as "cannot fork", or "cannot
-    /// create pipe". It includes things like
-    /// [`getuid(2)`][getuid-2-man-url] returning a user that does not exist in
-    /// the passwd file.
+    /// An operating system error has been detected. This is intended to be used
+    /// for such things as "cannot fork", or "cannot create pipe". It includes
+    /// things like [`getuid(2)`][getuid-2-man-url] returning a user that does
+    /// not exist in the passwd file.
     ///
     /// # Examples
     ///
@@ -174,8 +171,8 @@ pub enum ExitCode {
     /// ```
     IoErr,
 
-    /// Temporary failure, indicating something that is not really an error.
-    /// For example that a mailer could not create a connection, and the request
+    /// Temporary failure, indicating something that is not really an error. For
+    /// example that a mailer could not create a connection, and the request
     /// should be reattempted later.
     ///
     /// # Examples
@@ -199,8 +196,8 @@ pub enum ExitCode {
     /// ```
     Protocol,
 
-    /// You did not have sufficient permission to perform the operation.
-    /// This is not intended for file system problems, which should use
+    /// You did not have sufficient permission to perform the operation. This is
+    /// not intended for file system problems, which should use
     /// [`NoInput`](Self::NoInput) or [`CantCreat`](Self::CantCreat), but rather
     /// for higher level permissions.
     ///
@@ -239,7 +236,7 @@ impl ExitCode {
     /// ```
     #[must_use]
     #[inline]
-    pub const fn is_success(self) -> bool {
+    pub const fn is_success(&self) -> bool {
         matches!(self, Self::Ok)
     }
 
@@ -256,7 +253,7 @@ impl ExitCode {
     /// ```
     #[must_use]
     #[inline]
-    pub const fn is_failure(self) -> bool {
+    pub const fn is_failure(&self) -> bool {
         !self.is_success()
     }
 

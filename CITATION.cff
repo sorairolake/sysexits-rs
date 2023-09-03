@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
+# SPDX-FileCopyrightText: 2022 Shun Sakai and other contributors
 #
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 
@@ -7,8 +7,8 @@ cff-version: 1.2.0
 message: Please cite this software using these meta data.
 
 # Version information.
-date-released: 2023-08-09
-version: 0.6.3
+date-released: 2023-09-03
+version: 0.7.0
 
 # Project information.
 abstract: The system exit codes as defined by <sysexits.h> for Rust

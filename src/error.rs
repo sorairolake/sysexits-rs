@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
+// SPDX-FileCopyrightText: 2023 Shun Sakai and other contributors
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
@@ -24,7 +24,7 @@ impl TryFromExitStatusError {
     /// Returns [`None`] if the process was terminated by a signal.
     #[must_use]
     #[inline]
-    pub const fn code(self) -> Option<i32> {
+    pub const fn code(&self) -> Option<i32> {
         self.0
     }
 }

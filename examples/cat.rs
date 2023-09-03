@@ -1,9 +1,9 @@
-// SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
+// SPDX-FileCopyrightText: 2022 Shun Sakai and other contributors
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-//! An example of concatenating files and print on the standard output.
-//! The contents of the file must be valid UTF-8.
+//! An example of concatenating files and print on the standard output. The
+//! contents of the file must be valid UTF-8.
 
 // Lint levels of rustc.
 #![forbid(unsafe_code)]

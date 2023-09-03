@@ -1,9 +1,9 @@
-// SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
+// SPDX-FileCopyrightText: 2022 Shun Sakai and other contributors
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 = Changelog
-:toc: macro
+:toc: preamble
 :project-url: https://github.com/sorairolake/sysexits-rs
 :compare-url: {project-url}/compare
 :issue-url: {project-url}/issues
@@ -14,7 +14,16 @@ All notable changes to this project will be documented in this file.
 The format is based on https://keepachangelog.com/[Keep a Changelog], and this
 project adheres to https://semver.org/[Semantic Versioning].
 
-toc::[]
+== {compare-url}/v0.6.3\...v0.7.0[0.7.0] - 2023-09-03
+
+=== Changed
+
+* Change `SPDX-FileCopyrightText` of each file to include only the year of
+  initial publication ({pull-request-url}/38[#38])
+* Change "Contributors" to "other contributors" in the copyright notice
+  ({pull-request-url}/38[#38])
+* Remove unnecessary newline after period ({pull-request-url}/39[#39])
+* Change parameters of methods to pass-by-reference ({pull-request-url}/40[#40])
 
 == {compare-url}/v0.6.2\...v0.6.3[0.6.3] - 2023-08-09
 

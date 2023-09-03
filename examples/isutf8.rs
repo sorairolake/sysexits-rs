@@ -1,9 +1,9 @@
-// SPDX-FileCopyrightText: 2022-2023 Shun Sakai and Contributors
+// SPDX-FileCopyrightText: 2022 Shun Sakai and other contributors
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-//! An example of checking whether the input is valid UTF-8.
-//! The input is a file or the standard input.
+//! An example of checking whether the input is valid UTF-8. The input is a file
+//! or the standard input.
 
 // Lint levels of rustc.
 #![forbid(unsafe_code)]
