@@ -11,7 +11,6 @@ rust-version = "1.61.0"
 description = "The system exit codes as defined by <sysexits.h>"
 documentation = "https://docs.rs/sysexits"
 readme = "README.md"
-homepage = "https://github.com/sorairolake/sysexits-rs"
 repository = "https://github.com/sorairolake/sysexits-rs"
 license = "Apache-2.0 OR MIT"
 keywords = ["exitcode", "sysexits"]
