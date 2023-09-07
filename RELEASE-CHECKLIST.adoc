@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2023 Shun Sakai and other contributors
+// SPDX-FileCopyrightText: 2023 Shun Sakai
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
@@ -12,9 +12,7 @@
   and switch to it
 . Update `link:CHANGELOG.adoc[]` (rename unreleased header to the current date,
   add any missing changes)
-. Bump up the version in `link:Cargo.toml[]`, `link:CITATION.cff[]`,
-  `link:README.md[]` and `link:src/lib.rs[]` (should use
-  `{bump2version-pypi-url}[bump2version]` via `{just-official-url}[just]`)
+. Bump up the version (`just bump part`)
 . Update the release date in `link:CITATION.cff[]` to the current date
 . Switch to the `master` branch, and merge the release branch into it (with
   `--no-ff`)

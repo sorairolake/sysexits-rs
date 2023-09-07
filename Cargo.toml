@@ -1,10 +1,10 @@
-# SPDX-FileCopyrightText: 2022 Shun Sakai and other contributors
+# SPDX-FileCopyrightText: 2022 Shun Sakai
 #
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 
 [package]
 name = "sysexits"
-version = "0.7.1"
+version = "0.7.2"
 authors = ["Shun Sakai <sorairolake@protonmail.ch>"]
 edition = "2021"
 rust-version = "1.61.0"

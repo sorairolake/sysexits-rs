@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2022 Shun Sakai and other contributors
+SPDX-FileCopyrightText: 2022 Shun Sakai
 
 SPDX-License-Identifier: Apache-2.0 OR MIT
 -->
@@ -23,7 +23,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-sysexits = "0.7.1"
+sysexits = "0.7.2"
 ```
 
 ### Example

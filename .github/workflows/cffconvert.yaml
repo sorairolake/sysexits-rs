@@ -1,4 +1,5 @@
-# SPDX-FileCopyrightText: 2022 Shun Sakai and other contributors
+# SPDX-FileCopyrightText: 2022 Kevin Matthes
+# SPDX-FileCopyrightText: 2022 Shun Sakai
 #
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 
@@ -21,7 +22,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
 

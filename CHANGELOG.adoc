@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 Shun Sakai and other contributors
+// SPDX-FileCopyrightText: 2022 Shun Sakai
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
@@ -14,13 +14,20 @@ All notable changes to this project will be documented in this file.
 The format is based on https://keepachangelog.com/[Keep a Changelog], and this
 project adheres to https://semver.org/[Semantic Versioning].
 
+== {compare-url}/v0.7.1\...v0.7.2[0.7.2] - 2023-09-07
+
+=== Changed
+
+* Change to use a list of copyright holders in copyright notice
+  ({pull-request-url}/46[#46])
+
 == {compare-url}/v0.7.0\...v0.7.1[0.7.1] - 2023-09-03
 
 === Fixed
 
 * Fix `Cargo.lock`
 
-== {compare-url}/v0.6.3\...v0.7.0[0.7.0] - 2023-09-03
+== {compare-url}/v0.6.3\...v0.7.0[0.7.0] - 2023-09-03 [YANKED]
 
 === Changed
 

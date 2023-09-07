@@ -1,4 +1,5 @@
-// SPDX-FileCopyrightText: 2022 Shun Sakai and other contributors
+// SPDX-FileCopyrightText: 2022 Shun Sakai
+// SPDX-FileCopyrightText: 2023 Kevin Matthes
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
@@ -67,7 +68,7 @@
 //!
 //! [sysexits-man-url]: https://man.openbsd.org/sysexits
 
-#![doc(html_root_url = "https://docs.rs/sysexits/0.7.1/")]
+#![doc(html_root_url = "https://docs.rs/sysexits/0.7.2/")]
 #![no_std]
 #![cfg_attr(doc_cfg, feature(doc_auto_cfg, doc_cfg))]
 // Lint levels of rustc.
