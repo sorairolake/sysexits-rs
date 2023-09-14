@@ -18,15 +18,14 @@ permissions:
 
 jobs:
   validation:
-    name: validate
+    name: Validate
     runs-on: ubuntu-22.04
     steps:
-      - name: checkout
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           persist-credentials: false
-
-      - name: cffconvert
+      - name: Validate the CITATION.cff file
         uses: docker://citationcff/cffconvert:latest
         with:
-          args: --validate
+          args: --validate --verbose
