@@ -12,6 +12,7 @@ default: build
 # Build a package
 @build:
     cargo build
+    cargo +nightly build --features nightly
 
 # Remove generated artifacts
 @clean:
