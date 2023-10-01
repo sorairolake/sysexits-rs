@@ -28,4 +28,4 @@ jobs:
       - name: Validate the CITATION.cff file
         uses: docker://citationcff/cffconvert:latest
         with:
-          args: --validate --verbose
+          args: --validate
