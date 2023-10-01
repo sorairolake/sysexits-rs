@@ -426,9 +426,9 @@ impl From<std::io::ErrorKind> for ExitCode {
             #[cfg(feature = "extended_io_error")]
             ErrorKind::NetworkDown => Self::Unavailable,
             ErrorKind::AlreadyExists => Self::CantCreat,
+            ErrorKind::WouldBlock | ErrorKind::Unsupported => Self::Protocol,
             #[cfg(feature = "extended_io_error")]
             ErrorKind::ReadOnlyFilesystem => Self::CantCreat,
-            ErrorKind::WouldBlock | ErrorKind::Unsupported => Self::Protocol,
             ErrorKind::InvalidInput | ErrorKind::InvalidData => Self::DataErr,
             ErrorKind::WriteZero | ErrorKind::UnexpectedEof => Self::Software,
             _ => Self::IoErr,
