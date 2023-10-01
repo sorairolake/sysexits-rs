@@ -33,6 +33,8 @@ exclude = [
 [features]
 default = ["std"]
 std = []
+nightly = ["extended_io_error"]
+extended_io_error = []
 
 [package.metadata.docs.rs]
 all-features = true
