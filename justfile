@@ -1,5 +1,6 @@
 # SPDX-FileCopyrightText: 2022 Kevin Matthes
 # SPDX-FileCopyrightText: 2022 Shun Sakai
+# SPDX-FileCopyrightText: 2023 zSchoen
 #
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 
@@ -12,6 +13,7 @@ default: build
 # Build a package
 @build:
     cargo build
+    cargo +nightly build --features nightly
 
 # Remove generated artifacts
 @clean:

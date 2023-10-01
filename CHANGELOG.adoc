@@ -14,6 +14,13 @@ All notable changes to this project will be documented in this file.
 The format is based on https://keepachangelog.com/[Keep a Changelog], and this
 project adheres to https://semver.org/[Semantic Versioning].
 
+== {compare-url}/v0.7.2\...v0.7.3[0.7.3] - 2023-10-01
+
+=== Changed
+
+* Extend `io::ErrorKind` conversion to support variants available in the
+  nightly ({pull-request-url}/52[#52])
+
 == {compare-url}/v0.7.1\...v0.7.2[0.7.2] - 2023-09-07
 
 === Changed

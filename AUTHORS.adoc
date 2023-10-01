@@ -11,3 +11,4 @@
 == Contributors
 
 * https://github.com/kevinmatthes[Kevin Matthes]
+* https://github.com/TheAlgorythm[zSchoen]

@@ -23,7 +23,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-sysexits = "0.7.2"
+sysexits = "0.7.3"
 ```
 
 ### Example
@@ -50,6 +50,15 @@ fn main() -> sysexits::ExitCode {
 
 Enables features that depend on the standard library. This is enabled by
 default.
+
+#### `nightly`
+
+Enables features that depend on the nightly Rust.
+
+#### `extended_io_error`
+
+Enables features that depend on the `io_error_more` feature. This also enables
+`std`. This is implied by `nightly`.
 
 ### `no_std` support
 
