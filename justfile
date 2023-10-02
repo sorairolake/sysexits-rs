@@ -45,7 +45,7 @@ default: build
 
 # Run the linter for GitHub Actions workflow files
 @lint-github-actions:
-    actionlint
+    actionlint -verbose
 
 # Run the formatter for the README
 @fmt-readme:
