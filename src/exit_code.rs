@@ -329,9 +329,18 @@ macro_rules! impl_from_exit_code_for_integer {
         );
     };
 }
+impl_from_exit_code_for_integer!(i8);
+impl_from_exit_code_for_integer!(i16);
 impl_from_exit_code_for_integer!(i32);
+impl_from_exit_code_for_integer!(i64);
+impl_from_exit_code_for_integer!(i128);
+impl_from_exit_code_for_integer!(isize);
 impl_from_exit_code_for_integer!(u8);
+impl_from_exit_code_for_integer!(u16);
 impl_from_exit_code_for_integer!(u32);
+impl_from_exit_code_for_integer!(u64);
+impl_from_exit_code_for_integer!(u128);
+impl_from_exit_code_for_integer!(usize);
 
 #[cfg(feature = "std")]
 impl From<ExitCode> for std::process::ExitCode {
@@ -872,7 +881,7 @@ mod tests {
         assert!(ExitCode::Config.is_failure());
     }
 
-    macro_rules! from_exit_code_to_integer {
+    macro_rules! test_from_exit_code_to_integer {
         ($T:ty, $name:ident) => {
             #[test]
             fn $name() {
@@ -895,9 +904,18 @@ mod tests {
             }
         };
     }
-    from_exit_code_to_integer!(i32, from_exit_code_to_i32);
-    from_exit_code_to_integer!(u8, from_exit_code_to_u8);
-    from_exit_code_to_integer!(u32, from_exit_code_to_u32);
+    test_from_exit_code_to_integer!(i8, from_exit_code_to_i8);
+    test_from_exit_code_to_integer!(i16, from_exit_code_to_i16);
+    test_from_exit_code_to_integer!(i32, from_exit_code_to_i32);
+    test_from_exit_code_to_integer!(i64, from_exit_code_to_i64);
+    test_from_exit_code_to_integer!(i128, from_exit_code_to_i128);
+    test_from_exit_code_to_integer!(isize, from_exit_code_to_isize);
+    test_from_exit_code_to_integer!(u8, from_exit_code_to_u8);
+    test_from_exit_code_to_integer!(u16, from_exit_code_to_u16);
+    test_from_exit_code_to_integer!(u32, from_exit_code_to_u32);
+    test_from_exit_code_to_integer!(u64, from_exit_code_to_u64);
+    test_from_exit_code_to_integer!(u128, from_exit_code_to_u128);
+    test_from_exit_code_to_integer!(usize, from_exit_code_to_usize);
 
     #[cfg(feature = "std")]
     #[test]
