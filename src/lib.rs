@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 //! The `sysexits` crate provides the system exit code constants as defined by
-//! [`<sysexits.h>`][sysexits-man-url].
+//! [`<sysexits.h>`].
 //!
 //! The [`ExitCode`] type implements the
 //! [`Termination`](std::process::Termination) trait, so this can be returned
@@ -67,7 +67,7 @@
 //! # fn main() {}
 //! ```
 //!
-//! [sysexits-man-url]: https://man.openbsd.org/sysexits
+//! [`<sysexits.h>`]: https://man.openbsd.org/sysexits
 
 #![cfg_attr(feature = "extended_io_error", feature(io_error_more))]
 #![doc(html_root_url = "https://docs.rs/sysexits/0.7.4/")]

@@ -12,10 +12,10 @@ SPDX-License-Identifier: Apache-2.0 OR MIT
 ![License][license-badge]
 
 **sysexits-rs** ([`sysexits`][version-url]) is a library that provides the
-system exit code constants as defined by [`<sysexits.h>`][sysexits-man-url].
+system exit code constants as defined by [`<sysexits.h>`].
 
-This library implements the [`Termination`][termination-docs-url] trait, so
-this can be returned from the `main` function.
+This library implements the [`Termination`] trait, so this can be returned from
+the `main` function.
 
 ## Usage
 
@@ -74,21 +74,21 @@ The minimum supported Rust version (MSRV) of this library is v1.61.0.
 
 ## Changelog
 
-Please see [CHANGELOG.adoc](CHANGELOG.adoc).
+Please see [CHANGELOG.adoc].
 
 ## Contributing
 
-Please see [CONTRIBUTING.adoc](CONTRIBUTING.adoc).
+Please see [CONTRIBUTING.adoc].
 
 ## License
 
 Copyright &copy; 2022&ndash;2023 Shun Sakai and other contributors (see
-[AUTHORS.adoc](AUTHORS.adoc))
+[AUTHORS.adoc])
 
 This library is distributed under the terms of either the _Apache License 2.0_
 or the _MIT License_.
 
-See [COPYING](COPYING) for more details.
+See [COPYING] for more details.
 
 [ci-badge]: https://img.shields.io/github/actions/workflow/status/sorairolake/sysexits-rs/CI.yaml?branch=develop&label=CI&logo=github&style=for-the-badge
 [ci-url]: https://github.com/sorairolake/sysexits-rs/actions?query=branch%3Adevelop+workflow%3ACI++
@@ -97,5 +97,9 @@ See [COPYING](COPYING) for more details.
 [docs-badge]: https://img.shields.io/docsrs/sysexits?label=Docs.rs&logo=docsdotrs&style=for-the-badge
 [docs-url]: https://docs.rs/sysexits
 [license-badge]: https://img.shields.io/crates/l/sysexits?style=for-the-badge
-[sysexits-man-url]: https://man.openbsd.org/sysexits
-[termination-docs-url]: https://doc.rust-lang.org/std/process/trait.Termination.html
+[`<sysexits.h>`]: https://man.openbsd.org/sysexits
+[`Termination`]: https://doc.rust-lang.org/std/process/trait.Termination.html
+[CHANGELOG.adoc]: CHANGELOG.adoc
+[CONTRIBUTING.adoc]: CONTRIBUTING.adoc
+[AUTHORS.adoc]: AUTHORS.adoc
+[COPYING]: COPYING
