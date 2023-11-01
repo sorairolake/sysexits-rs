@@ -18,5 +18,5 @@ Closes #
 - [ ] I have read the [Contribution Guide].
 - [ ] I agree to follow the [Code of Conduct].
 
-[Contribution Guide]: ../../CONTRIBUTING.adoc
-[Code of Conduct]: ../../CODE_OF_CONDUCT.md
+[Contribution Guide]: https://github.com/sorairolake/sysexits-rs/blob/develop/CONTRIBUTING.adoc
+[Code of Conduct]: https://github.com/sorairolake/sysexits-rs/blob/develop/CODE_OF_CONDUCT.md
