@@ -4,10 +4,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
-//! The system exit code constants as defined by
-//! [`<sysexits.h>`][sysexits-man-url].
+//! The system exit code constants as defined by [`<sysexits.h>`].
 //!
-//! [sysexits-man-url]: https://man.openbsd.org/sysexits
+//! [`<sysexits.h>`]: https://man.openbsd.org/sysexits
 
 use core::fmt;
 #[cfg(feature = "std")]
@@ -21,9 +20,9 @@ use std::process::Termination;
 pub type Result<T> = std::result::Result<T, ExitCode>;
 
 /// `ExitCode` is a type that represents the system exit code constants as
-/// defined by [`<sysexits.h>`][sysexits-man-url].
+/// defined by [`<sysexits.h>`].
 ///
-/// [sysexits-man-url]: https://man.openbsd.org/sysexits
+/// [`<sysexits.h>`]: https://man.openbsd.org/sysexits
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ExitCode {
     /// The successful exit.
@@ -125,8 +124,8 @@ pub enum ExitCode {
 
     /// An operating system error has been detected. This is intended to be used
     /// for such things as "cannot fork", or "cannot create pipe". It includes
-    /// things like [`getuid(2)`][getuid-2-man-url] returning a user that does
-    /// not exist in the passwd file.
+    /// things like [`getuid(2)`] returning a user that does not exist in the
+    /// passwd file.
     ///
     /// # Examples
     ///
@@ -136,7 +135,7 @@ pub enum ExitCode {
     /// assert_eq!(ExitCode::OsErr as u8, 71);
     /// ```
     ///
-    /// [getuid-2-man-url]: https://man.openbsd.org/getuid.2
+    /// [`getuid(2)`]: https://man.openbsd.org/getuid.2
     OsErr,
 
     /// Some system file (e.g., `/etc/passwd`, `/var/run/utmp`) does not exist,
