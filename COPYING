@@ -1,6 +1,0 @@
-Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Source: https://github.com/sorairolake/sysexits-rs
-
-Files: *
-Copyright: 2022-2023 Shun Sakai and other contributors
-License: Apache-2.0 or MIT
