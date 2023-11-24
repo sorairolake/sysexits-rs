@@ -17,22 +17,26 @@ use std::io::Read;
 
 #[cfg(feature = "std")]
 fn main() -> sysexits::ExitCode {
-    let input = std::env::args_os()
+    use std::{env, fs, io, str};
+
+    use sysexits::ExitCode;
+
+    let input = env::args_os()
         .nth(1)
         .map_or_else(
             || {
                 let mut buf = Vec::new();
-                std::io::stdin().read_to_end(&mut buf).map(|_| buf)
+                io::stdin().read_to_end(&mut buf).map(|_| buf)
             },
-            std::fs::read,
+            fs::read,
         )
         .unwrap_or_else(|err| panic!("{err}"));
-    if let Err(err) = std::str::from_utf8(&input) {
+    if let Err(err) = str::from_utf8(&input) {
         eprintln!("Error: {err}");
-        sysexits::ExitCode::DataErr
+        ExitCode::DataErr
     } else {
         println!("OK");
-        sysexits::ExitCode::Ok
+        ExitCode::Ok
     }
 }
 

@@ -18,31 +18,31 @@ use std::io::Read;
 
 #[cfg(feature = "std")]
 fn main() -> std::process::ExitCode {
-    let args: Vec<_> = std::env::args_os().skip(1).collect();
+    use std::{env, fs, io, process::ExitCode};
 
-    let contents: std::io::Result<Vec<_>> = if args.is_empty() {
+    let args: Vec<_> = env::args_os().skip(1).collect();
+
+    let contents: io::Result<Vec<_>> = if args.is_empty() {
         let mut buf = String::new();
-        vec![std::io::stdin().read_to_string(&mut buf).map(|_| buf)]
+        vec![io::stdin().read_to_string(&mut buf).map(|_| buf)]
             .into_iter()
             .collect()
     } else {
-        args.into_iter().map(std::fs::read_to_string).collect()
+        args.into_iter().map(fs::read_to_string).collect()
     };
     let contents = match contents {
         Ok(strings) => strings,
         Err(err) => {
             eprintln!("Error: {err}");
-            return sysexits::ExitCode::try_from(err.kind()).map_or(
-                std::process::ExitCode::FAILURE,
-                std::process::ExitCode::from,
-            );
+            return sysexits::ExitCode::try_from(err.kind())
+                .map_or(ExitCode::FAILURE, ExitCode::from);
         }
     };
 
     for output in contents {
         print!("{output}");
     }
-    std::process::ExitCode::SUCCESS
+    ExitCode::SUCCESS
 }
 
 #[cfg(not(feature = "std"))]

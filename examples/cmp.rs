@@ -32,26 +32,30 @@ impl From<sysexits::ExitCode> for ExitCode {
 #[cfg(feature = "std")]
 impl Termination for ExitCode {
     fn report(self) -> std::process::ExitCode {
+        use std::process::ExitCode;
+
         match self {
-            Self::Same => std::process::ExitCode::from(u8::MIN),
-            Self::Different => std::process::ExitCode::from(1),
-            Self::Trouble => std::process::ExitCode::from(2),
-            Self::Other(code) => std::process::ExitCode::from(code),
+            Self::Same => ExitCode::from(u8::MIN),
+            Self::Different => ExitCode::from(1),
+            Self::Trouble => ExitCode::from(2),
+            Self::Other(code) => ExitCode::from(code),
         }
     }
 }
 
 #[cfg(feature = "std")]
 fn main() -> ExitCode {
-    let args: Vec<_> = std::env::args_os().skip(1).take(2).collect();
+    use std::{env, fs, io, path::PathBuf};
+
+    let args: Vec<_> = env::args_os().skip(1).take(2).collect();
 
     let files = if let (Some(from), Some(to)) = (args.get(0), args.get(1)) {
-        (std::path::PathBuf::from(from), std::path::PathBuf::from(to))
+        (PathBuf::from(from), PathBuf::from(to))
     } else {
         eprintln!("Error: files are missing");
         return ExitCode::Trouble;
     };
-    let contents: std::io::Result<Vec<_>> = args.into_iter().map(std::fs::read).collect();
+    let contents: io::Result<Vec<_>> = args.into_iter().map(fs::read).collect();
     let contents = match contents {
         Ok(bytes) => bytes,
         Err(err) => {
