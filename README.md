@@ -82,7 +82,7 @@ Please see [CONTRIBUTING.adoc].
 
 ## License
 
-Copyright &copy; 2022&ndash;2023 Shun Sakai and other contributors (see
+Copyright &copy; 2022&ndash;2024 Shun Sakai and other contributors (see
 [AUTHORS.adoc])
 
 This library is distributed under the terms of either the _Apache License 2.0_
