@@ -14,11 +14,12 @@
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
 #[cfg(feature = "std")]
-use std::io::Read;
-
-#[cfg(feature = "std")]
 fn main() -> std::process::ExitCode {
-    use std::{env, fs, io, process::ExitCode};
+    use std::{
+        env, fs,
+        io::{self, Read},
+        process::ExitCode,
+    };
 
     let args: Vec<_> = env::args_os().skip(1).collect();
 
@@ -34,8 +35,7 @@ fn main() -> std::process::ExitCode {
         Ok(strings) => strings,
         Err(err) => {
             eprintln!("Error: {err}");
-            return sysexits::ExitCode::try_from(err.kind())
-                .map_or(ExitCode::FAILURE, ExitCode::from);
+            return sysexits::ExitCode::from(err).into();
         }
     };
 

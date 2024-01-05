@@ -13,11 +13,12 @@
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
 #[cfg(feature = "std")]
-use std::io::Read;
-
-#[cfg(feature = "std")]
 fn main() -> sysexits::ExitCode {
-    use std::{env, fs, io, str};
+    use std::{
+        env, fs,
+        io::{self, Read},
+        str,
+    };
 
     use sysexits::ExitCode;
 
