@@ -12,9 +12,6 @@
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
 #[cfg(feature = "std")]
-use std::process::Termination;
-
-#[cfg(feature = "std")]
 enum ExitCode {
     Same,
     Different,
@@ -30,7 +27,7 @@ impl From<sysexits::ExitCode> for ExitCode {
 }
 
 #[cfg(feature = "std")]
-impl Termination for ExitCode {
+impl std::process::Termination for ExitCode {
     fn report(self) -> std::process::ExitCode {
         use std::process::ExitCode;
 
@@ -49,7 +46,7 @@ fn main() -> ExitCode {
 
     let args: Vec<_> = env::args_os().skip(1).take(2).collect();
 
-    let files = if let (Some(from), Some(to)) = (args.get(0), args.get(1)) {
+    let files = if let (Some(from), Some(to)) = (args.first(), args.get(1)) {
         (PathBuf::from(from), PathBuf::from(to))
     } else {
         eprintln!("Error: files are missing");
@@ -60,8 +57,7 @@ fn main() -> ExitCode {
         Ok(bytes) => bytes,
         Err(err) => {
             eprintln!("Error: {err}");
-            return sysexits::ExitCode::try_from(err.kind())
-                .map_or(ExitCode::Trouble, ExitCode::from);
+            return sysexits::ExitCode::from(err).into();
         }
     };
 

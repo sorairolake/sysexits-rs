@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: 2022 Kevin Matthes
+# SPDX-FileCopyrightText: 2022 Shun Sakai
+#
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+
+[tool.bumpversion]
+current_version = "0.7.8"
+
+[[tool.bumpversion.files]]
+filename = "CITATION.cff"
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+
+[[tool.bumpversion.files]]
+filename = "src/lib.rs"
