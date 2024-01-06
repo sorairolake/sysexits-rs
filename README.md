@@ -29,16 +29,20 @@ sysexits = "0.7.8"
 ### Example
 
 ```rust
-fn main() -> sysexits::ExitCode {
+use std::str;
+
+use sysexits::ExitCode;
+
+fn main() -> ExitCode {
     let bytes = [0xf0, 0x9f, 0x92, 0x96];
-    match std::str::from_utf8(&bytes) {
+    match str::from_utf8(&bytes) {
         Ok(string) => {
             println!("{string}");
-            sysexits::ExitCode::Ok
+            ExitCode::Ok
         }
         Err(err) => {
             eprintln!("{err}");
-            sysexits::ExitCode::DataErr
+            ExitCode::DataErr
         }
     }
 }
