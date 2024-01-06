@@ -13,11 +13,6 @@
 //!
 //! # Examples
 //!
-//! ## Returns the exit code as defined by <sysexits.h>
-//!
-//! If you only use the exit code as defined by `<sysexits.h>`, you can return
-//! this from the `main` function.
-//!
 //! ```
 //! # #[cfg(feature = "std")]
 //! use std::str;
@@ -37,35 +32,6 @@
 //!             eprintln!("{err}");
 //!             ExitCode::DataErr
 //!         }
-//!     }
-//! }
-//! #
-//! # #[cfg(not(feature = "std"))]
-//! # fn main() {}
-//! ```
-//!
-//! ## Combine with other exit codes
-//!
-//! [`ExitCode`] can be converted to [`std::process::ExitCode`] by the [`From`]
-//! trait, so you can combine it with your own exit codes or
-//! [`std::process::ExitCode`].
-//!
-//! ```
-//! # #[cfg(feature = "std")]
-//! use std::{
-//!     io::{self, Read},
-//!     process::ExitCode,
-//! };
-//!
-//! # #[cfg(feature = "std")]
-//! fn main() -> ExitCode {
-//!     let mut buf = String::new();
-//!     if let Err(err) = io::stdin().read_to_string(&mut buf) {
-//!         eprintln!("{err}");
-//!         sysexits::ExitCode::from(err).into()
-//!     } else {
-//!         print!("{buf}");
-//!         ExitCode::SUCCESS
 //!     }
 //! }
 //! #
