@@ -9,7 +9,7 @@ message: Please cite this software using these meta data.
 
 # Version information.
 date-released: 2024-01-06
-version: 0.7.9
+version: 0.7.10
 
 # Project information.
 abstract: The system exit codes as defined by <sysexits.h> for Rust
