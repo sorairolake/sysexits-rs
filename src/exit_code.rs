@@ -486,7 +486,7 @@ impl std::error::Error for ExitCode {}
 impl std::process::Termination for ExitCode {
     #[inline]
     fn report(self) -> std::process::ExitCode {
-        std::process::ExitCode::from(u8::from(self))
+        u8::from(self).into()
     }
 }
 
