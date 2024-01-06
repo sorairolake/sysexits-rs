@@ -20,16 +20,22 @@
 //!
 //! ```
 //! # #[cfg(feature = "std")]
-//! fn main() -> sysexits::ExitCode {
+//! use std::str;
+//!
+//! # #[cfg(feature = "std")]
+//! use sysexits::ExitCode;
+//!
+//! # #[cfg(feature = "std")]
+//! fn main() -> ExitCode {
 //!     let bytes = [0xf0, 0x9f, 0x92, 0x96];
-//!     match std::str::from_utf8(&bytes) {
+//!     match str::from_utf8(&bytes) {
 //!         Ok(string) => {
 //!             println!("{string}");
-//!             sysexits::ExitCode::Ok
+//!             ExitCode::Ok
 //!         }
 //!         Err(err) => {
 //!             eprintln!("{err}");
-//!             sysexits::ExitCode::DataErr
+//!             ExitCode::DataErr
 //!         }
 //!     }
 //! }
@@ -46,20 +52,20 @@
 //!
 //! ```
 //! # #[cfg(feature = "std")]
-//! use std::io::Read;
+//! use std::{
+//!     io::{self, Read},
+//!     process::ExitCode,
+//! };
 //!
 //! # #[cfg(feature = "std")]
-//! fn main() -> std::process::ExitCode {
+//! fn main() -> ExitCode {
 //!     let mut buf = String::new();
-//!     if let Err(err) = std::io::stdin().read_to_string(&mut buf) {
+//!     if let Err(err) = io::stdin().read_to_string(&mut buf) {
 //!         eprintln!("{err}");
-//!         sysexits::ExitCode::try_from(err.kind()).map_or(
-//!             std::process::ExitCode::FAILURE,
-//!             std::process::ExitCode::from,
-//!         )
+//!         sysexits::ExitCode::from(err).into()
 //!     } else {
 //!         print!("{buf}");
-//!         std::process::ExitCode::SUCCESS
+//!         ExitCode::SUCCESS
 //!     }
 //! }
 //! #
@@ -70,7 +76,7 @@
 //! [`<sysexits.h>`]: https://man.openbsd.org/sysexits
 
 #![cfg_attr(feature = "extended_io_error", feature(io_error_more))]
-#![doc(html_root_url = "https://docs.rs/sysexits/0.7.8/")]
+#![doc(html_root_url = "https://docs.rs/sysexits/0.7.9/")]
 #![no_std]
 #![cfg_attr(doc_cfg, feature(doc_auto_cfg, doc_cfg))]
 // Lint levels of rustc.
@@ -90,8 +96,6 @@ extern crate std;
 mod error;
 mod exit_code;
 
-#[cfg(feature = "std")]
-pub use crate::error::TryFromExitStatusError;
 pub use crate::exit_code::ExitCode;
 #[cfg(feature = "std")]
-pub use crate::exit_code::Result;
+pub use crate::{error::TryFromExitStatusError, exit_code::Result};
