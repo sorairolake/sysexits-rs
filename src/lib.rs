@@ -13,11 +13,6 @@
 //!
 //! # Examples
 //!
-//! ## Returns the exit code as defined by <sysexits.h>
-//!
-//! If you only use the exit code as defined by `<sysexits.h>`, you can return
-//! this from the `main` function.
-//!
 //! ```
 //! # #[cfg(feature = "std")]
 //! use std::str;
@@ -44,39 +39,10 @@
 //! # fn main() {}
 //! ```
 //!
-//! ## Combine with other exit codes
-//!
-//! [`ExitCode`] can be converted to [`std::process::ExitCode`] by the [`From`]
-//! trait, so you can combine it with your own exit codes or
-//! [`std::process::ExitCode`].
-//!
-//! ```
-//! # #[cfg(feature = "std")]
-//! use std::{
-//!     io::{self, Read},
-//!     process::ExitCode,
-//! };
-//!
-//! # #[cfg(feature = "std")]
-//! fn main() -> ExitCode {
-//!     let mut buf = String::new();
-//!     if let Err(err) = io::stdin().read_to_string(&mut buf) {
-//!         eprintln!("{err}");
-//!         sysexits::ExitCode::from(err).into()
-//!     } else {
-//!         print!("{buf}");
-//!         ExitCode::SUCCESS
-//!     }
-//! }
-//! #
-//! # #[cfg(not(feature = "std"))]
-//! # fn main() {}
-//! ```
-//!
 //! [`<sysexits.h>`]: https://man.openbsd.org/sysexits
 
 #![cfg_attr(feature = "extended_io_error", feature(io_error_more))]
-#![doc(html_root_url = "https://docs.rs/sysexits/0.7.9/")]
+#![doc(html_root_url = "https://docs.rs/sysexits/0.7.10/")]
 #![no_std]
 #![cfg_attr(doc_cfg, feature(doc_auto_cfg, doc_cfg))]
 // Lint levels of rustc.

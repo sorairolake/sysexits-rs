@@ -9,8 +9,6 @@
 //! [`<sysexits.h>`]: https://man.openbsd.org/sysexits
 
 use core::fmt;
-#[cfg(feature = "std")]
-use std::process::Termination;
 
 /// A [`Result`](std::result::Result) type based on [`ExitCode`].
 ///
@@ -260,8 +258,7 @@ impl ExitCode {
 
     /// Terminates the current process with the exit code defined by `ExitCode`.
     ///
-    /// This method is equivalent to [`std::process::exit`] with a restricted
-    /// exit code.
+    /// Equivalent to [`std::process::exit`] with a restricted exit code.
     ///
     /// # Examples
     ///
@@ -344,10 +341,10 @@ impl_from_exit_code_for_integer!(usize);
 #[cfg(feature = "std")]
 impl From<ExitCode> for std::process::ExitCode {
     /// Converts an `sysexits::ExitCode` into an [`std::process::ExitCode`].
-    ///
-    /// This method is equivalent to [`ExitCode::report`].
     #[inline]
     fn from(code: ExitCode) -> Self {
+        use std::process::Termination;
+
         code.report()
     }
 }
@@ -453,7 +450,7 @@ impl TryFrom<std::process::ExitStatus> for ExitCode {
     ///
     /// # Errors
     ///
-    /// This method returns [`Err`] in the following situations:
+    /// Returns [`Err`] if any of the following are true:
     ///
     /// - The exit code is not `0` or `64..=78`.
     /// - The exit code is unknown (e.g., the process was terminated by a
@@ -486,10 +483,10 @@ impl TryFrom<std::process::ExitStatus> for ExitCode {
 impl std::error::Error for ExitCode {}
 
 #[cfg(feature = "std")]
-impl Termination for ExitCode {
+impl std::process::Termination for ExitCode {
     #[inline]
     fn report(self) -> std::process::ExitCode {
-        std::process::ExitCode::from(u8::from(self))
+        u8::from(self).into()
     }
 }
 
@@ -1610,6 +1607,8 @@ mod tests {
     #[cfg(feature = "std")]
     #[test]
     fn report_exit_code() {
+        use std::process::Termination;
+
         assert_eq!(
             format!("{:?}", ExitCode::Ok.report()),
             format!("{:?}", std::process::ExitCode::from(0))
