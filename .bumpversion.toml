@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 
 [tool.bumpversion]
-current_version = "0.7.10"
+current_version = "0.7.11"
 
 [[tool.bumpversion.files]]
 filename = "CITATION.cff"
