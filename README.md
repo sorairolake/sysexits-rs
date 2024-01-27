@@ -28,7 +28,7 @@ sysexits = "0.7.11"
 
 ### Example
 
-```rust
+```rs
 use std::str;
 
 use sysexits::ExitCode;
