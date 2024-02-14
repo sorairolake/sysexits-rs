@@ -20,6 +20,18 @@ include = ["/LICENSES", "/README.md", "/src"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[[example]]
+name = "cat"
+required-features = ["default"]
+
+[[example]]
+name = "cmp"
+required-features = ["default"]
+
+[[example]]
+name = "isutf8"
+required-features = ["default"]
+
 [dependencies]
 
 [features]

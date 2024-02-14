@@ -11,7 +11,12 @@
 // Lint levels of Clippy.
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
-#[cfg(feature = "std")]
+use std::{
+    env, fs, io,
+    path::PathBuf,
+    process::{self, Termination},
+};
+
 enum ExitCode {
     Same,
     Different,
@@ -19,31 +24,24 @@ enum ExitCode {
     Other(sysexits::ExitCode),
 }
 
-#[cfg(feature = "std")]
 impl From<sysexits::ExitCode> for ExitCode {
     fn from(code: sysexits::ExitCode) -> Self {
         Self::Other(code)
     }
 }
 
-#[cfg(feature = "std")]
-impl std::process::Termination for ExitCode {
-    fn report(self) -> std::process::ExitCode {
-        use std::process::ExitCode;
-
+impl Termination for ExitCode {
+    fn report(self) -> process::ExitCode {
         match self {
-            Self::Same => ExitCode::from(u8::MIN),
-            Self::Different => ExitCode::from(1),
-            Self::Trouble => ExitCode::from(2),
-            Self::Other(code) => ExitCode::from(code),
+            Self::Same => process::ExitCode::from(u8::MIN),
+            Self::Different => process::ExitCode::from(1),
+            Self::Trouble => process::ExitCode::from(2),
+            Self::Other(code) => process::ExitCode::from(code),
         }
     }
 }
 
-#[cfg(feature = "std")]
 fn main() -> ExitCode {
-    use std::{env, fs, io, path::PathBuf};
-
     let args: Vec<_> = env::args_os().skip(1).take(2).collect();
 
     let files = if let (Some(from), Some(to)) = (args.first(), args.get(1)) {
@@ -76,9 +74,4 @@ fn main() -> ExitCode {
         );
         ExitCode::Different
     }
-}
-
-#[cfg(not(feature = "std"))]
-fn main() -> Result<(), &'static str> {
-    Err("`std` feature is required")
 }
