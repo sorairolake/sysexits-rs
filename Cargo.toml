@@ -22,14 +22,17 @@ include = ["/LICENSES", "/README.md", "/src"]
 
 [[example]]
 name = "cat"
+path = "examples/cat.rs"
 required-features = ["default"]
 
 [[example]]
 name = "cmp"
+path = "examples/cmp.rs"
 required-features = ["default"]
 
 [[example]]
 name = "isutf8"
+path = "examples/isutf8.rs"
 required-features = ["default"]
 
 [dependencies]
