@@ -18,6 +18,10 @@ keywords = ["exitcode", "sysexits"]
 categories = ["command-line-interface", "no-std", "os"]
 include = ["/LICENSES", "/README.md", "/src"]
 
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "doc_cfg"]
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [[example]]
@@ -42,7 +46,3 @@ default = ["std"]
 std = []
 nightly = ["extended_io_error"]
 extended_io_error = ["std"]
-
-[package.metadata.docs.rs]
-all-features = true
-rustdoc-args = ["--cfg", "doc_cfg"]
