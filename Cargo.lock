@@ -4,4 +4,4 @@ version = 3
 
 [[package]]
 name = "sysexits"
-version = "0.7.11"
+version = "0.7.12"
