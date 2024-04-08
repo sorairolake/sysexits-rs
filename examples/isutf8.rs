@@ -12,16 +12,15 @@
 // Lint levels of Clippy.
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
-#[cfg(feature = "std")]
-fn main() -> sysexits::ExitCode {
-    use std::{
-        env, fs,
-        io::{self, Read},
-        str,
-    };
+use std::{
+    env, fs,
+    io::{self, Read},
+    str,
+};
 
-    use sysexits::ExitCode;
+use sysexits::ExitCode;
 
+fn main() -> ExitCode {
     let input = env::args_os()
         .nth(1)
         .map_or_else(
@@ -39,9 +38,4 @@ fn main() -> sysexits::ExitCode {
         println!("OK");
         ExitCode::Ok
     }
-}
-
-#[cfg(not(feature = "std"))]
-fn main() -> Result<(), &'static str> {
-    Err("`std` feature is required")
 }

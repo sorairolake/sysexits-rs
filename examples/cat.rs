@@ -13,14 +13,13 @@
 // Lint levels of Clippy.
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
-#[cfg(feature = "std")]
-fn main() -> std::process::ExitCode {
-    use std::{
-        env, fs,
-        io::{self, Read},
-        process::ExitCode,
-    };
+use std::{
+    env, fs,
+    io::{self, Read},
+    process::ExitCode,
+};
 
+fn main() -> ExitCode {
     let args: Vec<_> = env::args_os().skip(1).collect();
 
     let contents: io::Result<Vec<_>> = if args.is_empty() {
@@ -43,9 +42,4 @@ fn main() -> std::process::ExitCode {
         print!("{output}");
     }
     ExitCode::SUCCESS
-}
-
-#[cfg(not(feature = "std"))]
-fn main() -> Result<(), &'static str> {
-    Err("`std` feature is required")
 }
