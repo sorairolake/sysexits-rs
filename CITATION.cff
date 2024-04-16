@@ -8,8 +8,8 @@ cff-version: 1.2.0
 message: Please cite this software using these meta data.
 
 # Version information.
-date-released: 2024-04-08
-version: 0.7.12
+date-released: 2024-04-16
+version: 0.7.13
 
 # Project information.
 abstract: The system exit codes as defined by <sysexits.h> for Rust

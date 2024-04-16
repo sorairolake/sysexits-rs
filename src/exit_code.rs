@@ -222,7 +222,7 @@ pub enum ExitCode {
 }
 
 impl ExitCode {
-    /// Returns `true` if this system exit code represents successful
+    /// Returns [`true`] if this system exit code represents successful
     /// termination.
     ///
     /// # Examples
@@ -239,7 +239,7 @@ impl ExitCode {
         matches!(self, Self::Ok)
     }
 
-    /// Returns `true` if this system exit code represents unsuccessful
+    /// Returns [`true`] if this system exit code represents unsuccessful
     /// termination.
     ///
     /// # Examples
