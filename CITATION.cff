@@ -20,6 +20,8 @@ authors:
   - alias: kevinmatthes
     family-names: Matthes
     given-names: Kevin
+  - alias: TheAlgorythm
+    name: zSchoen
 license:
   - Apache-2.0
   - MIT
