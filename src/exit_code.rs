@@ -8,7 +8,6 @@
 //! [`<sysexits.h>`]: https://man.openbsd.org/sysexits
 
 mod convert;
-#[cfg(feature = "std")]
 pub mod result;
 
 use core::fmt;

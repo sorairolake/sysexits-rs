@@ -7,11 +7,11 @@
 
 use super::ExitCode;
 
-/// A [`Result`](std::result::Result) type based on [`ExitCode`].
+/// A [`Result`](core::result::Result) type based on [`ExitCode`].
 ///
 /// In case of an error, an appropriate variant of [`ExitCode`] can describe the
 /// exact cause in further detail.
-pub type Result<T> = std::result::Result<T, ExitCode>;
+pub type Result<T> = core::result::Result<T, ExitCode>;
 
 impl<T> From<Result<T>> for ExitCode {
     /// Converts a [`Result<T>`] into an `ExitCode`.
@@ -49,12 +49,12 @@ mod tests {
     #[test]
     fn result_type() {
         assert_eq!(
-            std::any::type_name::<Result<()>>(),
-            std::any::type_name::<std::result::Result<(), ExitCode>>()
+            core::any::type_name::<Result<()>>(),
+            core::any::type_name::<core::result::Result<(), ExitCode>>()
         );
         assert_eq!(
-            std::any::type_name::<Result<u8>>(),
-            std::any::type_name::<std::result::Result<u8, ExitCode>>()
+            core::any::type_name::<Result<u8>>(),
+            core::any::type_name::<core::result::Result<u8, ExitCode>>()
         );
     }
 
