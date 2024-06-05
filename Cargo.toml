@@ -5,7 +5,7 @@
 
 [package]
 name = "sysexits"
-version = "0.7.14"
+version = "0.8.0"
 authors = ["Shun Sakai <sorairolake@protonmail.ch>"]
 edition = "2021"
 rust-version = "1.65.0"
