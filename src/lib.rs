@@ -42,7 +42,7 @@
 //! [`<sysexits.h>`]: https://man.openbsd.org/sysexits
 
 #![cfg_attr(feature = "extended_io_error", feature(io_error_more))]
-#![doc(html_root_url = "https://docs.rs/sysexits/0.7.14/")]
+#![doc(html_root_url = "https://docs.rs/sysexits/0.8.0/")]
 #![no_std]
 #![cfg_attr(docsrs, feature(doc_auto_cfg, doc_cfg))]
 // Lint levels of rustc.
@@ -58,10 +58,7 @@ extern crate alloc;
 #[cfg(feature = "std")]
 extern crate std;
 
-#[cfg(feature = "std")]
-mod error;
+pub mod error;
 mod exit_code;
 
-#[cfg(feature = "std")]
-pub use crate::error::TryFromExitStatusError;
 pub use crate::exit_code::{result::Result, ExitCode};
