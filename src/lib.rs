@@ -58,8 +58,7 @@ extern crate alloc;
 #[cfg(feature = "std")]
 extern crate std;
 
-#[cfg(feature = "std")]
-mod error;
+pub mod error;
 mod exit_code;
 
 #[cfg(feature = "std")]

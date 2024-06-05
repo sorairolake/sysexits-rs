@@ -6,9 +6,11 @@
 
 //! Implementations of conversions between [`ExitCode`] and other types.
 
+use crate::error::ExitCodeRangeError;
+
 use super::ExitCode;
 
-macro_rules! impl_from_exit_code_for_integer {
+macro_rules! impl_from_exit_code_to_integer {
     ($T:ty, $ok:expr, $usage:expr) => {
         impl From<ExitCode> for $T {
             /// Converts an `ExitCode` into the raw underlying integer value.
@@ -30,7 +32,7 @@ macro_rules! impl_from_exit_code_for_integer {
         }
     };
     ($T:ty) => {
-        impl_from_exit_code_for_integer!(
+        impl_from_exit_code_to_integer!(
             $T,
             concat!("assert_eq!(", stringify!($T), "::from(ExitCode::Ok), 0);"),
             concat!(
@@ -41,18 +43,18 @@ macro_rules! impl_from_exit_code_for_integer {
         );
     };
 }
-impl_from_exit_code_for_integer!(i8);
-impl_from_exit_code_for_integer!(i16);
-impl_from_exit_code_for_integer!(i32);
-impl_from_exit_code_for_integer!(i64);
-impl_from_exit_code_for_integer!(i128);
-impl_from_exit_code_for_integer!(isize);
-impl_from_exit_code_for_integer!(u8);
-impl_from_exit_code_for_integer!(u16);
-impl_from_exit_code_for_integer!(u32);
-impl_from_exit_code_for_integer!(u64);
-impl_from_exit_code_for_integer!(u128);
-impl_from_exit_code_for_integer!(usize);
+impl_from_exit_code_to_integer!(i8);
+impl_from_exit_code_to_integer!(i16);
+impl_from_exit_code_to_integer!(i32);
+impl_from_exit_code_to_integer!(i64);
+impl_from_exit_code_to_integer!(i128);
+impl_from_exit_code_to_integer!(isize);
+impl_from_exit_code_to_integer!(u8);
+impl_from_exit_code_to_integer!(u16);
+impl_from_exit_code_to_integer!(u32);
+impl_from_exit_code_to_integer!(u64);
+impl_from_exit_code_to_integer!(u128);
+impl_from_exit_code_to_integer!(usize);
 
 #[cfg(feature = "std")]
 impl From<ExitCode> for std::process::ExitCode {
@@ -64,6 +66,85 @@ impl From<ExitCode> for std::process::ExitCode {
         code.report()
     }
 }
+
+macro_rules! impl_try_from_integer_to_exit_code {
+    ($T:ty, $ok:expr, $usage:expr, $err:expr) => {
+        impl TryFrom<$T> for ExitCode {
+            type Error = ExitCodeRangeError;
+
+            /// Converts an integer value into an `ExitCode`.
+            ///
+            /// # Errors
+            ///
+            /// Returns [`Err`] if `value` is not `0` or `64..=78`.
+            ///
+            /// # Examples
+            ///
+            /// ```
+            /// # use sysexits::ExitCode;
+            /// #
+            #[doc = $ok]
+            #[doc = $usage]
+            ///
+            #[doc = $err]
+            /// ```
+            #[inline]
+            fn try_from(value: $T) -> core::result::Result<Self, Self::Error> {
+                match value {
+                    0 => Ok(Self::Ok),
+                    64 => Ok(Self::Usage),
+                    65 => Ok(Self::DataErr),
+                    66 => Ok(Self::NoInput),
+                    67 => Ok(Self::NoUser),
+                    68 => Ok(Self::NoHost),
+                    69 => Ok(Self::Unavailable),
+                    70 => Ok(Self::Software),
+                    71 => Ok(Self::OsErr),
+                    72 => Ok(Self::OsFile),
+                    73 => Ok(Self::CantCreat),
+                    74 => Ok(Self::IoErr),
+                    75 => Ok(Self::TempFail),
+                    76 => Ok(Self::Protocol),
+                    77 => Ok(Self::NoPerm),
+                    78 => Ok(Self::Config),
+                    _ => Err(ExitCodeRangeError),
+                }
+            }
+        }
+    };
+    ($T:ty) => {
+        impl_try_from_integer_to_exit_code!(
+            $T,
+            concat!(
+                "assert_eq!(ExitCode::try_from(0_",
+                stringify!($T),
+                ").unwrap(), ExitCode::Ok);"
+            ),
+            concat!(
+                "assert_eq!(ExitCode::try_from(64_",
+                stringify!($T),
+                ").unwrap(), ExitCode::Usage);"
+            ),
+            concat!(
+                "assert!(ExitCode::try_from(79_",
+                stringify!($T),
+                ").is_err());"
+            )
+        );
+    };
+}
+impl_try_from_integer_to_exit_code!(i8);
+impl_try_from_integer_to_exit_code!(i16);
+impl_try_from_integer_to_exit_code!(i32);
+impl_try_from_integer_to_exit_code!(i64);
+impl_try_from_integer_to_exit_code!(i128);
+impl_try_from_integer_to_exit_code!(isize);
+impl_try_from_integer_to_exit_code!(u8);
+impl_try_from_integer_to_exit_code!(u16);
+impl_try_from_integer_to_exit_code!(u32);
+impl_try_from_integer_to_exit_code!(u64);
+impl_try_from_integer_to_exit_code!(u128);
+impl_try_from_integer_to_exit_code!(usize);
 
 #[cfg(feature = "std")]
 impl From<std::io::Error> for ExitCode {
@@ -295,6 +376,258 @@ mod tests {
             format!("{:?}", std::process::ExitCode::from(78))
         );
     }
+
+    macro_rules! test_try_from_integer_to_exit_code {
+        ($T:ty, $name:ident) => {
+            #[test]
+            fn $name() {
+                assert_eq!(ExitCode::try_from(0 as $T).unwrap(), ExitCode::Ok);
+                assert_eq!(ExitCode::try_from(64 as $T).unwrap(), ExitCode::Usage);
+                assert_eq!(ExitCode::try_from(65 as $T).unwrap(), ExitCode::DataErr);
+                assert_eq!(ExitCode::try_from(66 as $T).unwrap(), ExitCode::NoInput);
+                assert_eq!(ExitCode::try_from(67 as $T).unwrap(), ExitCode::NoUser);
+                assert_eq!(ExitCode::try_from(68 as $T).unwrap(), ExitCode::NoHost);
+                assert_eq!(ExitCode::try_from(69 as $T).unwrap(), ExitCode::Unavailable);
+                assert_eq!(ExitCode::try_from(70 as $T).unwrap(), ExitCode::Software);
+                assert_eq!(ExitCode::try_from(71 as $T).unwrap(), ExitCode::OsErr);
+                assert_eq!(ExitCode::try_from(72 as $T).unwrap(), ExitCode::OsFile);
+                assert_eq!(ExitCode::try_from(73 as $T).unwrap(), ExitCode::CantCreat);
+                assert_eq!(ExitCode::try_from(74 as $T).unwrap(), ExitCode::IoErr);
+                assert_eq!(ExitCode::try_from(75 as $T).unwrap(), ExitCode::TempFail);
+                assert_eq!(ExitCode::try_from(76 as $T).unwrap(), ExitCode::Protocol);
+                assert_eq!(ExitCode::try_from(77 as $T).unwrap(), ExitCode::NoPerm);
+                assert_eq!(ExitCode::try_from(78 as $T).unwrap(), ExitCode::Config);
+            }
+        };
+    }
+    test_try_from_integer_to_exit_code!(i8, try_from_i8_to_exit_code);
+    test_try_from_integer_to_exit_code!(i16, try_from_i16_to_exit_code);
+    test_try_from_integer_to_exit_code!(i32, try_from_i32_to_exit_code);
+    test_try_from_integer_to_exit_code!(i64, try_from_i64_to_exit_code);
+    test_try_from_integer_to_exit_code!(i128, try_from_i128_to_exit_code);
+    test_try_from_integer_to_exit_code!(isize, try_from_isize_to_exit_code);
+    test_try_from_integer_to_exit_code!(u8, try_from_u8_to_exit_code);
+    test_try_from_integer_to_exit_code!(u16, try_from_u16_to_exit_code);
+    test_try_from_integer_to_exit_code!(u32, try_from_u32_to_exit_code);
+    test_try_from_integer_to_exit_code!(u64, try_from_u64_to_exit_code);
+    test_try_from_integer_to_exit_code!(u128, try_from_u128_to_exit_code);
+    test_try_from_integer_to_exit_code!(usize, try_from_usize_to_exit_code);
+
+    macro_rules! test_try_from_integer_to_exit_code_when_out_of_range {
+        ($T:ty, $name:ident) => {
+            #[test]
+            fn $name() {
+                assert_eq!(
+                    ExitCode::try_from(79 as $T).unwrap_err(),
+                    ExitCodeRangeError
+                );
+            }
+        };
+    }
+    test_try_from_integer_to_exit_code_when_out_of_range!(
+        i8,
+        try_from_i8_to_exit_code_when_out_of_range
+    );
+    test_try_from_integer_to_exit_code_when_out_of_range!(
+        i16,
+        try_from_i16_to_exit_code_when_out_of_range
+    );
+    test_try_from_integer_to_exit_code_when_out_of_range!(
+        i32,
+        try_from_i32_to_exit_code_when_out_of_range
+    );
+    test_try_from_integer_to_exit_code_when_out_of_range!(
+        i64,
+        try_from_i64_to_exit_code_when_out_of_range
+    );
+    test_try_from_integer_to_exit_code_when_out_of_range!(
+        i128,
+        try_from_i128_to_exit_code_when_out_of_range
+    );
+    test_try_from_integer_to_exit_code_when_out_of_range!(
+        isize,
+        try_from_isize_to_exit_code_when_out_of_range
+    );
+    test_try_from_integer_to_exit_code_when_out_of_range!(
+        u8,
+        try_from_u8_to_exit_code_when_out_of_range
+    );
+    test_try_from_integer_to_exit_code_when_out_of_range!(
+        u16,
+        try_from_u16_to_exit_code_when_out_of_range
+    );
+    test_try_from_integer_to_exit_code_when_out_of_range!(
+        u32,
+        try_from_u32_to_exit_code_when_out_of_range
+    );
+    test_try_from_integer_to_exit_code_when_out_of_range!(
+        u64,
+        try_from_u64_to_exit_code_when_out_of_range
+    );
+    test_try_from_integer_to_exit_code_when_out_of_range!(
+        u128,
+        try_from_u128_to_exit_code_when_out_of_range
+    );
+    test_try_from_integer_to_exit_code_when_out_of_range!(
+        usize,
+        try_from_usize_to_exit_code_when_out_of_range
+    );
+
+    macro_rules! test_try_from_integer_to_exit_code_when_negative_integer_roundtrip {
+        ($T:ty, $name:ident) => {
+            #[cfg(feature = "std")]
+            #[test_strategy::proptest]
+            fn $name(#[strategy(..<$T>::default())] v: $T) {
+                use proptest::prop_assert_eq;
+
+                prop_assert_eq!(ExitCode::try_from(v).unwrap_err(), ExitCodeRangeError);
+            }
+        };
+    }
+    test_try_from_integer_to_exit_code_when_negative_integer_roundtrip!(
+        i8,
+        try_from_i8_to_exit_code_when_negative_i8_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_negative_integer_roundtrip!(
+        i16,
+        try_from_i16_to_exit_code_when_negative_i16_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_negative_integer_roundtrip!(
+        i32,
+        try_from_i32_to_exit_code_when_negative_i32_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_negative_integer_roundtrip!(
+        i64,
+        try_from_i64_to_exit_code_when_negative_i64_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_negative_integer_roundtrip!(
+        i128,
+        try_from_i128_to_exit_code_when_negative_i128_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_negative_integer_roundtrip!(
+        isize,
+        try_from_isize_to_exit_code_when_negative_isize_roundtrip
+    );
+
+    macro_rules! test_try_from_integer_to_exit_code_when_middle_integer_roundtrip {
+        ($T:ty, $name:ident) => {
+            #[cfg(feature = "std")]
+            #[test_strategy::proptest]
+            fn $name(#[strategy(1..(64 as $T))] v: $T) {
+                use proptest::prop_assert_eq;
+
+                prop_assert_eq!(ExitCode::try_from(v).unwrap_err(), ExitCodeRangeError);
+            }
+        };
+    }
+    test_try_from_integer_to_exit_code_when_middle_integer_roundtrip!(
+        i8,
+        try_from_i8_to_exit_code_when_middle_i8_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_middle_integer_roundtrip!(
+        i16,
+        try_from_i16_to_exit_code_when_middle_i16_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_middle_integer_roundtrip!(
+        i32,
+        try_from_i32_to_exit_code_when_middle_i32_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_middle_integer_roundtrip!(
+        i64,
+        try_from_i64_to_exit_code_when_middle_i64_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_middle_integer_roundtrip!(
+        i128,
+        try_from_i128_to_exit_code_when_middle_i128_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_middle_integer_roundtrip!(
+        isize,
+        try_from_isize_to_exit_code_when_middle_isize_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_middle_integer_roundtrip!(
+        u8,
+        try_from_u8_to_exit_code_when_middle_u8_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_middle_integer_roundtrip!(
+        u16,
+        try_from_u16_to_exit_code_when_middle_u16_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_middle_integer_roundtrip!(
+        u32,
+        try_from_u32_to_exit_code_when_middle_u32_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_middle_integer_roundtrip!(
+        u64,
+        try_from_u64_to_exit_code_when_middle_u64_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_middle_integer_roundtrip!(
+        u128,
+        try_from_u128_to_exit_code_when_middle_u128_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_middle_integer_roundtrip!(
+        usize,
+        try_from_usize_to_exit_code_when_middle_usize_roundtrip
+    );
+
+    macro_rules! test_try_from_integer_to_exit_code_when_positive_integer_roundtrip {
+        ($T:ty, $name:ident) => {
+            #[cfg(feature = "std")]
+            #[test_strategy::proptest]
+            fn $name(#[strategy((79 as $T)..)] v: $T) {
+                use proptest::prop_assert_eq;
+
+                prop_assert_eq!(ExitCode::try_from(v).unwrap_err(), ExitCodeRangeError);
+            }
+        };
+    }
+    test_try_from_integer_to_exit_code_when_positive_integer_roundtrip!(
+        i8,
+        try_from_i8_to_exit_code_when_positive_i8_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_positive_integer_roundtrip!(
+        i16,
+        try_from_i16_to_exit_code_when_positive_i16_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_positive_integer_roundtrip!(
+        i32,
+        try_from_i32_to_exit_code_when_positive_i32_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_positive_integer_roundtrip!(
+        i64,
+        try_from_i64_to_exit_code_when_positive_i64_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_positive_integer_roundtrip!(
+        i128,
+        try_from_i128_to_exit_code_when_positive_i128_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_positive_integer_roundtrip!(
+        isize,
+        try_from_isize_to_exit_code_when_positive_isize_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_positive_integer_roundtrip!(
+        u8,
+        try_from_u8_to_exit_code_when_positive_u8_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_positive_integer_roundtrip!(
+        u16,
+        try_from_u16_to_exit_code_when_positive_u16_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_positive_integer_roundtrip!(
+        u32,
+        try_from_u32_to_exit_code_when_positive_u32_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_positive_integer_roundtrip!(
+        u64,
+        try_from_u64_to_exit_code_when_positive_u64_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_positive_integer_roundtrip!(
+        u128,
+        try_from_u128_to_exit_code_when_positive_u128_roundtrip
+    );
+    test_try_from_integer_to_exit_code_when_positive_integer_roundtrip!(
+        usize,
+        try_from_usize_to_exit_code_when_positive_usize_roundtrip
+    );
 
     #[cfg(feature = "std")]
     #[allow(clippy::too_many_lines)]
