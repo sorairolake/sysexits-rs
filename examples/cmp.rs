@@ -12,15 +12,16 @@
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
 use std::{
-    env, fs, io,
+    fs, io,
     path::PathBuf,
     process::{self, Termination},
 };
 
+use clap::Parser;
+
 enum ExitCode {
     Same,
     Different,
-    Trouble,
     Other(sysexits::ExitCode),
 }
 
@@ -35,22 +36,28 @@ impl Termination for ExitCode {
         match self {
             Self::Same => process::ExitCode::from(u8::MIN),
             Self::Different => process::ExitCode::from(1),
-            Self::Trouble => process::ExitCode::from(2),
             Self::Other(code) => process::ExitCode::from(code),
         }
     }
 }
 
-fn main() -> ExitCode {
-    let args: Vec<_> = env::args_os().skip(1).take(2).collect();
+#[derive(Debug, Parser)]
+#[command(version, about)]
+struct Opt {
+    /// File to compare.
+    #[arg(value_name("FILE1"))]
+    pub input_1: PathBuf,
 
-    let files = if let (Some(from), Some(to)) = (args.first(), args.get(1)) {
-        (PathBuf::from(from), PathBuf::from(to))
-    } else {
-        eprintln!("Error: files are missing");
-        return ExitCode::Trouble;
-    };
-    let contents: io::Result<Vec<_>> = args.into_iter().map(fs::read).collect();
+    /// File to compare.
+    #[arg(value_name("FILE2"))]
+    pub input_2: PathBuf,
+}
+
+fn main() -> ExitCode {
+    let opt = Opt::parse();
+
+    let files = [opt.input_1, opt.input_2];
+    let contents: io::Result<Vec<_>> = files.iter().map(fs::read).collect();
     let contents = match contents {
         Ok(bytes) => bytes,
         Err(err) => {
@@ -62,15 +69,15 @@ fn main() -> ExitCode {
     if contents[0] == contents[1] {
         println!(
             "Files {} and {} are identical",
-            files.0.display(),
-            files.1.display()
+            files[0].display(),
+            files[1].display()
         );
         ExitCode::Same
     } else {
         println!(
             "Files {} and {} are different",
-            files.0.display(),
-            files.1.display()
+            files[0].display(),
+            files[1].display()
         );
         ExitCode::Different
     }

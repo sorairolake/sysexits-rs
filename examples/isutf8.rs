@@ -13,24 +13,44 @@
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
 use std::{
-    env, fs,
+    fs,
     io::{self, Read},
+    path::PathBuf,
     str,
 };
 
+use clap::Parser;
 use sysexits::ExitCode;
 
+#[derive(Debug, Parser)]
+#[command(version, about)]
+struct Opt {
+    /// File to check.
+    ///
+    /// If [FILE] is not specified, data will be read from stdin.
+    #[arg(value_name("FILE"))]
+    pub input: Option<PathBuf>,
+}
+
 fn main() -> ExitCode {
-    let input = env::args_os()
-        .nth(1)
-        .map_or_else(
-            || {
-                let mut buf = Vec::new();
-                io::stdin().read_to_end(&mut buf).map(|_| buf)
-            },
-            fs::read,
-        )
-        .unwrap_or_else(|err| panic!("{err}"));
+    let opt = Opt::parse();
+
+    let input = if let Some(file) = opt.input {
+        match fs::read(file) {
+            Ok(data) => data,
+            Err(err) => {
+                eprintln!("Error: {err}");
+                return ExitCode::from(err);
+            }
+        }
+    } else {
+        let mut buf = Vec::new();
+        if let Err(err) = io::stdin().read_to_end(&mut buf) {
+            eprintln!("Error: {err}");
+            return ExitCode::from(err);
+        }
+        buf
+    };
     if let Err(err) = str::from_utf8(&input) {
         eprintln!("Error: {err}");
         ExitCode::DataErr
