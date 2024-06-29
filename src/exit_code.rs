@@ -334,8 +334,8 @@ mod tests {
         assert_eq!(format!("{:?}", ExitCode::Config), "Config");
     }
 
-    #[allow(clippy::cognitive_complexity, clippy::too_many_lines)]
     #[test]
+    #[allow(clippy::cognitive_complexity, clippy::too_many_lines)]
     fn exit_code_equality() {
         assert_eq!(ExitCode::Ok, ExitCode::Ok);
         assert_ne!(ExitCode::Ok, ExitCode::Usage);
