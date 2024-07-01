@@ -34,8 +34,8 @@ impl From<sysexits::ExitCode> for ExitCode {
 impl Termination for ExitCode {
     fn report(self) -> process::ExitCode {
         match self {
-            Self::Same => process::ExitCode::from(u8::MIN),
-            Self::Different => process::ExitCode::from(1),
+            Self::Same => process::ExitCode::SUCCESS,
+            Self::Different => process::ExitCode::FAILURE,
             Self::Other(code) => process::ExitCode::from(code),
         }
     }
