@@ -9,8 +9,8 @@ use core::fmt;
 
 /// The error type indicating that [`ExitCode`](crate::ExitCode) was out of
 /// range.
-#[allow(clippy::module_name_repetitions)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[allow(clippy::module_name_repetitions)]
 pub struct ExitCodeRangeError;
 
 impl fmt::Display for ExitCodeRangeError {
@@ -26,8 +26,8 @@ impl std::error::Error for ExitCodeRangeError {}
 /// An error which can be returned when converting an
 /// [`ExitCode`](crate::ExitCode) from an
 /// [`ExitStatus`](std::process::ExitStatus).
-#[allow(clippy::module_name_repetitions)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[allow(clippy::module_name_repetitions)]
 pub struct TryFromExitStatusError(Option<i32>);
 
 #[cfg(feature = "std")]

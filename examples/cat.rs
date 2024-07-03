@@ -14,21 +14,35 @@
 #![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
 
 use std::{
-    env, fs,
+    fs,
     io::{self, Read},
+    path::PathBuf,
     process::ExitCode,
 };
 
-fn main() -> ExitCode {
-    let args: Vec<_> = env::args_os().skip(1).collect();
+use clap::Parser;
 
-    let contents: io::Result<Vec<_>> = if args.is_empty() {
+#[derive(Debug, Parser)]
+#[command(version, about)]
+struct Opt {
+    /// Files to print.
+    ///
+    /// If [FILE] is not specified, data will be read from stdin.
+    #[arg(value_name("FILE"))]
+    pub input: Option<Vec<PathBuf>>,
+}
+
+fn main() -> ExitCode {
+    let opt = Opt::parse();
+
+    #[allow(clippy::option_if_let_else)]
+    let contents: io::Result<Vec<_>> = if let Some(files) = opt.input {
+        files.into_iter().map(fs::read_to_string).collect()
+    } else {
         let mut buf = String::new();
         vec![io::stdin().read_to_string(&mut buf).map(|_| buf)]
             .into_iter()
             .collect()
-    } else {
-        args.into_iter().map(fs::read_to_string).collect()
     };
     let contents = match contents {
         Ok(strings) => strings,

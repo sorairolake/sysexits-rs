@@ -24,7 +24,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-sysexits = "0.8.0"
+sysexits = "0.8.1"
 ```
 
 ### Example
@@ -75,7 +75,7 @@ See the [documentation][docs-url] for more details.
 
 ## Minimum supported Rust version
 
-The minimum supported Rust version (MSRV) of this library is v1.65.0.
+The minimum supported Rust version (MSRV) of this library is v1.74.0.
 
 ## Changelog
 
