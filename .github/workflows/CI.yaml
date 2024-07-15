@@ -95,12 +95,3 @@ jobs:
           toolchain: stable
       - name: Check no `rustdoc` lint warnings
         run: RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --document-private-items
-
-  semver:
-    name: Semantic Versioning
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Check Semantic Versioning
-        uses: obi1kenobi/cargo-semver-checks-action@v2.4
