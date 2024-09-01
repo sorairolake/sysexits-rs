@@ -41,7 +41,7 @@ required-features = ["default"]
 [dependencies]
 
 [dev-dependencies]
-clap = { version = "4.5.13", features = ["derive"] }
+clap = { version = "4.5.16", features = ["derive"] }
 proptest = "1.5.0"
 test-strategy = "0.4.0"
 
