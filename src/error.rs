@@ -5,7 +5,7 @@
 
 //! Error types for this crate.
 
-use core::fmt;
+use core::{error::Error, fmt};
 
 /// The error type indicating that [`ExitCode`](crate::ExitCode) was out of
 /// range.
@@ -19,8 +19,7 @@ impl fmt::Display for ExitCodeRangeError {
     }
 }
 
-#[cfg(feature = "std")]
-impl std::error::Error for ExitCodeRangeError {}
+impl Error for ExitCodeRangeError {}
 
 #[cfg(feature = "std")]
 /// An error which can be returned when converting an
@@ -59,7 +58,7 @@ impl fmt::Display for TryFromExitStatusError {
 }
 
 #[cfg(feature = "std")]
-impl std::error::Error for TryFromExitStatusError {}
+impl Error for TryFromExitStatusError {}
 
 #[cfg(test)]
 mod tests {
@@ -95,11 +94,8 @@ mod tests {
         );
     }
 
-    #[cfg(feature = "std")]
     #[test]
     fn source_exit_code_range_error() {
-        use std::error::Error;
-
         assert!(ExitCodeRangeError.source().is_none());
     }
 
@@ -188,8 +184,6 @@ mod tests {
     #[cfg(feature = "std")]
     #[test]
     fn source_try_from_exit_status_error() {
-        use std::error::Error;
-
         assert!(TryFromExitStatusError::new(Some(1)).source().is_none());
         assert!(TryFromExitStatusError::new(None).source().is_none());
     }
