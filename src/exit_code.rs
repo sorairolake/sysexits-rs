@@ -7,6 +7,7 @@
 //!
 //! [`<sysexits.h>`]: https://man.openbsd.org/sysexits
 
+mod consts;
 mod convert;
 pub mod result;
 
