@@ -27,7 +27,7 @@ use sysexits::ExitCode;
 struct Opt {
     /// File to check.
     ///
-    /// If [FILE] is not specified, data will be read from stdin.
+    /// If [FILE] is not specified, data will be read from standard input.
     #[arg(value_name("FILE"))]
     pub input: Option<PathBuf>,
 }

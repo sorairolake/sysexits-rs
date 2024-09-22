@@ -3,9 +3,6 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
 = Release Checklist
-:project-url: https://github.com/sorairolake/sysexits-rs
-:bump2version-pypi-url: https://pypi.org/project/bump2version/
-:just-official-url: https://just.systems/
 :crates-io-url: https://crates.io/
 
 . Create the release branch (e.g. `release/v0.1.0`) from the `develop` branch,
@@ -16,7 +13,8 @@
 . Update the release date in `link:CITATION.cff[]` to the current date
 . Switch to the `master` branch, and merge the release branch into it (with
   `--no-ff`)
-. Make a GPG-signed tag (e.g. `git tag -s v0.1.0 -m "Release version 0.1.0"`)
+. Make a GPG-signed tag (e.g.
+  `git tag -s v0.1.0 -m "chore(release): Release version 0.1.0"`)
 . Switch to the `develop` branch, and merge the release branch into it (with
   `--no-ff`)
 . Push the `master` branch, the `develop` branch and the local tags

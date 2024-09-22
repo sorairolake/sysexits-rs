@@ -24,7 +24,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-sysexits = "0.8.1"
+sysexits = "0.8.2"
 ```
 
 ### Example
@@ -77,6 +77,16 @@ See the [documentation][docs-url] for more details.
 
 The minimum supported Rust version (MSRV) of this library is v1.74.0.
 
+## Source code
+
+The upstream repository is available at
+<https://github.com/sorairolake/sysexits-rs.git>.
+
+The source code is also available at:
+
+- <https://gitlab.com/sorairolake/sysexits-rs.git>
+- <https://codeberg.org/sorairolake/sysexits-rs.git>
+
 ## Changelog
 
 Please see [CHANGELOG.adoc].
@@ -93,7 +103,7 @@ Copyright &copy; 2022&ndash;2024 Shun Sakai and other contributors (see
 This library is distributed under the terms of either the _Apache License 2.0_
 or the _MIT License_.
 
-This project is compliant with version 3.0 of the [_REUSE Specification_]. See
+This project is compliant with version 3.2 of the [_REUSE Specification_]. See
 copyright notices of individual files for more details on copyright and
 licensing information.
 

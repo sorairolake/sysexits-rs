@@ -5,7 +5,7 @@
 
 [package]
 name = "sysexits"
-version = "0.8.1"
+version = "0.8.2"
 authors = ["Shun Sakai <sorairolake@protonmail.ch>"]
 edition = "2021"
 rust-version = "1.74.0"
@@ -20,7 +20,6 @@ include = ["/LICENSES", "/README.md", "/src"]
 
 [package.metadata.docs.rs]
 all-features = true
-rustdoc-args = ["--cfg", "docsrs"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -42,7 +41,7 @@ required-features = ["default"]
 [dependencies]
 
 [dev-dependencies]
-clap = { version = "4.5.8", features = ["derive"] }
+clap = { version = "4.5.18", features = ["derive"] }
 proptest = "1.5.0"
 test-strategy = "0.4.0"
 
