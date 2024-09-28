@@ -6,9 +6,8 @@
 
 //! Implementations of conversions between [`ExitCode`] and other types.
 
-use crate::error::ExitCodeRangeError;
-
 use super::ExitCode;
+use crate::error::ExitCodeRangeError;
 
 macro_rules! impl_from_exit_code_to_integer {
     ($T:ty, $ok:expr, $usage:expr) => {
