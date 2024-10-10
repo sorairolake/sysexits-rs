@@ -16,6 +16,13 @@ project adheres to https://semver.org/[Semantic Versioning].
 
 == {compare-url}/v0.8.2\...HEAD[Unreleased]
 
+=== Changed
+
+* Make `Error` trait available in `no_std` mode ({pull-request-url}/116[#116])
+* Bump MSRV to 1.81.0 ({pull-request-url}/116[#116])
+
+== {compare-url}/v0.8.2\...HEAD[Unreleased]
+
 === Added
 
 * Add benchmarks ({pull-request-url}/121[#121])
