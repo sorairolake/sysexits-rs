@@ -27,28 +27,6 @@ Add this to your `Cargo.toml`:
 sysexits = "0.8.2"
 ```
 
-### Example
-
-```rust
-use std::str;
-
-use sysexits::ExitCode;
-
-fn main() -> ExitCode {
-    let bytes = [0xf0, 0x9f, 0x92, 0x96];
-    match str::from_utf8(&bytes) {
-        Ok(string) => {
-            println!("{string}");
-            ExitCode::Ok
-        }
-        Err(err) => {
-            eprintln!("{err}");
-            ExitCode::DataErr
-        }
-    }
-}
-```
-
 ### Crate features
 
 #### `std`
