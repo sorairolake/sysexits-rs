@@ -6,13 +6,6 @@
 //! An example of concatenating files and print on the standard output. The
 //! contents of the file must be valid UTF-8.
 
-// Lint levels of rustc.
-#![forbid(unsafe_code)]
-#![deny(missing_debug_implementations)]
-#![warn(rust_2018_idioms)]
-// Lint levels of Clippy.
-#![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
-
 use std::{
     fs,
     io::{self, Read},

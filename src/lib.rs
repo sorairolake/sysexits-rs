@@ -46,11 +46,7 @@
 #![no_std]
 #![cfg_attr(docsrs, feature(doc_auto_cfg, doc_cfg))]
 // Lint levels of rustc.
-#![forbid(unsafe_code)]
-#![deny(missing_debug_implementations, missing_docs)]
-#![warn(rust_2018_idioms)]
-// Lint levels of Clippy.
-#![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
+#![deny(missing_docs)]
 
 #[cfg(test)]
 #[macro_use]
