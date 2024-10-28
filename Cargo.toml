@@ -58,5 +58,6 @@ pedantic = "warn"
 
 [lints.rust]
 missing_debug_implementations = "deny"
+missing_docs = "deny"
 rust_2018_idioms = { level = "warn", priority = -1 }
 unsafe_code = "forbid"
