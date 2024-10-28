@@ -45,6 +45,8 @@
 #![doc(html_root_url = "https://docs.rs/sysexits/0.8.2/")]
 #![no_std]
 #![cfg_attr(docsrs, feature(doc_auto_cfg, doc_cfg))]
+// Lint levels of rustc.
+#![deny(missing_docs)]
 
 #[cfg(test)]
 #[macro_use]
