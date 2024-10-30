@@ -14,6 +14,7 @@ use core::fmt;
 pub struct ExitCodeRangeError;
 
 impl fmt::Display for ExitCodeRangeError {
+    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "value is out of range for `ExitCode`")
     }
@@ -49,6 +50,7 @@ impl TryFromExitStatusError {
 
 #[cfg(feature = "std")]
 impl fmt::Display for TryFromExitStatusError {
+    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(code) = self.code() {
             write!(f, "invalid exit code `{code}`")

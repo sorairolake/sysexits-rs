@@ -5,7 +5,7 @@
 
 [package]
 name = "sysexits"
-version = "0.8.2"
+version = "0.8.3"
 authors = ["Shun Sakai <sorairolake@protonmail.ch>"]
 edition = "2021"
 rust-version = "1.74.0"
@@ -26,22 +26,22 @@ all-features = true
 [[example]]
 name = "cat"
 path = "examples/cat.rs"
-required-features = ["default"]
+required-features = ["std"]
 
 [[example]]
 name = "cmp"
 path = "examples/cmp.rs"
-required-features = ["default"]
+required-features = ["std"]
 
 [[example]]
 name = "isutf8"
 path = "examples/isutf8.rs"
-required-features = ["default"]
+required-features = ["std"]
 
 [dependencies]
 
 [dev-dependencies]
-clap = { version = "4.5.18", features = ["derive"] }
+clap = { version = "4.5.20", features = ["derive"] }
 proptest = "1.5.0"
 test-strategy = "0.4.0"
 
@@ -50,3 +50,13 @@ default = ["std"]
 std = []
 nightly = ["extended_io_error"]
 extended_io_error = ["std"]
+
+[lints.clippy]
+cargo = "warn"
+nursery = "warn"
+pedantic = "warn"
+
+[lints.rust]
+missing_debug_implementations = "deny"
+rust_2018_idioms = { level = "warn", priority = -1 }
+unsafe_code = "forbid"

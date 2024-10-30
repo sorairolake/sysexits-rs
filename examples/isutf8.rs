@@ -5,13 +5,6 @@
 //! An example of checking whether the input is valid UTF-8. The input is a file
 //! or the standard input.
 
-// Lint levels of rustc.
-#![forbid(unsafe_code)]
-#![deny(missing_debug_implementations)]
-#![warn(rust_2018_idioms)]
-// Lint levels of Clippy.
-#![warn(clippy::cargo, clippy::nursery, clippy::pedantic)]
-
 use std::{
     fs,
     io::{self, Read},

@@ -17,7 +17,7 @@ use core::fmt;
 /// defined by [`<sysexits.h>`].
 ///
 /// [`<sysexits.h>`]: https://man.openbsd.org/sysexits
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
 pub enum ExitCode {
     /// The successful exit.
     ///
@@ -28,6 +28,7 @@ pub enum ExitCode {
     /// #
     /// assert_eq!(ExitCode::Ok as u8, 0);
     /// ```
+    #[default]
     Ok,
 
     /// The command was used incorrectly, e.g., with the wrong number of
@@ -266,6 +267,7 @@ impl ExitCode {
     /// }
     /// ```
     #[cfg(feature = "std")]
+    #[inline]
     pub fn exit(self) -> ! {
         std::process::exit(self.into())
     }
@@ -304,19 +306,19 @@ mod tests {
     use super::*;
 
     #[test]
-    fn clone_exit_code() {
+    fn clone() {
         assert_eq!(ExitCode::Ok.clone(), ExitCode::Ok);
     }
 
     #[test]
-    fn copy_exit_code() {
+    fn copy() {
         let a = ExitCode::Ok;
         let b = a;
         assert_eq!(a, b);
     }
 
     #[test]
-    fn debug_exit_code() {
+    fn debug() {
         assert_eq!(format!("{:?}", ExitCode::Ok), "Ok");
         assert_eq!(format!("{:?}", ExitCode::Usage), "Usage");
         assert_eq!(format!("{:?}", ExitCode::DataErr), "DataErr");
@@ -336,8 +338,13 @@ mod tests {
     }
 
     #[test]
+    fn default() {
+        assert_eq!(ExitCode::default(), ExitCode::Ok);
+    }
+
+    #[test]
     #[allow(clippy::cognitive_complexity, clippy::too_many_lines)]
-    fn exit_code_equality() {
+    fn equality() {
         assert_eq!(ExitCode::Ok, ExitCode::Ok);
         assert_ne!(ExitCode::Ok, ExitCode::Usage);
         assert_ne!(ExitCode::Ok, ExitCode::DataErr);
@@ -597,7 +604,7 @@ mod tests {
     }
 
     #[test]
-    fn display_exit_code() {
+    fn display() {
         assert_eq!(format!("{}", ExitCode::Ok), format!("{}", 0));
         assert_eq!(format!("{}", ExitCode::Usage), format!("{}", 64));
         assert_eq!(format!("{}", ExitCode::DataErr), format!("{}", 65));
@@ -666,7 +673,7 @@ mod tests {
 
     #[cfg(feature = "std")]
     #[test]
-    fn source_exit_code() {
+    fn source() {
         use std::error::Error;
 
         assert!(ExitCode::Ok.source().is_none());
@@ -689,7 +696,7 @@ mod tests {
 
     #[cfg(feature = "std")]
     #[test]
-    fn report_exit_code() {
+    fn report() {
         use std::process::Termination;
 
         assert_eq!(
