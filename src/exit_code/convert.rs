@@ -161,6 +161,7 @@ impl From<std::io::Error> for ExitCode {
     ///     ExitCode::NoInput
     /// );
     /// ```
+    #[inline]
     fn from(error: std::io::Error) -> Self {
         error.kind().into()
     }
@@ -179,6 +180,7 @@ impl From<std::io::ErrorKind> for ExitCode {
     /// #
     /// assert_eq!(ExitCode::from(io::ErrorKind::NotFound), ExitCode::NoInput);
     /// ```
+    #[inline]
     fn from(kind: std::io::ErrorKind) -> Self {
         use std::io::ErrorKind;
 
@@ -221,6 +223,7 @@ impl TryFrom<std::process::ExitStatus> for ExitCode {
     /// - The exit code is not `0` or `64..=78`.
     /// - The exit code is unknown (e.g., the process was terminated by a
     ///   signal).
+    #[inline]
     fn try_from(status: std::process::ExitStatus) -> std::result::Result<Self, Self::Error> {
         match status.code() {
             Some(0) => Ok(Self::Ok),

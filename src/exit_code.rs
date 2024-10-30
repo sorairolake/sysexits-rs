@@ -266,6 +266,7 @@ impl ExitCode {
     /// }
     /// ```
     #[cfg(feature = "std")]
+    #[inline]
     pub fn exit(self) -> ! {
         std::process::exit(self.into())
     }

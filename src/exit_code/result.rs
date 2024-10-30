@@ -37,6 +37,7 @@ impl<T> From<Result<T>> for ExitCode {
     ///     ExitCode::Usage
     /// );
     /// ```
+    #[inline]
     fn from(result: Result<T>) -> Self {
         result.map_or_else(|code| code, |_| Self::Ok)
     }
