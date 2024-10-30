@@ -625,22 +625,22 @@ mod tests {
 
     #[test]
     fn display() {
-        assert_eq!(format!("{}", ExitCode::Ok), format!("{}", 0));
-        assert_eq!(format!("{}", ExitCode::Usage), format!("{}", 64));
-        assert_eq!(format!("{}", ExitCode::DataErr), format!("{}", 65));
-        assert_eq!(format!("{}", ExitCode::NoInput), format!("{}", 66));
-        assert_eq!(format!("{}", ExitCode::NoUser), format!("{}", 67));
-        assert_eq!(format!("{}", ExitCode::NoHost), format!("{}", 68));
-        assert_eq!(format!("{}", ExitCode::Unavailable), format!("{}", 69));
-        assert_eq!(format!("{}", ExitCode::Software), format!("{}", 70));
-        assert_eq!(format!("{}", ExitCode::OsErr), format!("{}", 71));
-        assert_eq!(format!("{}", ExitCode::OsFile), format!("{}", 72));
-        assert_eq!(format!("{}", ExitCode::CantCreat), format!("{}", 73));
-        assert_eq!(format!("{}", ExitCode::IoErr), format!("{}", 74));
-        assert_eq!(format!("{}", ExitCode::TempFail), format!("{}", 75));
-        assert_eq!(format!("{}", ExitCode::Protocol), format!("{}", 76));
-        assert_eq!(format!("{}", ExitCode::NoPerm), format!("{}", 77));
-        assert_eq!(format!("{}", ExitCode::Config), format!("{}", 78));
+        assert_eq!(format!("{}", ExitCode::Ok), "0");
+        assert_eq!(format!("{}", ExitCode::Usage), "64");
+        assert_eq!(format!("{}", ExitCode::DataErr), "65");
+        assert_eq!(format!("{}", ExitCode::NoInput), "66");
+        assert_eq!(format!("{}", ExitCode::NoUser), "67");
+        assert_eq!(format!("{}", ExitCode::NoHost), "68");
+        assert_eq!(format!("{}", ExitCode::Unavailable), "69");
+        assert_eq!(format!("{}", ExitCode::Software), "70");
+        assert_eq!(format!("{}", ExitCode::OsErr), "71");
+        assert_eq!(format!("{}", ExitCode::OsFile), "72");
+        assert_eq!(format!("{}", ExitCode::CantCreat), "73");
+        assert_eq!(format!("{}", ExitCode::IoErr), "74");
+        assert_eq!(format!("{}", ExitCode::TempFail), "75");
+        assert_eq!(format!("{}", ExitCode::Protocol), "76");
+        assert_eq!(format!("{}", ExitCode::NoPerm), "77");
+        assert_eq!(format!("{}", ExitCode::Config), "78");
     }
 
     #[test]
