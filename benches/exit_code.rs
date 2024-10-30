@@ -10,7 +10,12 @@ use sysexits::ExitCode;
 use test::Bencher;
 
 #[bench]
-fn exit_code_equality(b: &mut Bencher) {
+fn default(b: &mut Bencher) {
+    b.iter(ExitCode::default);
+}
+
+#[bench]
+fn equality(b: &mut Bencher) {
     b.iter(|| ExitCode::Ok == ExitCode::Ok);
 }
 
@@ -36,7 +41,7 @@ fn is_failure_for_unsuccessful_termination(b: &mut Bencher) {
 
 #[cfg(feature = "std")]
 #[bench]
-fn source_exit_code(b: &mut Bencher) {
+fn source(b: &mut Bencher) {
     use std::error::Error;
 
     b.iter(|| ExitCode::Ok.source());
@@ -44,7 +49,7 @@ fn source_exit_code(b: &mut Bencher) {
 
 #[cfg(feature = "std")]
 #[bench]
-fn report_exit_code(b: &mut Bencher) {
+fn report(b: &mut Bencher) {
     use std::process::Termination;
 
     b.iter(|| ExitCode::Ok.report());

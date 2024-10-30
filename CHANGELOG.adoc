@@ -19,6 +19,7 @@ project adheres to https://semver.org/[Semantic Versioning].
 === Added
 
 * Add benchmarks ({pull-request-url}/121[#121])
+* Implement `Default` for `ExitCode` ({pull-request-url}/126[#126])
 
 == {compare-url}/v0.8.1\...v0.8.2[0.8.2] - 2024-09-22
 
