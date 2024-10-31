@@ -386,7 +386,7 @@ dependencies = [
 
 [[package]]
 name = "sysexits"
-version = "0.8.3"
+version = "0.8.4"
 dependencies = [
  "clap",
  "proptest",

@@ -1,5 +1,5 @@
-// SPDX-FileCopyrightText: 2022 Kevin Matthes
 // SPDX-FileCopyrightText: 2022 Shun Sakai
+// SPDX-FileCopyrightText: 2023 Kevin Matthes
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
@@ -9,9 +9,8 @@
 
 mod consts;
 mod convert;
+mod fmt;
 pub mod result;
-
-use core::fmt;
 
 /// `ExitCode` is a type that represents the system exit code constants as
 /// defined by [`<sysexits.h>`].
@@ -26,7 +25,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::Ok as u8, 0);
+    /// assert_eq!(u8::from(ExitCode::Ok), 0);
     /// ```
     #[default]
     Ok,
@@ -39,7 +38,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::Usage as u8, 64);
+    /// assert_eq!(u8::from(ExitCode::Usage), 64);
     /// ```
     Usage = 64,
 
@@ -51,7 +50,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::DataErr as u8, 65);
+    /// assert_eq!(u8::from(ExitCode::DataErr), 65);
     /// ```
     DataErr,
 
@@ -64,7 +63,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::NoInput as u8, 66);
+    /// assert_eq!(u8::from(ExitCode::NoInput), 66);
     /// ```
     NoInput,
 
@@ -76,7 +75,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::NoUser as u8, 67);
+    /// assert_eq!(u8::from(ExitCode::NoUser), 67);
     /// ```
     NoUser,
 
@@ -88,7 +87,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::NoHost as u8, 68);
+    /// assert_eq!(u8::from(ExitCode::NoHost), 68);
     /// ```
     NoHost,
 
@@ -101,7 +100,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::Unavailable as u8, 69);
+    /// assert_eq!(u8::from(ExitCode::Unavailable), 69);
     /// ```
     Unavailable,
 
@@ -113,7 +112,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::Software as u8, 70);
+    /// assert_eq!(u8::from(ExitCode::Software), 70);
     /// ```
     Software,
 
@@ -127,7 +126,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::OsErr as u8, 71);
+    /// assert_eq!(u8::from(ExitCode::OsErr), 71);
     /// ```
     ///
     /// [`getuid(2)`]: https://man.openbsd.org/getuid.2
@@ -141,7 +140,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::OsFile as u8, 72);
+    /// assert_eq!(u8::from(ExitCode::OsFile), 72);
     /// ```
     OsFile,
 
@@ -152,7 +151,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::CantCreat as u8, 73);
+    /// assert_eq!(u8::from(ExitCode::CantCreat), 73);
     /// ```
     CantCreat,
 
@@ -163,7 +162,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::IoErr as u8, 74);
+    /// assert_eq!(u8::from(ExitCode::IoErr), 74);
     /// ```
     IoErr,
 
@@ -176,7 +175,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::TempFail as u8, 75);
+    /// assert_eq!(u8::from(ExitCode::TempFail), 75);
     /// ```
     TempFail,
 
@@ -188,7 +187,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::Protocol as u8, 76);
+    /// assert_eq!(u8::from(ExitCode::Protocol), 76);
     /// ```
     Protocol,
 
@@ -202,7 +201,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::NoPerm as u8, 77);
+    /// assert_eq!(u8::from(ExitCode::NoPerm), 77);
     /// ```
     NoPerm,
 
@@ -213,7 +212,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::Config as u8, 78);
+    /// assert_eq!(u8::from(ExitCode::Config), 78);
     /// ```
     Config,
 }
@@ -227,8 +226,8 @@ impl ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::Ok.is_success(), true);
-    /// assert_eq!(ExitCode::Usage.is_success(), false);
+    /// assert!(ExitCode::Ok.is_success());
+    /// assert!(!ExitCode::Usage.is_success());
     /// ```
     #[must_use]
     #[inline]
@@ -244,8 +243,8 @@ impl ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(ExitCode::Ok.is_failure(), false);
-    /// assert_eq!(ExitCode::Usage.is_failure(), true);
+    /// assert!(!ExitCode::Ok.is_failure());
+    /// assert!(ExitCode::Usage.is_failure());
     /// ```
     #[must_use]
     #[inline]
@@ -273,23 +272,6 @@ impl ExitCode {
     }
 }
 
-impl fmt::Display for ExitCode {
-    /// Shows the integer representation of this `ExitCode`.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// # use sysexits::ExitCode;
-    /// #
-    /// assert_eq!(format!("{}", ExitCode::Ok), "0");
-    /// assert_eq!(format!("{}", ExitCode::Usage), "64");
-    /// ```
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        u8::from(*self).fmt(f)
-    }
-}
-
 #[cfg(feature = "std")]
 impl std::error::Error for ExitCode {}
 
@@ -306,6 +288,26 @@ mod tests {
     use super::*;
 
     #[test]
+    fn exit_code() {
+        assert_eq!(ExitCode::Ok as u8, 0);
+        assert_eq!(ExitCode::Usage as u8, 64);
+        assert_eq!(ExitCode::DataErr as u8, 65);
+        assert_eq!(ExitCode::NoInput as u8, 66);
+        assert_eq!(ExitCode::NoUser as u8, 67);
+        assert_eq!(ExitCode::NoHost as u8, 68);
+        assert_eq!(ExitCode::Unavailable as u8, 69);
+        assert_eq!(ExitCode::Software as u8, 70);
+        assert_eq!(ExitCode::OsErr as u8, 71);
+        assert_eq!(ExitCode::OsFile as u8, 72);
+        assert_eq!(ExitCode::CantCreat as u8, 73);
+        assert_eq!(ExitCode::IoErr as u8, 74);
+        assert_eq!(ExitCode::TempFail as u8, 75);
+        assert_eq!(ExitCode::Protocol as u8, 76);
+        assert_eq!(ExitCode::NoPerm as u8, 77);
+        assert_eq!(ExitCode::Config as u8, 78);
+    }
+
+    #[test]
     fn clone() {
         assert_eq!(ExitCode::Ok.clone(), ExitCode::Ok);
     }
@@ -315,26 +317,6 @@ mod tests {
         let a = ExitCode::Ok;
         let b = a;
         assert_eq!(a, b);
-    }
-
-    #[test]
-    fn debug() {
-        assert_eq!(format!("{:?}", ExitCode::Ok), "Ok");
-        assert_eq!(format!("{:?}", ExitCode::Usage), "Usage");
-        assert_eq!(format!("{:?}", ExitCode::DataErr), "DataErr");
-        assert_eq!(format!("{:?}", ExitCode::NoInput), "NoInput");
-        assert_eq!(format!("{:?}", ExitCode::NoUser), "NoUser");
-        assert_eq!(format!("{:?}", ExitCode::NoHost), "NoHost");
-        assert_eq!(format!("{:?}", ExitCode::Unavailable), "Unavailable");
-        assert_eq!(format!("{:?}", ExitCode::Software), "Software");
-        assert_eq!(format!("{:?}", ExitCode::OsErr), "OsErr");
-        assert_eq!(format!("{:?}", ExitCode::OsFile), "OsFile");
-        assert_eq!(format!("{:?}", ExitCode::CantCreat), "CantCreat");
-        assert_eq!(format!("{:?}", ExitCode::IoErr), "IoErr");
-        assert_eq!(format!("{:?}", ExitCode::TempFail), "TempFail");
-        assert_eq!(format!("{:?}", ExitCode::Protocol), "Protocol");
-        assert_eq!(format!("{:?}", ExitCode::NoPerm), "NoPerm");
-        assert_eq!(format!("{:?}", ExitCode::Config), "Config");
     }
 
     #[test]
@@ -601,26 +583,6 @@ mod tests {
         assert_ne!(ExitCode::Config, ExitCode::Protocol);
         assert_ne!(ExitCode::Config, ExitCode::NoPerm);
         assert_eq!(ExitCode::Config, ExitCode::Config);
-    }
-
-    #[test]
-    fn display() {
-        assert_eq!(format!("{}", ExitCode::Ok), format!("{}", 0));
-        assert_eq!(format!("{}", ExitCode::Usage), format!("{}", 64));
-        assert_eq!(format!("{}", ExitCode::DataErr), format!("{}", 65));
-        assert_eq!(format!("{}", ExitCode::NoInput), format!("{}", 66));
-        assert_eq!(format!("{}", ExitCode::NoUser), format!("{}", 67));
-        assert_eq!(format!("{}", ExitCode::NoHost), format!("{}", 68));
-        assert_eq!(format!("{}", ExitCode::Unavailable), format!("{}", 69));
-        assert_eq!(format!("{}", ExitCode::Software), format!("{}", 70));
-        assert_eq!(format!("{}", ExitCode::OsErr), format!("{}", 71));
-        assert_eq!(format!("{}", ExitCode::OsFile), format!("{}", 72));
-        assert_eq!(format!("{}", ExitCode::CantCreat), format!("{}", 73));
-        assert_eq!(format!("{}", ExitCode::IoErr), format!("{}", 74));
-        assert_eq!(format!("{}", ExitCode::TempFail), format!("{}", 75));
-        assert_eq!(format!("{}", ExitCode::Protocol), format!("{}", 76));
-        assert_eq!(format!("{}", ExitCode::NoPerm), format!("{}", 77));
-        assert_eq!(format!("{}", ExitCode::Config), format!("{}", 78));
     }
 
     #[test]
