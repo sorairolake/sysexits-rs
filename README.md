@@ -24,7 +24,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-sysexits = "0.8.3"
+sysexits = "0.8.4"
 ```
 
 ### Crate features
