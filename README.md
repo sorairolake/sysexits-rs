@@ -53,7 +53,7 @@ See the [documentation][docs-url] for more details.
 
 ## Minimum supported Rust version
 
-The minimum supported Rust version (MSRV) of this library is v1.74.0.
+The minimum supported Rust version (MSRV) of this library is v1.62.0.
 
 ## Source code
 
