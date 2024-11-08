@@ -176,6 +176,12 @@ mod tests {
 
     #[cfg(feature = "std")]
     #[test]
+    const fn code_try_from_exit_status_error_is_const_fn() {
+        const _: Option<i32> = TryFromExitStatusError::new(None).code();
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
     fn display_try_from_exit_status_error() {
         assert_eq!(
             format!("{}", TryFromExitStatusError::new(Some(1))),

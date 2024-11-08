@@ -14,6 +14,49 @@ on:
     - cron: "0 0 * * 0"
 
 jobs:
+  check:
+    name: Check
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+          - aarch64-apple-darwin
+          - x86_64-pc-windows-msvc
+        toolchain:
+          - 1.62.0 # MSRV
+          - stable
+          - nightly
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-24.04
+          - target: aarch64-apple-darwin
+            os: macos-14
+          - target: x86_64-pc-windows-msvc
+            os: windows-2022
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@v1
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          targets: ${{ matrix.target }}
+      - name: Cache build artifacts
+        uses: Swatinem/rust-cache@v2.7.5
+        with:
+          key: ${{ matrix.target }}
+      - name: Check a package
+        run: cargo check --target ${{ matrix.target }}
+      - name: Check a package (no default features)
+        run: cargo check --target ${{ matrix.target }} --no-default-features
+      - name: Check a package (`nightly` feature)
+        if: matrix.toolchain == 'nightly'
+        run: cargo check --target ${{ matrix.target }} -F nightly
+      - name: Check a package (`nightly` feature without `default` feature)
+        if: matrix.toolchain == 'nightly'
+        run: cargo check --target ${{ matrix.target }} --no-default-features -F nightly
+
   test:
     name: Test
     runs-on: ${{ matrix.os }}
@@ -24,12 +67,12 @@ jobs:
           - aarch64-apple-darwin
           - x86_64-pc-windows-msvc
         toolchain:
-          - 1.74.0 # MSRV
+          - 1.74.0
           - stable
           - nightly
         include:
           - target: x86_64-unknown-linux-gnu
-            os: ubuntu-22.04
+            os: ubuntu-24.04
           - target: aarch64-apple-darwin
             os: macos-14
           - target: x86_64-pc-windows-msvc
@@ -59,7 +102,7 @@ jobs:
 
   rustfmt:
     name: Rustfmt
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -75,7 +118,7 @@ jobs:
 
   clippy:
     name: Clippy
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -93,7 +136,7 @@ jobs:
 
   doc:
     name: Documentation
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -108,7 +151,7 @@ jobs:
 
   benchmark:
     name: Benchmark
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

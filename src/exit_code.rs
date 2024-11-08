@@ -610,6 +610,11 @@ mod tests {
     }
 
     #[test]
+    const fn is_success_is_const_fn() {
+        const _: bool = ExitCode::Ok.is_success();
+    }
+
+    #[test]
     fn is_failure_for_successful_termination() {
         assert!(!ExitCode::Ok.is_failure());
     }
@@ -631,6 +636,11 @@ mod tests {
         assert!(ExitCode::Protocol.is_failure());
         assert!(ExitCode::NoPerm.is_failure());
         assert!(ExitCode::Config.is_failure());
+    }
+
+    #[test]
+    const fn is_failure_is_const_fn() {
+        const _: bool = ExitCode::Ok.is_failure();
     }
 
     #[cfg(feature = "std")]
