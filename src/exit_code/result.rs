@@ -45,17 +45,19 @@ impl<T> From<Result<T>> for ExitCode {
 
 #[cfg(test)]
 mod tests {
+    use core::any;
+
     use super::*;
 
     #[test]
     fn result_type() {
         assert_eq!(
-            core::any::type_name::<Result<()>>(),
-            core::any::type_name::<core::result::Result<(), ExitCode>>()
+            any::type_name::<Result<()>>(),
+            any::type_name::<core::result::Result<(), ExitCode>>()
         );
         assert_eq!(
-            core::any::type_name::<Result<u8>>(),
-            core::any::type_name::<core::result::Result<u8, ExitCode>>()
+            any::type_name::<Result<u8>>(),
+            any::type_name::<core::result::Result<u8, ExitCode>>()
         );
     }
 
