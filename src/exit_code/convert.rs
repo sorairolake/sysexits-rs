@@ -754,7 +754,7 @@ mod tests {
         );
         #[cfg(feature = "extended_io_error")]
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::FilesystemQuotaExceeded)),
+            ExitCode::from(Error::from(ErrorKind::QuotaExceeded)),
             ExitCode::IoErr
         );
         #[cfg(feature = "extended_io_error")]
@@ -812,6 +812,11 @@ mod tests {
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::OutOfMemory)),
             ExitCode::OsErr
+        );
+        #[cfg(feature = "extended_io_error")]
+        assert_eq!(
+            ExitCode::from(Error::from(ErrorKind::InProgress)),
+            ExitCode::IoErr
         );
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::Other)),
@@ -926,7 +931,7 @@ mod tests {
         assert_eq!(ExitCode::from(io::ErrorKind::NotSeekable), ExitCode::IoErr);
         #[cfg(feature = "extended_io_error")]
         assert_eq!(
-            ExitCode::from(io::ErrorKind::FilesystemQuotaExceeded),
+            ExitCode::from(io::ErrorKind::QuotaExceeded),
             ExitCode::IoErr
         );
         #[cfg(feature = "extended_io_error")]
@@ -970,6 +975,8 @@ mod tests {
             ExitCode::Software
         );
         assert_eq!(ExitCode::from(io::ErrorKind::OutOfMemory), ExitCode::OsErr);
+        #[cfg(feature = "extended_io_error")]
+        assert_eq!(ExitCode::from(io::ErrorKind::InProgress), ExitCode::IoErr);
         assert_eq!(ExitCode::from(io::ErrorKind::Other), ExitCode::IoErr);
     }
 
