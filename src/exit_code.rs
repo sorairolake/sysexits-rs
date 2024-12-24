@@ -325,7 +325,6 @@ mod tests {
     }
 
     #[test]
-    #[allow(clippy::cognitive_complexity, clippy::too_many_lines)]
     fn equality() {
         assert_eq!(ExitCode::Ok, ExitCode::Ok);
         assert_ne!(ExitCode::Ok, ExitCode::Usage);

@@ -28,7 +28,6 @@ struct Opt {
 fn main() -> ExitCode {
     let opt = Opt::parse();
 
-    #[allow(clippy::option_if_let_else)]
     let contents: io::Result<Vec<_>> = if let Some(files) = opt.input {
         files.into_iter().map(fs::read_to_string).collect()
     } else {

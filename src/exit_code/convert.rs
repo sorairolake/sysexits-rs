@@ -633,7 +633,6 @@ mod tests {
 
     #[cfg(feature = "std")]
     #[test]
-    #[allow(clippy::too_many_lines)]
     fn from_io_error_to_exit_code() {
         use std::io::{Error, ErrorKind};
 
@@ -826,7 +825,6 @@ mod tests {
 
     #[cfg(feature = "std")]
     #[test]
-    #[allow(clippy::cognitive_complexity, clippy::too_many_lines)]
     fn from_io_error_kind_to_exit_code() {
         use std::io;
 
@@ -983,7 +981,6 @@ mod tests {
     #[cfg(feature = "std")]
     #[cfg(any(unix, windows))]
     #[test]
-    #[allow(clippy::cognitive_complexity)]
     fn try_from_process_exit_status_to_exit_code() {
         assert_eq!(
             ExitCode::try_from(get_exit_status(0)).unwrap(),

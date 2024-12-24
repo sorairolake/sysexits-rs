@@ -62,7 +62,6 @@ mod tests {
     }
 
     #[test]
-    #[allow(clippy::cognitive_complexity, clippy::too_many_lines)]
     fn from_result_type_to_exit_code() {
         assert_eq!(ExitCode::from(Ok::<(), ExitCode>(())), ExitCode::Ok);
         assert_eq!(ExitCode::from(Ok::<u8, ExitCode>(42)), ExitCode::Ok);
