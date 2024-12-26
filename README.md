@@ -83,8 +83,7 @@ You can discover more projects at
 
 ## License
 
-Copyright &copy; 2022&ndash;2024 Shun Sakai and other contributors (see
-[AUTHORS.adoc])
+Copyright (C) 2022-2024 Shun Sakai and other contributors (see [AUTHORS.adoc])
 
 This library is distributed under the terms of either the _Apache License 2.0_
 or the _MIT License_.
