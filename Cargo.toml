@@ -39,7 +39,7 @@ path = "examples/isutf8.rs"
 required-features = ["std"]
 
 [dev-dependencies]
-clap = { version = "4.0.32", features = ["derive"] }
+clap = { version = "4.5.26", features = ["derive"] }
 proptest = "1.2.0"
 test-strategy = "0.3.1"
 
