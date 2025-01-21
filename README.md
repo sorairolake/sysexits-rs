@@ -29,19 +29,19 @@ sysexits = "0.8.5"
 
 ### Crate features
 
-#### `std`
+#### `extended_io_error`
 
-Enables features that depend on the standard library. This is enabled by
-default.
+Enables features that depend on the `io_error_inprogress` and the
+`io_error_more` features. This also enables `std`. This is implied by `nightly`.
 
 #### `nightly`
 
 Enables features that depend on the nightly Rust.
 
-#### `extended_io_error`
+#### `std`
 
-Enables features that depend on the `io_error_inprogress` and the
-`io_error_more` features. This also enables `std`. This is implied by `nightly`.
+Enables features that depend on the standard library. This is enabled by
+default.
 
 ### `no_std` support
 

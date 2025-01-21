@@ -45,9 +45,9 @@ test-strategy = "0.3.1"
 
 [features]
 default = ["std"]
-std = []
-nightly = ["extended_io_error"]
 extended_io_error = ["std"]
+nightly = ["extended_io_error"]
+std = []
 
 [lints.clippy]
 cargo = "warn"
