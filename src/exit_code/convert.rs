@@ -117,12 +117,12 @@ macro_rules! impl_try_from_integer_to_exit_code {
             concat!(
                 "assert_eq!(ExitCode::try_from(0_",
                 stringify!($T),
-                ").unwrap(), ExitCode::Ok);"
+                "), Ok(ExitCode::Ok));"
             ),
             concat!(
                 "assert_eq!(ExitCode::try_from(64_",
                 stringify!($T),
-                ").unwrap(), ExitCode::Usage);"
+                "), Ok(ExitCode::Usage));"
             ),
             concat!(
                 "assert!(ExitCode::try_from(79_",

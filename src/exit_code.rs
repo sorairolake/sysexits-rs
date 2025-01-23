@@ -25,7 +25,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::Ok), 0);
+    /// assert_eq!(ExitCode::Ok as u8, 0);
     /// ```
     #[default]
     Ok,
@@ -38,7 +38,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::Usage), 64);
+    /// assert_eq!(ExitCode::Usage as u8, 64);
     /// ```
     Usage = 64,
 
@@ -50,7 +50,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::DataErr), 65);
+    /// assert_eq!(ExitCode::DataErr as u8, 65);
     /// ```
     DataErr,
 
@@ -63,7 +63,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::NoInput), 66);
+    /// assert_eq!(ExitCode::NoInput as u8, 66);
     /// ```
     NoInput,
 
@@ -75,7 +75,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::NoUser), 67);
+    /// assert_eq!(ExitCode::NoUser as u8, 67);
     /// ```
     NoUser,
 
@@ -87,7 +87,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::NoHost), 68);
+    /// assert_eq!(ExitCode::NoHost as u8, 68);
     /// ```
     NoHost,
 
@@ -100,7 +100,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::Unavailable), 69);
+    /// assert_eq!(ExitCode::Unavailable as u8, 69);
     /// ```
     Unavailable,
 
@@ -112,7 +112,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::Software), 70);
+    /// assert_eq!(ExitCode::Software as u8, 70);
     /// ```
     Software,
 
@@ -126,7 +126,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::OsErr), 71);
+    /// assert_eq!(ExitCode::OsErr as u8, 71);
     /// ```
     ///
     /// [`getuid(2)`]: https://man.openbsd.org/getuid.2
@@ -140,7 +140,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::OsFile), 72);
+    /// assert_eq!(ExitCode::OsFile as u8, 72);
     /// ```
     OsFile,
 
@@ -151,7 +151,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::CantCreat), 73);
+    /// assert_eq!(ExitCode::CantCreat as u8, 73);
     /// ```
     CantCreat,
 
@@ -162,7 +162,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::IoErr), 74);
+    /// assert_eq!(ExitCode::IoErr as u8, 74);
     /// ```
     IoErr,
 
@@ -175,7 +175,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::TempFail), 75);
+    /// assert_eq!(ExitCode::TempFail as u8, 75);
     /// ```
     TempFail,
 
@@ -187,7 +187,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::Protocol), 76);
+    /// assert_eq!(ExitCode::Protocol as u8, 76);
     /// ```
     Protocol,
 
@@ -201,7 +201,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::NoPerm), 77);
+    /// assert_eq!(ExitCode::NoPerm as u8, 77);
     /// ```
     NoPerm,
 
@@ -212,7 +212,7 @@ pub enum ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert_eq!(u8::from(ExitCode::Config), 78);
+    /// assert_eq!(ExitCode::Config as u8, 78);
     /// ```
     Config,
 }
@@ -226,8 +226,8 @@ impl ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert!(ExitCode::Ok.is_success());
-    /// assert!(!ExitCode::Usage.is_success());
+    /// assert_eq!(ExitCode::Ok.is_success(), true);
+    /// assert_eq!(ExitCode::Usage.is_success(), false);
     /// ```
     #[must_use]
     #[inline]
@@ -243,8 +243,8 @@ impl ExitCode {
     /// ```
     /// # use sysexits::ExitCode;
     /// #
-    /// assert!(!ExitCode::Ok.is_failure());
-    /// assert!(ExitCode::Usage.is_failure());
+    /// assert_eq!(ExitCode::Ok.is_failure(), false);
+    /// assert_eq!(ExitCode::Usage.is_failure(), true);
     /// ```
     #[must_use]
     #[inline]
