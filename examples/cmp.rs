@@ -39,11 +39,11 @@ impl Termination for ExitCode {
 struct Opt {
     /// File to compare.
     #[arg(value_name("FILE1"))]
-    pub input_1: PathBuf,
+    input_1: PathBuf,
 
     /// File to compare.
     #[arg(value_name("FILE2"))]
-    pub input_2: PathBuf,
+    input_2: PathBuf,
 }
 
 fn main() -> ExitCode {
