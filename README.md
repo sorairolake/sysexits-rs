@@ -20,11 +20,10 @@ the `main` function.
 
 ## Usage
 
-Add this to your `Cargo.toml`:
+Run the following command in your project directory:
 
-```toml
-[dependencies]
-sysexits = "0.8.5"
+```sh
+cargo add sysexits
 ```
 
 ### Crate features

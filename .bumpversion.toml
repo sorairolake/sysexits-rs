@@ -10,7 +10,4 @@ current_version = "0.8.5"
 filename = "CITATION.cff"
 
 [[tool.bumpversion.files]]
-filename = "README.md"
-
-[[tool.bumpversion.files]]
 filename = "src/lib.rs"
