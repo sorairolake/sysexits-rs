@@ -12,6 +12,8 @@ mod convert;
 mod fmt;
 pub mod result;
 
+use core::error::Error;
+
 /// `ExitCode` is a type that represents the system exit code constants as
 /// defined by [`<sysexits.h>`].
 ///
@@ -272,8 +274,7 @@ impl ExitCode {
     }
 }
 
-#[cfg(feature = "std")]
-impl std::error::Error for ExitCode {}
+impl Error for ExitCode {}
 
 #[cfg(feature = "std")]
 impl std::process::Termination for ExitCode {
@@ -642,11 +643,8 @@ mod tests {
         const _: bool = ExitCode::Ok.is_failure();
     }
 
-    #[cfg(feature = "std")]
     #[test]
     fn source() {
-        use std::error::Error;
-
         assert!(ExitCode::Ok.source().is_none());
         assert!(ExitCode::Usage.source().is_none());
         assert!(ExitCode::DataErr.source().is_none());

@@ -60,4 +60,4 @@ extern crate std;
 pub mod error;
 mod exit_code;
 
-pub use crate::exit_code::{result::Result, ExitCode};
+pub use crate::exit_code::{ExitCode, result::Result};

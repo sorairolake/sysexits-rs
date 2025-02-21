@@ -7,8 +7,8 @@
 name = "sysexits"
 version = "0.8.5"
 authors = ["Shun Sakai <sorairolake@protonmail.ch>"]
-edition = "2021"
-rust-version = "1.62.0"
+edition = "2024"
+rust-version = "1.85.0"
 description = "The system exit codes as defined by <sysexits.h>"
 documentation = "https://docs.rs/sysexits"
 readme = "README.md"
@@ -37,9 +37,9 @@ path = "examples/isutf8.rs"
 required-features = ["std"]
 
 [dev-dependencies]
-clap = { version = "4.0.32", features = ["derive"] }
-proptest = "1.2.0"
-test-strategy = "0.3.1"
+clap = { version = "4.5.30", features = ["derive"] }
+proptest = "1.6.0"
+test-strategy = "0.4.0"
 
 [features]
 default = ["std"]

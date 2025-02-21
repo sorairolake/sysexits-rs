@@ -38,7 +38,7 @@ jobs:
             os: windows-2022
             target: x86_64-pc-windows-msvc
           - toolchain-alias: msrv
-            toolchain: 1.62.0
+            toolchain: 1.85.0
           - toolchain-alias: stable
             toolchain: stable
           - toolchain-alias: nightly
@@ -90,7 +90,7 @@ jobs:
             os: windows-2022
             target: x86_64-pc-windows-msvc
           - toolchain-alias: msrv
-            toolchain: 1.62.0
+            toolchain: 1.85.0
           - toolchain-alias: stable
             toolchain: stable
           - toolchain-alias: nightly
