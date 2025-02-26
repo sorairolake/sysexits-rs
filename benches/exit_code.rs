@@ -6,6 +6,8 @@
 
 extern crate test;
 
+use core::error::Error;
+
 use sysexits::ExitCode;
 use test::Bencher;
 
@@ -39,11 +41,8 @@ fn is_failure_for_unsuccessful_termination(b: &mut Bencher) {
     b.iter(|| ExitCode::Usage.is_failure());
 }
 
-#[cfg(feature = "std")]
 #[bench]
 fn source(b: &mut Bencher) {
-    use std::error::Error;
-
     b.iter(|| ExitCode::Ok.source());
 }
 

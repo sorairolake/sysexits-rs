@@ -22,13 +22,12 @@ struct Opt {
     ///
     /// If [FILE] is not specified, data will be read from standard input.
     #[arg(value_name("FILE"))]
-    pub input: Option<Vec<PathBuf>>,
+    input: Option<Vec<PathBuf>>,
 }
 
 fn main() -> ExitCode {
     let opt = Opt::parse();
 
-    #[allow(clippy::option_if_let_else)]
     let contents: io::Result<Vec<_>> = if let Some(files) = opt.input {
         files.into_iter().map(fs::read_to_string).collect()
     } else {

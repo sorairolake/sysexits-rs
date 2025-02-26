@@ -173,7 +173,6 @@ mod tests {
     }
 
     #[test]
-    #[allow(clippy::cognitive_complexity)]
     fn octal() {
         assert_eq!(format!("{:o}", ExitCode::Ok), "0");
         assert_eq!(format!("{:#o}", ExitCode::Ok), "0o0");
@@ -242,7 +241,6 @@ mod tests {
     }
 
     #[test]
-    #[allow(clippy::cognitive_complexity)]
     fn lower_hex() {
         assert_eq!(format!("{:x}", ExitCode::Ok), "0");
         assert_eq!(format!("{:#x}", ExitCode::Ok), "0x0");
@@ -311,7 +309,6 @@ mod tests {
     }
 
     #[test]
-    #[allow(clippy::cognitive_complexity)]
     fn upper_hex() {
         assert_eq!(format!("{:X}", ExitCode::Ok), "0");
         assert_eq!(format!("{:#X}", ExitCode::Ok), "0x0");
@@ -380,7 +377,6 @@ mod tests {
     }
 
     #[test]
-    #[allow(clippy::cognitive_complexity)]
     fn binary() {
         assert_eq!(format!("{:b}", ExitCode::Ok), "0");
         assert_eq!(format!("{:#b}", ExitCode::Ok), "0b0");
@@ -449,7 +445,6 @@ mod tests {
     }
 
     #[test]
-    #[allow(clippy::cognitive_complexity)]
     fn lower_exp() {
         assert_eq!(format!("{:e}", ExitCode::Ok), "0e0");
         assert_eq!(format!("{:05e}", ExitCode::Ok), "000e0");
@@ -486,7 +481,6 @@ mod tests {
     }
 
     #[test]
-    #[allow(clippy::cognitive_complexity)]
     fn upper_exp() {
         assert_eq!(format!("{:E}", ExitCode::Ok), "0E0");
         assert_eq!(format!("{:05E}", ExitCode::Ok), "000E0");

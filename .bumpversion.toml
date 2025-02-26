@@ -4,13 +4,10 @@
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 
 [tool.bumpversion]
-current_version = "0.8.5"
+current_version = "0.9.0"
 
 [[tool.bumpversion.files]]
 filename = "CITATION.cff"
-
-[[tool.bumpversion.files]]
-filename = "README.md"
 
 [[tool.bumpversion.files]]
 filename = "src/lib.rs"

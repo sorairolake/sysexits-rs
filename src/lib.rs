@@ -15,12 +15,11 @@
 //!
 //! ```
 //! # #[cfg(feature = "std")]
+//! # {
 //! use std::str;
 //!
-//! # #[cfg(feature = "std")]
 //! use sysexits::ExitCode;
 //!
-//! # #[cfg(feature = "std")]
 //! fn main() -> ExitCode {
 //!     let bytes = [0xf0, 0x9f, 0x92, 0x96];
 //!     match str::from_utf8(&bytes) {
@@ -34,6 +33,7 @@
 //!         }
 //!     }
 //! }
+//! # }
 //! #
 //! # #[cfg(not(feature = "std"))]
 //! # fn main() {}
@@ -41,8 +41,11 @@
 //!
 //! [`<sysexits.h>`]: https://man.openbsd.org/sysexits
 
-#![cfg_attr(feature = "extended_io_error", feature(io_error_more))]
-#![doc(html_root_url = "https://docs.rs/sysexits/0.8.5/")]
+#![cfg_attr(
+    feature = "extended_io_error",
+    feature(io_error_inprogress, io_error_more)
+)]
+#![doc(html_root_url = "https://docs.rs/sysexits/0.9.0/")]
 #![no_std]
 #![cfg_attr(docsrs, feature(doc_auto_cfg, doc_cfg))]
 // Lint levels of rustc.
@@ -57,4 +60,4 @@ extern crate std;
 pub mod error;
 mod exit_code;
 
-pub use crate::exit_code::{result::Result, ExitCode};
+pub use crate::exit_code::{ExitCode, result::Result};

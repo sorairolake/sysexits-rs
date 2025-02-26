@@ -117,12 +117,12 @@ macro_rules! impl_try_from_integer_to_exit_code {
             concat!(
                 "assert_eq!(ExitCode::try_from(0_",
                 stringify!($T),
-                ").unwrap(), ExitCode::Ok);"
+                "), Ok(ExitCode::Ok));"
             ),
             concat!(
                 "assert_eq!(ExitCode::try_from(64_",
                 stringify!($T),
-                ").unwrap(), ExitCode::Usage);"
+                "), Ok(ExitCode::Usage));"
             ),
             concat!(
                 "assert!(ExitCode::try_from(79_",
@@ -194,15 +194,12 @@ impl From<std::io::ErrorKind> for ExitCode {
             | ErrorKind::BrokenPipe
             | ErrorKind::TimedOut
             | ErrorKind::Interrupted => Self::TempFail,
-            #[cfg(feature = "extended_io_error")]
             ErrorKind::HostUnreachable | ErrorKind::NetworkUnreachable => Self::NoHost,
-            ErrorKind::AddrInUse | ErrorKind::AddrNotAvailable => Self::Unavailable,
-            #[cfg(feature = "extended_io_error")]
-            ErrorKind::NetworkDown => Self::Unavailable,
-            ErrorKind::AlreadyExists => Self::CantCreat,
+            ErrorKind::AddrInUse | ErrorKind::AddrNotAvailable | ErrorKind::NetworkDown => {
+                Self::Unavailable
+            }
+            ErrorKind::AlreadyExists | ErrorKind::ReadOnlyFilesystem => Self::CantCreat,
             ErrorKind::WouldBlock | ErrorKind::Unsupported => Self::Protocol,
-            #[cfg(feature = "extended_io_error")]
-            ErrorKind::ReadOnlyFilesystem => Self::CantCreat,
             ErrorKind::InvalidInput | ErrorKind::InvalidData => Self::DataErr,
             ErrorKind::WriteZero | ErrorKind::UnexpectedEof => Self::Software,
             _ => Self::IoErr,
@@ -633,7 +630,6 @@ mod tests {
 
     #[cfg(feature = "std")]
     #[test]
-    #[allow(clippy::too_many_lines)]
     fn from_io_error_to_exit_code() {
         use std::io::{Error, ErrorKind};
 
@@ -653,12 +649,10 @@ mod tests {
             ExitCode::from(Error::from(ErrorKind::ConnectionReset)),
             ExitCode::TempFail
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::HostUnreachable)),
             ExitCode::NoHost
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::NetworkUnreachable)),
             ExitCode::NoHost
@@ -679,7 +673,6 @@ mod tests {
             ExitCode::from(Error::from(ErrorKind::AddrNotAvailable)),
             ExitCode::Unavailable
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::NetworkDown)),
             ExitCode::Unavailable
@@ -696,22 +689,18 @@ mod tests {
             ExitCode::from(Error::from(ErrorKind::WouldBlock)),
             ExitCode::Protocol
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::NotADirectory)),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::IsADirectory)),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::DirectoryNotEmpty)),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::ReadOnlyFilesystem)),
             ExitCode::CantCreat
@@ -721,7 +710,6 @@ mod tests {
             ExitCode::from(Error::from(ErrorKind::FilesystemLoop)),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::StaleNetworkFileHandle)),
             ExitCode::IoErr
@@ -742,47 +730,38 @@ mod tests {
             ExitCode::from(Error::from(ErrorKind::WriteZero)),
             ExitCode::Software
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::StorageFull)),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::NotSeekable)),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::FilesystemQuotaExceeded)),
+            ExitCode::from(Error::from(ErrorKind::QuotaExceeded)),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::FileTooLarge)),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::ResourceBusy)),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::ExecutableFileBusy)),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::Deadlock)),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::CrossesDevices)),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::TooManyLinks)),
             ExitCode::IoErr
@@ -792,7 +771,6 @@ mod tests {
             ExitCode::from(Error::from(ErrorKind::InvalidFilename)),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::ArgumentListTooLong)),
             ExitCode::IoErr
@@ -813,6 +791,11 @@ mod tests {
             ExitCode::from(Error::from(ErrorKind::OutOfMemory)),
             ExitCode::OsErr
         );
+        #[cfg(feature = "extended_io_error")]
+        assert_eq!(
+            ExitCode::from(Error::from(ErrorKind::InProgress)),
+            ExitCode::IoErr
+        );
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::Other)),
             ExitCode::IoErr
@@ -821,7 +804,6 @@ mod tests {
 
     #[cfg(feature = "std")]
     #[test]
-    #[allow(clippy::cognitive_complexity, clippy::too_many_lines)]
     fn from_io_error_kind_to_exit_code() {
         use std::io;
 
@@ -838,12 +820,10 @@ mod tests {
             ExitCode::from(io::ErrorKind::ConnectionReset),
             ExitCode::TempFail
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(io::ErrorKind::HostUnreachable),
             ExitCode::NoHost
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(io::ErrorKind::NetworkUnreachable),
             ExitCode::NoHost
@@ -864,7 +844,6 @@ mod tests {
             ExitCode::from(io::ErrorKind::AddrNotAvailable),
             ExitCode::Unavailable
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(io::ErrorKind::NetworkDown),
             ExitCode::Unavailable
@@ -881,19 +860,15 @@ mod tests {
             ExitCode::from(io::ErrorKind::WouldBlock),
             ExitCode::Protocol
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(io::ErrorKind::NotADirectory),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(ExitCode::from(io::ErrorKind::IsADirectory), ExitCode::IoErr);
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(io::ErrorKind::DirectoryNotEmpty),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(io::ErrorKind::ReadOnlyFilesystem),
             ExitCode::CantCreat
@@ -903,7 +878,6 @@ mod tests {
             ExitCode::from(io::ErrorKind::FilesystemLoop),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(io::ErrorKind::StaleNetworkFileHandle),
             ExitCode::IoErr
@@ -916,43 +890,31 @@ mod tests {
             ExitCode::from(io::ErrorKind::InvalidData),
             ExitCode::DataErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(ExitCode::from(io::ErrorKind::TimedOut), ExitCode::TempFail);
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(ExitCode::from(io::ErrorKind::WriteZero), ExitCode::Software);
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(ExitCode::from(io::ErrorKind::StorageFull), ExitCode::IoErr);
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(ExitCode::from(io::ErrorKind::NotSeekable), ExitCode::IoErr);
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
-            ExitCode::from(io::ErrorKind::FilesystemQuotaExceeded),
+            ExitCode::from(io::ErrorKind::QuotaExceeded),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(ExitCode::from(io::ErrorKind::FileTooLarge), ExitCode::IoErr);
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(ExitCode::from(io::ErrorKind::ResourceBusy), ExitCode::IoErr);
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(io::ErrorKind::ExecutableFileBusy),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(ExitCode::from(io::ErrorKind::Deadlock), ExitCode::IoErr);
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(io::ErrorKind::CrossesDevices),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(ExitCode::from(io::ErrorKind::TooManyLinks), ExitCode::IoErr);
         #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(io::ErrorKind::InvalidFilename),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
         assert_eq!(
             ExitCode::from(io::ErrorKind::ArgumentListTooLong),
             ExitCode::IoErr
@@ -970,13 +932,14 @@ mod tests {
             ExitCode::Software
         );
         assert_eq!(ExitCode::from(io::ErrorKind::OutOfMemory), ExitCode::OsErr);
+        #[cfg(feature = "extended_io_error")]
+        assert_eq!(ExitCode::from(io::ErrorKind::InProgress), ExitCode::IoErr);
         assert_eq!(ExitCode::from(io::ErrorKind::Other), ExitCode::IoErr);
     }
 
     #[cfg(feature = "std")]
     #[cfg(any(unix, windows))]
     #[test]
-    #[allow(clippy::cognitive_complexity)]
     fn try_from_process_exit_status_to_exit_code() {
         assert_eq!(
             ExitCode::try_from(get_exit_status(0)).unwrap(),

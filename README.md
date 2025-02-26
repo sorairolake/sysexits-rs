@@ -20,28 +20,27 @@ the `main` function.
 
 ## Usage
 
-Add this to your `Cargo.toml`:
+Run the following command in your project directory:
 
-```toml
-[dependencies]
-sysexits = "0.8.5"
+```sh
+cargo add sysexits
 ```
 
 ### Crate features
 
-#### `std`
+#### `extended_io_error`
 
-Enables features that depend on the standard library. This is enabled by
-default.
+Enables features that depend on the `io_error_inprogress` and the
+`io_error_more` features. This also enables `std`. This is implied by `nightly`.
 
 #### `nightly`
 
 Enables features that depend on the nightly Rust.
 
-#### `extended_io_error`
+#### `std`
 
-Enables features that depend on the `io_error_more` feature. This also enables
-`std`. This is implied by `nightly`.
+Enables features that depend on the standard library. This is enabled by
+default.
 
 ### `no_std` support
 
@@ -53,7 +52,7 @@ See the [documentation][docs-url] for more details.
 
 ## Minimum supported Rust version
 
-The minimum supported Rust version (MSRV) of this library is v1.62.0.
+The minimum supported Rust version (MSRV) of this library is v1.85.0.
 
 ## Source code
 
@@ -83,8 +82,7 @@ You can discover more projects at
 
 ## License
 
-Copyright &copy; 2022&ndash;2024 Shun Sakai and other contributors (see
-[AUTHORS.adoc])
+Copyright (C) 2022 Shun Sakai and other contributors (see [AUTHORS.adoc])
 
 This library is distributed under the terms of either the _Apache License 2.0_
 or the _MIT License_.

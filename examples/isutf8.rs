@@ -22,7 +22,7 @@ struct Opt {
     ///
     /// If [FILE] is not specified, data will be read from standard input.
     #[arg(value_name("FILE"))]
-    pub input: Option<PathBuf>,
+    input: Option<PathBuf>,
 }
 
 fn main() -> ExitCode {

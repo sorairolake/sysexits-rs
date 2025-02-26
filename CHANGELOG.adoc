@@ -14,6 +14,15 @@ All notable changes to this project will be documented in this file.
 The format is based on https://keepachangelog.com/[Keep a Changelog], and this
 project adheres to https://semver.org/[Semantic Versioning].
 
+== {compare-url}/v0.8.5\...v0.9.0[0.9.0] - 2025-02-26
+
+=== Changed
+
+* Change MSRV to 1.85.0 ({pull-request-url}/157[#157])
+* Make `Error` trait available in `no_std` mode ({pull-request-url}/157[#157])
+* Support more `io::ErrorKind` variants without the `extended_io_error` feature
+  ({pull-request-url}/157[#157])
+
 == {compare-url}/v0.8.4\...v0.8.5[0.8.5] - 2024-11-08
 
 === Changed
