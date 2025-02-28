@@ -25,6 +25,10 @@ default: build
 @test:
     cargo test
 
+# Run benchmarks
+@bench:
+    cargo +nightly bench
+
 # Run the formatter
 @fmt:
     cargo fmt
@@ -41,6 +45,10 @@ default: build
 @clippy-fix:
     cargo +nightly clippy --fix --allow-dirty --allow-staged -- -D warnings
 
+# Build the package documentation
+@doc $RUSTDOCFLAGS="--cfg docsrs":
+    cargo +nightly doc --all-features
+
 # Run the linter for GitHub Actions workflow files
 @lint-github-actions:
     actionlint -verbose
@@ -51,5 +59,5 @@ default: build
 
 # Increment the version
 @bump part:
-    bump-my-version bump {{part}}
-    cargo set-version --bump {{part}}
+    bump-my-version bump {{ part }}
+    cargo set-version --bump {{ part }}
