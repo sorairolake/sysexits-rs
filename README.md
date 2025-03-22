@@ -11,6 +11,7 @@ SPDX-License-Identifier: Apache-2.0 OR MIT
 ![MSRV][msrv-badge]
 [![Docs][docs-badge]][docs-url]
 ![License][license-badge]
+[![REUSE status][reuse-badge]][reuse-url]
 
 **sysexits-rs** ([`sysexits`][version-url]) is a library that provides the
 system exit code constants as defined by [`<sysexits.h>`].
@@ -99,6 +100,8 @@ licensing information.
 [docs-badge]: https://img.shields.io/docsrs/sysexits?style=for-the-badge&logo=docsdotrs&label=Docs.rs
 [docs-url]: https://docs.rs/sysexits
 [license-badge]: https://img.shields.io/crates/l/sysexits?style=for-the-badge
+[reuse-badge]: https://img.shields.io/reuse/compliance/github.com%2Fsorairolake%2Fsysexits-rs?style=for-the-badge
+[reuse-url]: https://api.reuse.software/info/github.com/sorairolake/sysexits-rs
 [`<sysexits.h>`]: https://man.openbsd.org/sysexits
 [`Termination`]: https://doc.rust-lang.org/std/process/trait.Termination.html
 [CHANGELOG.adoc]: CHANGELOG.adoc
