@@ -15,11 +15,12 @@
 //!
 //! ```
 //! # #[cfg(feature = "std")]
-//! # {
 //! use std::str;
 //!
+//! # #[cfg(feature = "std")]
 //! use sysexits::ExitCode;
 //!
+//! # #[cfg(feature = "std")]
 //! fn main() -> ExitCode {
 //!     let bytes = [0xf0, 0x9f, 0x92, 0x96];
 //!     match str::from_utf8(&bytes) {
@@ -33,7 +34,6 @@
 //!         }
 //!     }
 //! }
-//! # }
 //! #
 //! # #[cfg(not(feature = "std"))]
 //! # fn main() {}
