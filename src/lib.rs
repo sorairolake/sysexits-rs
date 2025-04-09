@@ -15,16 +15,16 @@
 //!
 //! ```
 //! # #[cfg(feature = "std")]
+//! # {
 //! use std::str;
 //!
-//! # #[cfg(feature = "std")]
 //! use sysexits::ExitCode;
 //!
-//! # #[cfg(feature = "std")]
 //! fn main() -> ExitCode {
-//!     let bytes = [0xf0, 0x9f, 0x92, 0x96];
+//!     let bytes = [0xF0, 0x9F, 0xA6, 0x80];
 //!     match str::from_utf8(&bytes) {
 //!         Ok(string) => {
+//!             assert_eq!(string, "🦀");
 //!             println!("{string}");
 //!             ExitCode::Ok
 //!         }
@@ -34,9 +34,7 @@
 //!         }
 //!     }
 //! }
-//! #
-//! # #[cfg(not(feature = "std"))]
-//! # fn main() {}
+//! # }
 //! ```
 //!
 //! [`<sysexits.h>`]: https://man.openbsd.org/sysexits
