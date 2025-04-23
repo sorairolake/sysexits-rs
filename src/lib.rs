@@ -25,7 +25,6 @@
 //!     match str::from_utf8(&bytes) {
 //!         Ok(string) => {
 //!             assert_eq!(string, "🦀");
-//!             println!("{string}");
 //!             ExitCode::Ok
 //!         }
 //!         Err(err) => {
