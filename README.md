@@ -1,7 +1,7 @@
 <!--
 SPDX-FileCopyrightText: 2022 Shun Sakai
 
-SPDX-License-Identifier: Apache-2.0 OR MIT
+SPDX-License-Identifier: CC-BY-4.0
 -->
 
 # sysexits-rs
@@ -11,6 +11,7 @@ SPDX-License-Identifier: Apache-2.0 OR MIT
 ![MSRV][msrv-badge]
 [![Docs][docs-badge]][docs-url]
 ![License][license-badge]
+[![REUSE status][reuse-badge]][reuse-url]
 
 **sysexits-rs** ([`sysexits`][version-url]) is a library that provides the
 system exit code constants as defined by [`<sysexits.h>`].
@@ -59,11 +60,6 @@ The minimum supported Rust version (MSRV) of this library is v1.85.0.
 The upstream repository is available at
 <https://github.com/sorairolake/sysexits-rs.git>.
 
-The source code is also available at:
-
-- <https://gitlab.com/sorairolake/sysexits-rs.git>
-- <https://codeberg.org/sorairolake/sysexits-rs.git>
-
 ## Changelog
 
 Please see [CHANGELOG.adoc].
@@ -72,14 +68,6 @@ Please see [CHANGELOG.adoc].
 
 Please see [CONTRIBUTING.adoc].
 
-## Similar projects
-
-- <https://github.com/sorairolake/Sysexits.jl> (Julia)
-- <https://github.com/sorairolake/sysexits-zig> (Zig)
-
-You can discover more projects at
-<https://github.com/sorairolake/awesome-sysexits>.
-
 ## License
 
 Copyright (C) 2022 Shun Sakai and other contributors (see [AUTHORS.adoc])
@@ -87,7 +75,7 @@ Copyright (C) 2022 Shun Sakai and other contributors (see [AUTHORS.adoc])
 This library is distributed under the terms of either the _Apache License 2.0_
 or the _MIT License_.
 
-This project is compliant with version 3.2 of the [_REUSE Specification_]. See
+This project is compliant with version 3.3 of the [_REUSE Specification_]. See
 copyright notices of individual files for more details on copyright and
 licensing information.
 
@@ -99,9 +87,11 @@ licensing information.
 [docs-badge]: https://img.shields.io/docsrs/sysexits?style=for-the-badge&logo=docsdotrs&label=Docs.rs
 [docs-url]: https://docs.rs/sysexits
 [license-badge]: https://img.shields.io/crates/l/sysexits?style=for-the-badge
+[reuse-badge]: https://img.shields.io/reuse/compliance/github.com%2Fsorairolake%2Fsysexits-rs?style=for-the-badge
+[reuse-url]: https://api.reuse.software/info/github.com/sorairolake/sysexits-rs
 [`<sysexits.h>`]: https://man.openbsd.org/sysexits
 [`Termination`]: https://doc.rust-lang.org/std/process/trait.Termination.html
 [CHANGELOG.adoc]: CHANGELOG.adoc
 [CONTRIBUTING.adoc]: CONTRIBUTING.adoc
 [AUTHORS.adoc]: AUTHORS.adoc
-[_REUSE Specification_]: https://reuse.software/spec/
+[_REUSE Specification_]: https://reuse.software/spec-3.3/

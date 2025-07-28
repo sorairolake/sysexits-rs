@@ -3,53 +3,61 @@
 #
 # SPDX-License-Identifier: Apache-2.0 OR MIT
 
-alias all := default
 alias lint := clippy
 
 # Run default recipe
-default: build
+_default:
+    just -l
 
 # Build a package
-@build:
+build:
     cargo build
 
 # Remove generated artifacts
-@clean:
+clean:
     cargo clean
 
 # Check a package
-@check:
+check:
     cargo check
 
 # Run tests
-@test:
+test:
     cargo test
 
+# Run benchmarks
+bench:
+    cargo +nightly bench
+
 # Run the formatter
-@fmt:
+fmt:
     cargo fmt
 
 # Run the formatter with options
-@fmt-with-options:
+fmt-with-options:
     cargo +nightly fmt
 
 # Run the linter
-@clippy:
+clippy:
     cargo clippy -- -D warnings
 
 # Apply lint suggestions
-@clippy-fix:
+clippy-fix:
     cargo +nightly clippy --fix --allow-dirty --allow-staged -- -D warnings
 
+# Build the package documentation
+doc $RUSTDOCFLAGS="--cfg docsrs":
+    cargo +nightly doc --all-features
+
 # Run the linter for GitHub Actions workflow files
-@lint-github-actions:
+lint-github-actions:
     actionlint -verbose
 
 # Run the formatter for the README
-@fmt-readme:
+fmt-readme:
     npx prettier -w README.md
 
 # Increment the version
-@bump part:
-    bump-my-version bump {{part}}
-    cargo set-version --bump {{part}}
+bump part:
+    bump-my-version bump {{ part }}
+    cargo set-version --bump {{ part }}

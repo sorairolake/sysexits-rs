@@ -21,10 +21,10 @@
 //! use sysexits::ExitCode;
 //!
 //! fn main() -> ExitCode {
-//!     let bytes = [0xf0, 0x9f, 0x92, 0x96];
+//!     let bytes = [0xF0, 0x9F, 0xA6, 0x80];
 //!     match str::from_utf8(&bytes) {
 //!         Ok(string) => {
-//!             println!("{string}");
+//!             assert_eq!(string, "🦀");
 //!             ExitCode::Ok
 //!         }
 //!         Err(err) => {
@@ -34,9 +34,6 @@
 //!     }
 //! }
 //! # }
-//! #
-//! # #[cfg(not(feature = "std"))]
-//! # fn main() {}
 //! ```
 //!
 //! [`<sysexits.h>`]: https://man.openbsd.org/sysexits
@@ -45,7 +42,7 @@
     feature = "extended_io_error",
     feature(io_error_inprogress, io_error_more)
 )]
-#![doc(html_root_url = "https://docs.rs/sysexits/0.9.0/")]
+#![doc(html_root_url = "https://docs.rs/sysexits/0.9.1/")]
 #![no_std]
 #![cfg_attr(docsrs, feature(doc_auto_cfg, doc_cfg))]
 // Lint levels of rustc.
