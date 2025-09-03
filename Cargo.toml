@@ -43,8 +43,6 @@ test-strategy = "0.4.3"
 
 [features]
 default = ["std"]
-extended_io_error = ["std"]
-nightly = ["extended_io_error"]
 std = []
 
 [lints.clippy]

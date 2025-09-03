@@ -29,15 +29,6 @@ cargo add sysexits
 
 ### Crate features
 
-#### `extended_io_error`
-
-Enables features that depend on the `io_error_inprogress` and the
-`io_error_more` features. This also enables `std`. This is implied by `nightly`.
-
-#### `nightly`
-
-Enables features that depend on the nightly Rust.
-
 #### `std`
 
 Enables features that depend on the standard library. This is enabled by

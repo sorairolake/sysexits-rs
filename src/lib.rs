@@ -38,10 +38,6 @@
 //!
 //! [`<sysexits.h>`]: https://man.openbsd.org/sysexits
 
-#![cfg_attr(
-    feature = "extended_io_error",
-    feature(io_error_inprogress, io_error_more)
-)]
 #![doc(html_root_url = "https://docs.rs/sysexits/0.9.1/")]
 #![no_std]
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
