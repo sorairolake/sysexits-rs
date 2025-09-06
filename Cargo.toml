@@ -5,7 +5,7 @@
 
 [package]
 name = "sysexits"
-version = "0.9.1"
+version = "0.10.0"
 authors = ["Shun Sakai <sorairolake@protonmail.ch>"]
 edition = "2024"
 rust-version = "1.85.0"
@@ -34,7 +34,7 @@ name = "isutf8"
 required-features = ["std"]
 
 [dev-dependencies]
-clap = { version = "4.5.45", features = ["derive"] }
+clap = { version = "4.5.47", features = ["derive"] }
 proptest = "1.7.0"
 test-strategy = "0.4.3"
 
