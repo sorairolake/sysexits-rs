@@ -23,17 +23,14 @@ all-features = true
 
 [[example]]
 name = "cat"
-path = "examples/cat.rs"
 required-features = ["std"]
 
 [[example]]
 name = "cmp"
-path = "examples/cmp.rs"
 required-features = ["std"]
 
 [[example]]
 name = "isutf8"
-path = "examples/isutf8.rs"
 required-features = ["std"]
 
 [dev-dependencies]
