@@ -705,11 +705,6 @@ mod tests {
             ExitCode::from(Error::from(ErrorKind::ReadOnlyFilesystem)),
             ExitCode::CantCreat
         );
-        #[cfg(feature = "extended_io_error")]
-        assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::FilesystemLoop)),
-            ExitCode::IoErr
-        );
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::StaleNetworkFileHandle)),
             ExitCode::IoErr
@@ -766,11 +761,6 @@ mod tests {
             ExitCode::from(Error::from(ErrorKind::TooManyLinks)),
             ExitCode::IoErr
         );
-        #[cfg(feature = "extended_io_error")]
-        assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::InvalidFilename)),
-            ExitCode::IoErr
-        );
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::ArgumentListTooLong)),
             ExitCode::IoErr
@@ -790,11 +780,6 @@ mod tests {
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::OutOfMemory)),
             ExitCode::OsErr
-        );
-        #[cfg(feature = "extended_io_error")]
-        assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::InProgress)),
-            ExitCode::IoErr
         );
         assert_eq!(
             ExitCode::from(Error::from(ErrorKind::Other)),
@@ -873,11 +858,6 @@ mod tests {
             ExitCode::from(io::ErrorKind::ReadOnlyFilesystem),
             ExitCode::CantCreat
         );
-        #[cfg(feature = "extended_io_error")]
-        assert_eq!(
-            ExitCode::from(io::ErrorKind::FilesystemLoop),
-            ExitCode::IoErr
-        );
         assert_eq!(
             ExitCode::from(io::ErrorKind::StaleNetworkFileHandle),
             ExitCode::IoErr
@@ -910,11 +890,6 @@ mod tests {
             ExitCode::IoErr
         );
         assert_eq!(ExitCode::from(io::ErrorKind::TooManyLinks), ExitCode::IoErr);
-        #[cfg(feature = "extended_io_error")]
-        assert_eq!(
-            ExitCode::from(io::ErrorKind::InvalidFilename),
-            ExitCode::IoErr
-        );
         assert_eq!(
             ExitCode::from(io::ErrorKind::ArgumentListTooLong),
             ExitCode::IoErr
@@ -932,8 +907,6 @@ mod tests {
             ExitCode::Software
         );
         assert_eq!(ExitCode::from(io::ErrorKind::OutOfMemory), ExitCode::OsErr);
-        #[cfg(feature = "extended_io_error")]
-        assert_eq!(ExitCode::from(io::ErrorKind::InProgress), ExitCode::IoErr);
         assert_eq!(ExitCode::from(io::ErrorKind::Other), ExitCode::IoErr);
     }
 

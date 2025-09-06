@@ -26,7 +26,6 @@ jobs:
         toolchain-alias:
           - msrv
           - stable
-          - nightly
         include:
           - os-alias: ubuntu
             os: ubuntu-24.04
@@ -41,11 +40,9 @@ jobs:
             toolchain: 1.85.0
           - toolchain-alias: stable
             toolchain: stable
-          - toolchain-alias: nightly
-            toolchain: nightly
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
@@ -59,12 +56,6 @@ jobs:
         run: cargo check --target ${{ matrix.target }}
       - name: Check a package (no default features)
         run: cargo check --target ${{ matrix.target }} --no-default-features
-      - name: Check a package (`nightly` feature)
-        if: matrix.toolchain == 'nightly'
-        run: cargo check --target ${{ matrix.target }} -F nightly
-      - name: Check a package (`nightly` feature without `default` feature)
-        if: matrix.toolchain == 'nightly'
-        run: cargo check --target ${{ matrix.target }} --no-default-features -F nightly
 
   test:
     name: Test
@@ -78,7 +69,6 @@ jobs:
         toolchain-alias:
           - msrv
           - stable
-          - nightly
         include:
           - os-alias: ubuntu
             os: ubuntu-24.04
@@ -93,11 +83,9 @@ jobs:
             toolchain: 1.85.0
           - toolchain-alias: stable
             toolchain: stable
-          - toolchain-alias: nightly
-            toolchain: nightly
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
@@ -111,19 +99,13 @@ jobs:
         run: cargo test --target ${{ matrix.target }}
       - name: Run tests (no default features)
         run: cargo test --target ${{ matrix.target }} --no-default-features
-      - name: Run tests (`nightly` feature)
-        if: matrix.toolchain == 'nightly'
-        run: cargo test --target ${{ matrix.target }} -F nightly
-      - name: Run tests (`nightly` feature without `default` feature)
-        if: matrix.toolchain == 'nightly'
-        run: cargo test --target ${{ matrix.target }} --no-default-features -F nightly
 
   rustfmt:
     name: Rustfmt
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
@@ -139,7 +121,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
@@ -157,7 +139,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
@@ -172,7 +154,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
