@@ -13,6 +13,8 @@ mod fmt;
 pub mod result;
 
 use core::error::Error;
+#[cfg(feature = "std")]
+use std::process::{self, Termination};
 
 /// `ExitCode` is a type that represents the system exit code constants as
 /// defined by [`<sysexits.h>`].
@@ -256,7 +258,7 @@ impl ExitCode {
 
     /// Terminates the current process with the exit code defined by `ExitCode`.
     ///
-    /// Equivalent to [`std::process::exit`] with a restricted exit code.
+    /// Equivalent to [`process::exit`] with a restricted exit code.
     ///
     /// # Examples
     ///
@@ -270,16 +272,16 @@ impl ExitCode {
     #[cfg(feature = "std")]
     #[inline]
     pub fn exit(self) -> ! {
-        std::process::exit(self.into())
+        process::exit(self.into())
     }
 }
 
 impl Error for ExitCode {}
 
 #[cfg(feature = "std")]
-impl std::process::Termination for ExitCode {
+impl Termination for ExitCode {
     #[inline]
-    fn report(self) -> std::process::ExitCode {
+    fn report(self) -> process::ExitCode {
         u8::from(self).into()
     }
 }
@@ -666,71 +668,69 @@ mod tests {
     #[cfg(feature = "std")]
     #[test]
     fn report() {
-        use std::process::Termination;
-
         assert_eq!(
             format!("{:?}", ExitCode::Ok.report()),
-            format!("{:?}", std::process::ExitCode::from(0))
+            format!("{:?}", process::ExitCode::from(0))
         );
         assert_eq!(
             format!("{:?}", ExitCode::Usage.report()),
-            format!("{:?}", std::process::ExitCode::from(64))
+            format!("{:?}", process::ExitCode::from(64))
         );
         assert_eq!(
             format!("{:?}", ExitCode::DataErr.report()),
-            format!("{:?}", std::process::ExitCode::from(65))
+            format!("{:?}", process::ExitCode::from(65))
         );
         assert_eq!(
             format!("{:?}", ExitCode::NoInput.report()),
-            format!("{:?}", std::process::ExitCode::from(66))
+            format!("{:?}", process::ExitCode::from(66))
         );
         assert_eq!(
             format!("{:?}", ExitCode::NoUser.report()),
-            format!("{:?}", std::process::ExitCode::from(67))
+            format!("{:?}", process::ExitCode::from(67))
         );
         assert_eq!(
             format!("{:?}", ExitCode::NoHost.report()),
-            format!("{:?}", std::process::ExitCode::from(68))
+            format!("{:?}", process::ExitCode::from(68))
         );
         assert_eq!(
             format!("{:?}", ExitCode::Unavailable.report()),
-            format!("{:?}", std::process::ExitCode::from(69))
+            format!("{:?}", process::ExitCode::from(69))
         );
         assert_eq!(
             format!("{:?}", ExitCode::Software.report()),
-            format!("{:?}", std::process::ExitCode::from(70))
+            format!("{:?}", process::ExitCode::from(70))
         );
         assert_eq!(
             format!("{:?}", ExitCode::OsErr.report()),
-            format!("{:?}", std::process::ExitCode::from(71))
+            format!("{:?}", process::ExitCode::from(71))
         );
         assert_eq!(
             format!("{:?}", ExitCode::OsFile.report()),
-            format!("{:?}", std::process::ExitCode::from(72))
+            format!("{:?}", process::ExitCode::from(72))
         );
         assert_eq!(
             format!("{:?}", ExitCode::CantCreat.report()),
-            format!("{:?}", std::process::ExitCode::from(73))
+            format!("{:?}", process::ExitCode::from(73))
         );
         assert_eq!(
             format!("{:?}", ExitCode::IoErr.report()),
-            format!("{:?}", std::process::ExitCode::from(74))
+            format!("{:?}", process::ExitCode::from(74))
         );
         assert_eq!(
             format!("{:?}", ExitCode::TempFail.report()),
-            format!("{:?}", std::process::ExitCode::from(75))
+            format!("{:?}", process::ExitCode::from(75))
         );
         assert_eq!(
             format!("{:?}", ExitCode::Protocol.report()),
-            format!("{:?}", std::process::ExitCode::from(76))
+            format!("{:?}", process::ExitCode::from(76))
         );
         assert_eq!(
             format!("{:?}", ExitCode::NoPerm.report()),
-            format!("{:?}", std::process::ExitCode::from(77))
+            format!("{:?}", process::ExitCode::from(77))
         );
         assert_eq!(
             format!("{:?}", ExitCode::Config.report()),
-            format!("{:?}", std::process::ExitCode::from(78))
+            format!("{:?}", process::ExitCode::from(78))
         );
     }
 }

@@ -6,8 +6,16 @@
 
 //! Implementations of conversions between [`ExitCode`] and other types.
 
+#[cfg(feature = "std")]
+use std::{
+    io,
+    process::{self, ExitStatus, Termination},
+};
+
 use super::ExitCode;
 use crate::error::ExitCodeRangeError;
+#[cfg(feature = "std")]
+use crate::error::TryFromExitStatusError;
 
 macro_rules! impl_from_exit_code_to_integer {
     ($T:ty, $ok:expr, $usage:expr) => {
@@ -56,12 +64,10 @@ impl_from_exit_code_to_integer!(u128);
 impl_from_exit_code_to_integer!(usize);
 
 #[cfg(feature = "std")]
-impl From<ExitCode> for std::process::ExitCode {
-    /// Converts an `sysexits::ExitCode` into an [`std::process::ExitCode`].
+impl From<ExitCode> for process::ExitCode {
+    /// Converts an `sysexits::ExitCode` into an [`process::ExitCode`].
     #[inline]
     fn from(code: ExitCode) -> Self {
-        use std::process::Termination;
-
         code.report()
     }
 }
@@ -88,7 +94,7 @@ macro_rules! impl_try_from_integer_to_exit_code {
             #[doc = $err]
             /// ```
             #[inline]
-            fn try_from(value: $T) -> core::result::Result<Self, Self::Error> {
+            fn try_from(value: $T) -> Result<Self, Self::Error> {
                 match value {
                     0 => Ok(Self::Ok),
                     64 => Ok(Self::Usage),
@@ -146,30 +152,30 @@ impl_try_from_integer_to_exit_code!(u128);
 impl_try_from_integer_to_exit_code!(usize);
 
 #[cfg(feature = "std")]
-impl From<std::io::Error> for ExitCode {
-    /// Converts an [`Error`](std::io::Error) into an `ExitCode`.
+impl From<io::Error> for ExitCode {
+    /// Converts an [`io::Error`] into an `ExitCode`.
     ///
     /// # Examples
     ///
     /// ```
-    /// # use std::io::{Error, ErrorKind};
+    /// # use std::io;
     /// #
     /// # use sysexits::ExitCode;
     /// #
     /// assert_eq!(
-    ///     ExitCode::from(Error::from(ErrorKind::NotFound)),
+    ///     ExitCode::from(io::Error::from(io::ErrorKind::NotFound)),
     ///     ExitCode::NoInput
     /// );
     /// ```
     #[inline]
-    fn from(error: std::io::Error) -> Self {
+    fn from(error: io::Error) -> Self {
         error.kind().into()
     }
 }
 
 #[cfg(feature = "std")]
-impl From<std::io::ErrorKind> for ExitCode {
-    /// Converts an [`ErrorKind`](std::io::ErrorKind) into an `ExitCode`.
+impl From<io::ErrorKind> for ExitCode {
+    /// Converts an [`io::ErrorKind`] into an `ExitCode`.
     ///
     /// # Examples
     ///
@@ -181,37 +187,35 @@ impl From<std::io::ErrorKind> for ExitCode {
     /// assert_eq!(ExitCode::from(io::ErrorKind::NotFound), ExitCode::NoInput);
     /// ```
     #[inline]
-    fn from(kind: std::io::ErrorKind) -> Self {
-        use std::io::ErrorKind;
-
+    fn from(kind: io::ErrorKind) -> Self {
         match kind {
-            ErrorKind::NotFound => Self::NoInput,
-            ErrorKind::PermissionDenied => Self::NoPerm,
-            ErrorKind::ConnectionRefused | ErrorKind::OutOfMemory => Self::OsErr,
-            ErrorKind::ConnectionReset
-            | ErrorKind::ConnectionAborted
-            | ErrorKind::NotConnected
-            | ErrorKind::BrokenPipe
-            | ErrorKind::TimedOut
-            | ErrorKind::Interrupted => Self::TempFail,
-            ErrorKind::HostUnreachable | ErrorKind::NetworkUnreachable => Self::NoHost,
-            ErrorKind::AddrInUse | ErrorKind::AddrNotAvailable | ErrorKind::NetworkDown => {
-                Self::Unavailable
-            }
-            ErrorKind::AlreadyExists | ErrorKind::ReadOnlyFilesystem => Self::CantCreat,
-            ErrorKind::WouldBlock | ErrorKind::Unsupported => Self::Protocol,
-            ErrorKind::InvalidInput | ErrorKind::InvalidData => Self::DataErr,
-            ErrorKind::WriteZero | ErrorKind::UnexpectedEof => Self::Software,
+            io::ErrorKind::NotFound => Self::NoInput,
+            io::ErrorKind::PermissionDenied => Self::NoPerm,
+            io::ErrorKind::ConnectionRefused | io::ErrorKind::OutOfMemory => Self::OsErr,
+            io::ErrorKind::ConnectionReset
+            | io::ErrorKind::ConnectionAborted
+            | io::ErrorKind::NotConnected
+            | io::ErrorKind::BrokenPipe
+            | io::ErrorKind::TimedOut
+            | io::ErrorKind::Interrupted => Self::TempFail,
+            io::ErrorKind::HostUnreachable | io::ErrorKind::NetworkUnreachable => Self::NoHost,
+            io::ErrorKind::AddrInUse
+            | io::ErrorKind::AddrNotAvailable
+            | io::ErrorKind::NetworkDown => Self::Unavailable,
+            io::ErrorKind::AlreadyExists | io::ErrorKind::ReadOnlyFilesystem => Self::CantCreat,
+            io::ErrorKind::WouldBlock | io::ErrorKind::Unsupported => Self::Protocol,
+            io::ErrorKind::InvalidInput | io::ErrorKind::InvalidData => Self::DataErr,
+            io::ErrorKind::WriteZero | io::ErrorKind::UnexpectedEof => Self::Software,
             _ => Self::IoErr,
         }
     }
 }
 
 #[cfg(feature = "std")]
-impl TryFrom<std::process::ExitStatus> for ExitCode {
-    type Error = crate::error::TryFromExitStatusError;
+impl TryFrom<ExitStatus> for ExitCode {
+    type Error = TryFromExitStatusError;
 
-    /// Converts an [`ExitStatus`](std::process::ExitStatus) into an `ExitCode`.
+    /// Converts an [`ExitStatus`] into an `ExitCode`.
     ///
     /// # Errors
     ///
@@ -221,7 +225,7 @@ impl TryFrom<std::process::ExitStatus> for ExitCode {
     /// - The exit code is unknown (e.g., the process was terminated by a
     ///   signal).
     #[inline]
-    fn try_from(status: std::process::ExitStatus) -> std::result::Result<Self, Self::Error> {
+    fn try_from(status: ExitStatus) -> Result<Self, Self::Error> {
         match status.code() {
             Some(0) => Ok(Self::Ok),
             Some(64) => Ok(Self::Usage),
@@ -247,12 +251,20 @@ impl TryFrom<std::process::ExitStatus> for ExitCode {
 
 #[cfg(test)]
 mod tests {
+    #[cfg(feature = "std")]
+    use std::process::Command;
+    #[cfg(all(feature = "std", unix))]
+    use std::process::Stdio;
+
+    #[cfg(feature = "std")]
+    use proptest::prop_assert_eq;
+    #[cfg(feature = "std")]
+    use test_strategy::proptest;
+
     use super::*;
 
     #[cfg(all(feature = "std", unix))]
-    fn get_exit_status(status: i32) -> std::process::ExitStatus {
-        use std::process::Command;
-
+    fn get_exit_status(status: i32) -> ExitStatus {
         Command::new("sh")
             .arg("-c")
             .arg(format!("exit {status}"))
@@ -261,9 +273,7 @@ mod tests {
     }
 
     #[cfg(all(feature = "std", windows))]
-    fn get_exit_status(status: u32) -> std::process::ExitStatus {
-        use std::process::Command;
-
+    fn get_exit_status(status: u32) -> ExitStatus {
         Command::new("cmd")
             .arg("/c")
             .arg(format!("exit {status}"))
@@ -311,68 +321,68 @@ mod tests {
     #[test]
     fn from_exit_code_to_process_exit_code() {
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::Ok)),
-            format!("{:?}", std::process::ExitCode::from(0))
+            format!("{:?}", process::ExitCode::from(ExitCode::Ok)),
+            format!("{:?}", process::ExitCode::from(0))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::Usage)),
-            format!("{:?}", std::process::ExitCode::from(64))
+            format!("{:?}", process::ExitCode::from(ExitCode::Usage)),
+            format!("{:?}", process::ExitCode::from(64))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::DataErr)),
-            format!("{:?}", std::process::ExitCode::from(65))
+            format!("{:?}", process::ExitCode::from(ExitCode::DataErr)),
+            format!("{:?}", process::ExitCode::from(65))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::NoInput)),
-            format!("{:?}", std::process::ExitCode::from(66))
+            format!("{:?}", process::ExitCode::from(ExitCode::NoInput)),
+            format!("{:?}", process::ExitCode::from(66))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::NoUser)),
-            format!("{:?}", std::process::ExitCode::from(67))
+            format!("{:?}", process::ExitCode::from(ExitCode::NoUser)),
+            format!("{:?}", process::ExitCode::from(67))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::NoHost)),
-            format!("{:?}", std::process::ExitCode::from(68))
+            format!("{:?}", process::ExitCode::from(ExitCode::NoHost)),
+            format!("{:?}", process::ExitCode::from(68))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::Unavailable)),
-            format!("{:?}", std::process::ExitCode::from(69))
+            format!("{:?}", process::ExitCode::from(ExitCode::Unavailable)),
+            format!("{:?}", process::ExitCode::from(69))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::Software)),
-            format!("{:?}", std::process::ExitCode::from(70))
+            format!("{:?}", process::ExitCode::from(ExitCode::Software)),
+            format!("{:?}", process::ExitCode::from(70))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::OsErr)),
-            format!("{:?}", std::process::ExitCode::from(71))
+            format!("{:?}", process::ExitCode::from(ExitCode::OsErr)),
+            format!("{:?}", process::ExitCode::from(71))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::OsFile)),
-            format!("{:?}", std::process::ExitCode::from(72))
+            format!("{:?}", process::ExitCode::from(ExitCode::OsFile)),
+            format!("{:?}", process::ExitCode::from(72))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::CantCreat)),
-            format!("{:?}", std::process::ExitCode::from(73))
+            format!("{:?}", process::ExitCode::from(ExitCode::CantCreat)),
+            format!("{:?}", process::ExitCode::from(73))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::IoErr)),
-            format!("{:?}", std::process::ExitCode::from(74))
+            format!("{:?}", process::ExitCode::from(ExitCode::IoErr)),
+            format!("{:?}", process::ExitCode::from(74))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::TempFail)),
-            format!("{:?}", std::process::ExitCode::from(75))
+            format!("{:?}", process::ExitCode::from(ExitCode::TempFail)),
+            format!("{:?}", process::ExitCode::from(75))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::Protocol)),
-            format!("{:?}", std::process::ExitCode::from(76))
+            format!("{:?}", process::ExitCode::from(ExitCode::Protocol)),
+            format!("{:?}", process::ExitCode::from(76))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::NoPerm)),
-            format!("{:?}", std::process::ExitCode::from(77))
+            format!("{:?}", process::ExitCode::from(ExitCode::NoPerm)),
+            format!("{:?}", process::ExitCode::from(77))
         );
         assert_eq!(
-            format!("{:?}", std::process::ExitCode::from(ExitCode::Config)),
-            format!("{:?}", std::process::ExitCode::from(78))
+            format!("{:?}", process::ExitCode::from(ExitCode::Config)),
+            format!("{:?}", process::ExitCode::from(78))
         );
     }
 
@@ -475,10 +485,8 @@ mod tests {
     macro_rules! test_try_from_integer_to_exit_code_when_negative_integer_roundtrip {
         ($T:ty, $name:ident) => {
             #[cfg(feature = "std")]
-            #[test_strategy::proptest]
+            #[proptest]
             fn $name(#[strategy(..<$T>::default())] v: $T) {
-                use proptest::prop_assert_eq;
-
                 prop_assert_eq!(ExitCode::try_from(v).unwrap_err(), ExitCodeRangeError);
             }
         };
@@ -511,10 +519,8 @@ mod tests {
     macro_rules! test_try_from_integer_to_exit_code_when_middle_integer_roundtrip {
         ($T:ty, $name:ident) => {
             #[cfg(feature = "std")]
-            #[test_strategy::proptest]
+            #[proptest]
             fn $name(#[strategy(1..(64 as $T))] v: $T) {
-                use proptest::prop_assert_eq;
-
                 prop_assert_eq!(ExitCode::try_from(v).unwrap_err(), ExitCodeRangeError);
             }
         };
@@ -571,10 +577,8 @@ mod tests {
     macro_rules! test_try_from_integer_to_exit_code_when_positive_integer_roundtrip {
         ($T:ty, $name:ident) => {
             #[cfg(feature = "std")]
-            #[test_strategy::proptest]
+            #[proptest]
             fn $name(#[strategy((79 as $T)..)] v: $T) {
-                use proptest::prop_assert_eq;
-
                 prop_assert_eq!(ExitCode::try_from(v).unwrap_err(), ExitCodeRangeError);
             }
         };
@@ -631,158 +635,156 @@ mod tests {
     #[cfg(feature = "std")]
     #[test]
     fn from_io_error_to_exit_code() {
-        use std::io::{Error, ErrorKind};
-
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::NotFound)),
+            ExitCode::from(io::Error::from(io::ErrorKind::NotFound)),
             ExitCode::NoInput
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::PermissionDenied)),
+            ExitCode::from(io::Error::from(io::ErrorKind::PermissionDenied)),
             ExitCode::NoPerm
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::ConnectionRefused)),
+            ExitCode::from(io::Error::from(io::ErrorKind::ConnectionRefused)),
             ExitCode::OsErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::ConnectionReset)),
+            ExitCode::from(io::Error::from(io::ErrorKind::ConnectionReset)),
             ExitCode::TempFail
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::HostUnreachable)),
+            ExitCode::from(io::Error::from(io::ErrorKind::HostUnreachable)),
             ExitCode::NoHost
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::NetworkUnreachable)),
+            ExitCode::from(io::Error::from(io::ErrorKind::NetworkUnreachable)),
             ExitCode::NoHost
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::ConnectionAborted)),
+            ExitCode::from(io::Error::from(io::ErrorKind::ConnectionAborted)),
             ExitCode::TempFail
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::NotConnected)),
+            ExitCode::from(io::Error::from(io::ErrorKind::NotConnected)),
             ExitCode::TempFail
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::AddrInUse)),
+            ExitCode::from(io::Error::from(io::ErrorKind::AddrInUse)),
             ExitCode::Unavailable
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::AddrNotAvailable)),
+            ExitCode::from(io::Error::from(io::ErrorKind::AddrNotAvailable)),
             ExitCode::Unavailable
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::NetworkDown)),
+            ExitCode::from(io::Error::from(io::ErrorKind::NetworkDown)),
             ExitCode::Unavailable
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::BrokenPipe)),
+            ExitCode::from(io::Error::from(io::ErrorKind::BrokenPipe)),
             ExitCode::TempFail
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::AlreadyExists)),
+            ExitCode::from(io::Error::from(io::ErrorKind::AlreadyExists)),
             ExitCode::CantCreat
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::WouldBlock)),
+            ExitCode::from(io::Error::from(io::ErrorKind::WouldBlock)),
             ExitCode::Protocol
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::NotADirectory)),
+            ExitCode::from(io::Error::from(io::ErrorKind::NotADirectory)),
             ExitCode::IoErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::IsADirectory)),
+            ExitCode::from(io::Error::from(io::ErrorKind::IsADirectory)),
             ExitCode::IoErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::DirectoryNotEmpty)),
+            ExitCode::from(io::Error::from(io::ErrorKind::DirectoryNotEmpty)),
             ExitCode::IoErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::ReadOnlyFilesystem)),
+            ExitCode::from(io::Error::from(io::ErrorKind::ReadOnlyFilesystem)),
             ExitCode::CantCreat
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::StaleNetworkFileHandle)),
+            ExitCode::from(io::Error::from(io::ErrorKind::StaleNetworkFileHandle)),
             ExitCode::IoErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::InvalidInput)),
+            ExitCode::from(io::Error::from(io::ErrorKind::InvalidInput)),
             ExitCode::DataErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::InvalidData)),
+            ExitCode::from(io::Error::from(io::ErrorKind::InvalidData)),
             ExitCode::DataErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::TimedOut)),
+            ExitCode::from(io::Error::from(io::ErrorKind::TimedOut)),
             ExitCode::TempFail
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::WriteZero)),
+            ExitCode::from(io::Error::from(io::ErrorKind::WriteZero)),
             ExitCode::Software
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::StorageFull)),
+            ExitCode::from(io::Error::from(io::ErrorKind::StorageFull)),
             ExitCode::IoErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::NotSeekable)),
+            ExitCode::from(io::Error::from(io::ErrorKind::NotSeekable)),
             ExitCode::IoErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::QuotaExceeded)),
+            ExitCode::from(io::Error::from(io::ErrorKind::QuotaExceeded)),
             ExitCode::IoErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::FileTooLarge)),
+            ExitCode::from(io::Error::from(io::ErrorKind::FileTooLarge)),
             ExitCode::IoErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::ResourceBusy)),
+            ExitCode::from(io::Error::from(io::ErrorKind::ResourceBusy)),
             ExitCode::IoErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::ExecutableFileBusy)),
+            ExitCode::from(io::Error::from(io::ErrorKind::ExecutableFileBusy)),
             ExitCode::IoErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::Deadlock)),
+            ExitCode::from(io::Error::from(io::ErrorKind::Deadlock)),
             ExitCode::IoErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::CrossesDevices)),
+            ExitCode::from(io::Error::from(io::ErrorKind::CrossesDevices)),
             ExitCode::IoErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::TooManyLinks)),
+            ExitCode::from(io::Error::from(io::ErrorKind::TooManyLinks)),
             ExitCode::IoErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::ArgumentListTooLong)),
+            ExitCode::from(io::Error::from(io::ErrorKind::ArgumentListTooLong)),
             ExitCode::IoErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::Interrupted)),
+            ExitCode::from(io::Error::from(io::ErrorKind::Interrupted)),
             ExitCode::TempFail
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::Unsupported)),
+            ExitCode::from(io::Error::from(io::ErrorKind::Unsupported)),
             ExitCode::Protocol
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::UnexpectedEof)),
+            ExitCode::from(io::Error::from(io::ErrorKind::UnexpectedEof)),
             ExitCode::Software
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::OutOfMemory)),
+            ExitCode::from(io::Error::from(io::ErrorKind::OutOfMemory)),
             ExitCode::OsErr
         );
         assert_eq!(
-            ExitCode::from(Error::from(ErrorKind::Other)),
+            ExitCode::from(io::Error::from(io::ErrorKind::Other)),
             ExitCode::IoErr
         );
     }
@@ -790,8 +792,6 @@ mod tests {
     #[cfg(feature = "std")]
     #[test]
     fn from_io_error_kind_to_exit_code() {
-        use std::io;
-
         assert_eq!(ExitCode::from(io::ErrorKind::NotFound), ExitCode::NoInput);
         assert_eq!(
             ExitCode::from(io::ErrorKind::PermissionDenied),
@@ -984,8 +984,6 @@ mod tests {
     #[cfg(any(unix, windows))]
     #[test]
     fn try_from_process_exit_status_to_exit_code_when_out_of_range() {
-        use crate::error::TryFromExitStatusError;
-
         assert_eq!(
             ExitCode::try_from(get_exit_status(1)).unwrap_err(),
             TryFromExitStatusError::new(Some(1))
@@ -1003,11 +1001,7 @@ mod tests {
     #[cfg(all(feature = "std", unix))]
     #[test]
     fn try_from_process_exit_status_to_exit_code_when_terminated_by_signal() {
-        use crate::error::TryFromExitStatusError;
-
-        fn get_exit_status() -> std::process::ExitStatus {
-            use std::process::{Command, Stdio};
-
+        fn get_exit_status() -> ExitStatus {
             let mut child = Command::new("sh")
                 .arg("-c")
                 .arg("read a")

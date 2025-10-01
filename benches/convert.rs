@@ -6,6 +6,9 @@
 
 extern crate test;
 
+#[cfg(feature = "std")]
+use std::{io, process};
+
 use sysexits::ExitCode;
 use test::Bencher;
 
@@ -33,7 +36,7 @@ bench_from_exit_code_to_integer!(usize, from_exit_code_to_usize);
 #[cfg(feature = "std")]
 #[bench]
 fn from_exit_code_to_process_exit_code(b: &mut Bencher) {
-    b.iter(|| std::process::ExitCode::from(ExitCode::Ok));
+    b.iter(|| process::ExitCode::from(ExitCode::Ok));
 }
 
 macro_rules! bench_try_from_integer_to_exit_code {
@@ -60,15 +63,11 @@ bench_try_from_integer_to_exit_code!(usize, try_from_usize_to_exit_code);
 #[cfg(feature = "std")]
 #[bench]
 fn from_io_error_to_exit_code(b: &mut Bencher) {
-    use std::io::{Error, ErrorKind};
-
-    b.iter(|| ExitCode::from(Error::from(ErrorKind::NotFound)));
+    b.iter(|| ExitCode::from(io::Error::from(io::ErrorKind::NotFound)));
 }
 
 #[cfg(feature = "std")]
 #[bench]
 fn from_io_error_kind_to_exit_code(b: &mut Bencher) {
-    use std::io;
-
     b.iter(|| ExitCode::from(io::ErrorKind::NotFound));
 }
