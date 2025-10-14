@@ -43,7 +43,7 @@ clippy-fix:
 
 # Build the package documentation
 doc $RUSTDOCFLAGS="--cfg docsrs":
-    cargo +nightly doc --all-features
+    cargo +nightly doc
 
 # Run the linter for GitHub Actions workflow files
 lint-github-actions:

@@ -16,9 +16,6 @@ keywords = ["exitcode", "sysexits"]
 categories = ["command-line-interface", "no-std", "os"]
 include = ["/LICENSES", "/README.md", "/src"]
 
-[package.metadata.docs.rs]
-all-features = true
-
 [[example]]
 name = "cat"
 required-features = ["std"]
