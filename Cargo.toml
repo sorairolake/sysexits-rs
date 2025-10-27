@@ -30,7 +30,7 @@ required-features = ["std"]
 
 [dev-dependencies]
 clap = { version = "4.5.50", features = ["derive"] }
-proptest = "1.8.0"
+proptest = "1.9.0"
 test-strategy = "0.4.3"
 
 [features]
