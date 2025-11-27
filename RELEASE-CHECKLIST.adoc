@@ -11,12 +11,12 @@
   add any missing changes)
 . Bump up the version (`just bump part`)
 . Update the release date in `link:CITATION.cff[]` to the current date
-. Switch to the `master` branch, and merge the release branch into it (with
+. Switch to the `main` branch, and merge the release branch into it (with
   `--no-ff`)
 . Make a GPG-signed tag (e.g.
   `git tag -s v0.1.0 -m "chore(release): Release version 0.1.0"`)
 . Switch to the `develop` branch, and merge the release branch into it (with
   `--no-ff`)
-. Push the `master` branch, the `develop` branch and the local tags
+. Push the `main` branch, the `develop` branch and the local tags
 . Checkout the latest tag, and publish to {crates-io-url}[crates.io] using
   `cargo publish`
