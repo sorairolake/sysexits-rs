@@ -12,6 +12,7 @@ on:
   push:
     paths:
       - CITATION.cff
+  workflow_dispatch:
 
 permissions:
   contents: read
