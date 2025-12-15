@@ -32,7 +32,6 @@ macro_rules! impl_from_exit_code_to_integer {
             #[doc = $ok]
             #[doc = $usage]
             /// ```
-            #[inline]
             fn from(code: ExitCode) -> Self {
                 code as Self
             }
@@ -66,7 +65,6 @@ impl_from_exit_code_to_integer!(usize);
 #[cfg(feature = "std")]
 impl From<ExitCode> for process::ExitCode {
     /// Converts an `sysexits::ExitCode` into an [`process::ExitCode`].
-    #[inline]
     fn from(code: ExitCode) -> Self {
         code.report()
     }
@@ -93,7 +91,6 @@ macro_rules! impl_try_from_integer_to_exit_code {
             ///
             #[doc = $err]
             /// ```
-            #[inline]
             fn try_from(value: $T) -> Result<Self, Self::Error> {
                 match value {
                     0 => Ok(Self::Ok),
@@ -167,7 +164,6 @@ impl From<io::Error> for ExitCode {
     ///     ExitCode::NoInput
     /// );
     /// ```
-    #[inline]
     fn from(error: io::Error) -> Self {
         error.kind().into()
     }
@@ -186,7 +182,6 @@ impl From<io::ErrorKind> for ExitCode {
     /// #
     /// assert_eq!(ExitCode::from(io::ErrorKind::NotFound), ExitCode::NoInput);
     /// ```
-    #[inline]
     fn from(kind: io::ErrorKind) -> Self {
         match kind {
             io::ErrorKind::NotFound => Self::NoInput,
@@ -224,7 +219,6 @@ impl TryFrom<ExitStatus> for ExitCode {
     /// - The exit code is not `0` or `64..=78`.
     /// - The exit code is unknown (e.g., the process was terminated by a
     ///   signal).
-    #[inline]
     fn try_from(status: ExitStatus) -> Result<Self, Self::Error> {
         match status.code() {
             Some(0) => Ok(Self::Ok),

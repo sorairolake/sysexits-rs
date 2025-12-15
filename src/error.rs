@@ -10,11 +10,9 @@ use core::{error::Error, fmt};
 /// The error type indicating that [`ExitCode`](crate::ExitCode) was out of
 /// range.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-#[allow(clippy::module_name_repetitions)]
 pub struct ExitCodeRangeError;
 
 impl fmt::Display for ExitCodeRangeError {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "value is out of range for `ExitCode`")
     }
@@ -27,12 +25,10 @@ impl Error for ExitCodeRangeError {}
 /// [`ExitCode`](crate::ExitCode) from an
 /// [`ExitStatus`](std::process::ExitStatus).
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-#[allow(clippy::module_name_repetitions)]
 pub struct TryFromExitStatusError(Option<i32>);
 
 #[cfg(feature = "std")]
 impl TryFromExitStatusError {
-    #[inline]
     pub(crate) const fn new(code: Option<i32>) -> Self {
         Self(code)
     }
@@ -41,7 +37,6 @@ impl TryFromExitStatusError {
     ///
     /// Returns [`None`] if the process was terminated by a signal.
     #[must_use]
-    #[inline]
     pub const fn code(&self) -> Option<i32> {
         self.0
     }
@@ -49,7 +44,6 @@ impl TryFromExitStatusError {
 
 #[cfg(feature = "std")]
 impl fmt::Display for TryFromExitStatusError {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(code) = self.code() {
             write!(f, "invalid exit code `{code}`")

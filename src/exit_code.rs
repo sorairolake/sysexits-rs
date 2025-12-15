@@ -234,7 +234,6 @@ impl ExitCode {
     /// assert_eq!(ExitCode::Usage.is_success(), false);
     /// ```
     #[must_use]
-    #[inline]
     pub const fn is_success(&self) -> bool {
         matches!(self, Self::Ok)
     }
@@ -251,7 +250,6 @@ impl ExitCode {
     /// assert_eq!(ExitCode::Usage.is_failure(), true);
     /// ```
     #[must_use]
-    #[inline]
     pub const fn is_failure(&self) -> bool {
         !self.is_success()
     }
@@ -270,7 +268,6 @@ impl ExitCode {
     /// }
     /// ```
     #[cfg(feature = "std")]
-    #[inline]
     pub fn exit(self) -> ! {
         process::exit(self.into())
     }
@@ -280,7 +277,6 @@ impl Error for ExitCode {}
 
 #[cfg(feature = "std")]
 impl Termination for ExitCode {
-    #[inline]
     fn report(self) -> process::ExitCode {
         u8::from(self).into()
     }
