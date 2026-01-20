@@ -269,7 +269,7 @@ impl ExitCode {
     /// ```
     #[cfg(feature = "std")]
     pub fn exit(self) -> ! {
-        process::exit(self.into())
+        process::exit(u8::from(self).into())
     }
 }
 
