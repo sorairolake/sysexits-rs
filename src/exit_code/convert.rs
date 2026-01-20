@@ -17,7 +17,7 @@ use super::ExitCode;
 use crate::error::TryFromExitStatusError;
 
 impl From<ExitCode> for u8 {
-    /// Converts an `ExitCode` into the raw underlying integer value.
+    /// Converts an `ExitCode` into the raw underlying [`u8`] value.
     ///
     /// The resulting value is `0` or `64..=78`.
     ///
