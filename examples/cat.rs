@@ -21,14 +21,13 @@ struct Opt {
     /// Files to print.
     ///
     /// If [FILE] is not specified, data will be read from standard input.
-    #[arg(value_name("FILE"))]
-    input: Option<Vec<PathBuf>>,
+    file: Option<Vec<PathBuf>>,
 }
 
 fn main() -> ExitCode {
     let opt = Opt::parse();
 
-    let contents: io::Result<Vec<_>> = if let Some(files) = opt.input {
+    let contents: io::Result<Vec<_>> = if let Some(files) = opt.file {
         files.into_iter().map(fs::read_to_string).collect()
     } else {
         let mut buf = String::new();

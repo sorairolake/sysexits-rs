@@ -21,10 +21,6 @@ name = "cat"
 required-features = ["std"]
 
 [[example]]
-name = "cmp"
-required-features = ["std"]
-
-[[example]]
 name = "isutf8"
 required-features = ["std"]
 
