@@ -7,6 +7,8 @@
 extern crate test;
 
 use core::error::Error;
+#[cfg(feature = "std")]
+use std::process::Termination;
 
 use sysexits::ExitCode;
 use test::Bencher;
@@ -49,7 +51,5 @@ fn source(b: &mut Bencher) {
 #[cfg(feature = "std")]
 #[bench]
 fn report(b: &mut Bencher) {
-    use std::process::Termination;
-
     b.iter(|| ExitCode::Ok.report());
 }

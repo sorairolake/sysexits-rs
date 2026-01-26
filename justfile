@@ -31,10 +31,6 @@ bench:
 
 # Run the formatter
 fmt:
-    cargo fmt
-
-# Run the formatter with options
-fmt-with-options:
     cargo +nightly fmt
 
 # Run the linter
@@ -47,7 +43,7 @@ clippy-fix:
 
 # Build the package documentation
 doc $RUSTDOCFLAGS="--cfg docsrs":
-    cargo +nightly doc --all-features
+    cargo +nightly doc
 
 # Run the linter for GitHub Actions workflow files
 lint-github-actions:

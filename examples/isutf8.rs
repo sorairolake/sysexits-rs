@@ -21,14 +21,13 @@ struct Opt {
     /// File to check.
     ///
     /// If [FILE] is not specified, data will be read from standard input.
-    #[arg(value_name("FILE"))]
-    input: Option<PathBuf>,
+    file: Option<PathBuf>,
 }
 
 fn main() -> ExitCode {
     let opt = Opt::parse();
 
-    let input = if let Some(file) = opt.input {
+    let input = if let Some(file) = opt.file {
         match fs::read(file) {
             Ok(data) => data,
             Err(err) => {

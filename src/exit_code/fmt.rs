@@ -20,7 +20,6 @@ impl fmt::Display for ExitCode {
     /// assert_eq!(format!("{}", ExitCode::Ok), "0");
     /// assert_eq!(format!("{}", ExitCode::Usage), "64");
     /// ```
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         u8::from(*self).fmt(f)
     }
@@ -37,7 +36,6 @@ impl fmt::Octal for ExitCode {
     /// assert_eq!(format!("{:#o}", ExitCode::Ok), "0o0");
     /// assert_eq!(format!("{:o}", ExitCode::Usage), "100");
     /// ```
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         u8::from(*self).fmt(f)
     }
@@ -54,7 +52,6 @@ impl fmt::LowerHex for ExitCode {
     /// assert_eq!(format!("{:#x}", ExitCode::Ok), "0x0");
     /// assert_eq!(format!("{:x}", ExitCode::Usage), "40");
     /// ```
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         u8::from(*self).fmt(f)
     }
@@ -71,7 +68,6 @@ impl fmt::UpperHex for ExitCode {
     /// assert_eq!(format!("{:#X}", ExitCode::Ok), "0x0");
     /// assert_eq!(format!("{:X}", ExitCode::Usage), "40");
     /// ```
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         u8::from(*self).fmt(f)
     }
@@ -88,7 +84,6 @@ impl fmt::Binary for ExitCode {
     /// assert_eq!(format!("{:#b}", ExitCode::Ok), "0b0");
     /// assert_eq!(format!("{:b}", ExitCode::Usage), "1000000");
     /// ```
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         u8::from(*self).fmt(f)
     }
@@ -105,7 +100,6 @@ impl fmt::LowerExp for ExitCode {
     /// assert_eq!(format!("{:e}", ExitCode::Ok), "0e0");
     /// assert_eq!(format!("{:e}", ExitCode::Usage), "6.4e1");
     /// ```
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         u8::from(*self).fmt(f)
     }
@@ -122,7 +116,6 @@ impl fmt::UpperExp for ExitCode {
     /// assert_eq!(format!("{:E}", ExitCode::Ok), "0E0");
     /// assert_eq!(format!("{:E}", ExitCode::Usage), "6.4E1");
     /// ```
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         u8::from(*self).fmt(f)
     }
