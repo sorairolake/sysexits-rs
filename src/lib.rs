@@ -16,8 +16,6 @@
 //! ```
 //! # #[cfg(feature = "std")]
 //! # {
-//! use std::str;
-//!
 //! use sysexits::ExitCode;
 //!
 //! fn main() -> ExitCode {
