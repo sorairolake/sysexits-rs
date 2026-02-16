@@ -27,7 +27,7 @@ required-features = ["std"]
 [dev-dependencies]
 clap = { version = "4.5.57", features = ["derive"] }
 proptest = "1.10.0"
-test-strategy = "0.4.4"
+test-strategy = "0.4.5"
 
 [features]
 default = ["std"]
