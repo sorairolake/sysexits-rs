@@ -20,6 +20,11 @@ project adheres to https://semver.org/[Semantic Versioning].
 
 * Bump MSRV to 1.87.0 ({pull-request-url}/225[#225])
 
+=== Removed
+
+* Remove the formatting traits for `ExitCode` except `fmt::Debug` and
+  `fmt::Display` ({pull-request-url}/236[#236])
+
 == {compare-url}/v0.10.0\...v0.11.0[0.11.0] - 2026-01-26
 
 === Removed
