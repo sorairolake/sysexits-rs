@@ -5,7 +5,7 @@
 
 [package]
 name = "sysexits"
-version = "0.11.0"
+version = "0.12.0"
 edition = "2024"
 rust-version = "1.87.0"
 description = "The system exit codes as defined by <sysexits.h>"
@@ -25,7 +25,7 @@ name = "isutf8"
 required-features = ["std"]
 
 [dev-dependencies]
-clap = { version = "4.5.58", features = ["derive"] }
+clap = { version = "4.5.60", features = ["derive"] }
 proptest = "1.10.0"
 test-strategy = "0.4.5"
 
