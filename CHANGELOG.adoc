@@ -14,6 +14,17 @@ All notable changes to this project will be documented in this file.
 The format is based on https://keepachangelog.com/[Keep a Changelog], and this
 project adheres to https://semver.org/[Semantic Versioning].
 
+== {compare-url}/v0.11.0\...v0.12.0[0.12.0] - 2026-02-20
+
+=== Changed
+
+* Bump MSRV to 1.87.0 ({pull-request-url}/225[#225])
+
+=== Removed
+
+* Remove the formatting traits for `ExitCode` except `fmt::Debug` and
+  `fmt::Display` ({pull-request-url}/236[#236])
+
 == {compare-url}/v0.10.0\...v0.11.0[0.11.0] - 2026-01-26
 
 === Removed

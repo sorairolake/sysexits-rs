@@ -38,7 +38,7 @@ jobs:
             os: windows-2025
             target: x86_64-pc-windows-msvc
           - toolchain-alias: msrv
-            toolchain: 1.85.0
+            toolchain: 1.87.0
           - toolchain-alias: stable
             toolchain: stable
     steps:
@@ -81,7 +81,7 @@ jobs:
             os: windows-2025
             target: x86_64-pc-windows-msvc
           - toolchain-alias: msrv
-            toolchain: 1.85.0
+            toolchain: 1.87.0
           - toolchain-alias: stable
             toolchain: stable
     steps:
@@ -126,7 +126,7 @@ jobs:
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
-          toolchain: stable
+          toolchain: nightly
           components: clippy
       - name: Cache build artifacts
         uses: Swatinem/rust-cache@v2.8.2
@@ -176,6 +176,6 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
       - name: Run formatter in check mode
         run: npx prettier -c "**.{md,yaml,yml}"

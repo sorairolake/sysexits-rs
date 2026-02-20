@@ -5,9 +5,9 @@
 
 [package]
 name = "sysexits"
-version = "0.11.0"
+version = "0.12.0"
 edition = "2024"
-rust-version = "1.85.0"
+rust-version = "1.87.0"
 description = "The system exit codes as defined by <sysexits.h>"
 documentation = "https://docs.rs/sysexits"
 repository = "https://github.com/sorairolake/sysexits-rs"
@@ -25,18 +25,19 @@ name = "isutf8"
 required-features = ["std"]
 
 [dev-dependencies]
-clap = { version = "4.5.54", features = ["derive"] }
-proptest = "1.9.0"
-test-strategy = "0.4.3"
+clap = { version = "4.5.60", features = ["derive"] }
+proptest = "1.10.0"
+test-strategy = "0.4.5"
 
 [features]
 default = ["std"]
 std = []
 
 [lints.clippy]
-cargo = "warn"
-nursery = "warn"
-pedantic = "warn"
+cargo = { level = "warn", priority = -1 }
+multiple_crate_versions = "allow"
+nursery = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
 
 [lints.rust]
 missing_debug_implementations = "deny"

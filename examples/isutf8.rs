@@ -9,7 +9,6 @@ use std::{
     fs,
     io::{self, Read},
     path::PathBuf,
-    str,
 };
 
 use clap::Parser;
