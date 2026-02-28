@@ -234,7 +234,7 @@ impl ExitCode {
     /// assert_eq!(ExitCode::Usage.is_success(), false);
     /// ```
     #[must_use]
-    pub const fn is_success(&self) -> bool {
+    pub const fn is_success(self) -> bool {
         matches!(self, Self::Ok)
     }
 
@@ -250,7 +250,7 @@ impl ExitCode {
     /// assert_eq!(ExitCode::Usage.is_failure(), true);
     /// ```
     #[must_use]
-    pub const fn is_failure(&self) -> bool {
+    pub const fn is_failure(self) -> bool {
         !self.is_success()
     }
 
