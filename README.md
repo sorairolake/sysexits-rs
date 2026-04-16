@@ -42,6 +42,10 @@ This supports `no_std` mode. Disables the `default` feature to enable this.
 
 See the [documentation][docs-url] for more details.
 
+## Examples
+
+Please see the [examples] directory for examples of using this library.
+
 ## Minimum supported Rust version
 
 The minimum supported Rust version (MSRV) of this library is v1.87.0.
@@ -86,6 +90,7 @@ licensing information.
 [reuse-url]: https://api.reuse.software/info/github.com/sorairolake/sysexits-rs
 [`<sysexits.h>`]: https://man.openbsd.org/sysexits
 [`Termination`]: https://doc.rust-lang.org/std/process/trait.Termination.html
+[examples]: examples
 [CHANGELOG.adoc]: CHANGELOG.adoc
 [CONTRIBUTING.adoc]: CONTRIBUTING.adoc
 [AUTHORS.adoc]: AUTHORS.adoc
