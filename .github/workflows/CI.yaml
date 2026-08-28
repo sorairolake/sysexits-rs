@@ -43,7 +43,7 @@ jobs:
             toolchain: stable
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
@@ -86,7 +86,7 @@ jobs:
             toolchain: stable
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
@@ -106,7 +106,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
@@ -122,7 +122,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
@@ -140,7 +140,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
@@ -157,7 +157,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
@@ -172,7 +172,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Setup Node.js environment
         uses: actions/setup-node@v6
         with:
