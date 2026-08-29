@@ -50,7 +50,7 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           targets: ${{ matrix.target }}
       - name: Cache build artifacts
-        uses: Swatinem/rust-cache@v2.9.1
+        uses: Swatinem/rust-cache@v2.9.2
         with:
           key: ${{ matrix.target }}
       - name: Check a package
@@ -93,7 +93,7 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           targets: ${{ matrix.target }}
       - name: Cache build artifacts
-        uses: Swatinem/rust-cache@v2.9.1
+        uses: Swatinem/rust-cache@v2.9.2
         with:
           key: ${{ matrix.target }}
       - name: Run tests
@@ -113,7 +113,7 @@ jobs:
           toolchain: nightly
           components: rustfmt
       - name: Cache build artifacts
-        uses: Swatinem/rust-cache@v2.9.1
+        uses: Swatinem/rust-cache@v2.9.2
       - name: Run formatter in check mode
         run: cargo fmt --check
 
@@ -129,7 +129,7 @@ jobs:
           toolchain: nightly
           components: clippy
       - name: Cache build artifacts
-        uses: Swatinem/rust-cache@v2.9.1
+        uses: Swatinem/rust-cache@v2.9.2
       - name: Run linter
         run: cargo clippy -- -D warnings
       - name: Run linter (no default features)
@@ -146,7 +146,7 @@ jobs:
         with:
           toolchain: nightly
       - name: Cache build artifacts
-        uses: Swatinem/rust-cache@v2.9.1
+        uses: Swatinem/rust-cache@v2.9.2
       - name: Run linter
         env:
           RUSTDOCFLAGS: "--cfg docsrs -D warnings"
@@ -163,7 +163,7 @@ jobs:
         with:
           toolchain: nightly
       - name: Cache build artifacts
-        uses: Swatinem/rust-cache@v2.9.1
+        uses: Swatinem/rust-cache@v2.9.2
       - name: Run benchmarks
         run: cargo bench
 
