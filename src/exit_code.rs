@@ -27,8 +27,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::Ok as u8, 0);
     /// ```
     #[default]
@@ -40,8 +40,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::Usage as u8, 64);
     /// ```
     Usage = 64,
@@ -52,8 +52,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::DataErr as u8, 65);
     /// ```
     DataErr,
@@ -65,8 +65,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::NoInput as u8, 66);
     /// ```
     NoInput,
@@ -77,8 +77,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::NoUser as u8, 67);
     /// ```
     NoUser,
@@ -89,8 +89,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::NoHost as u8, 68);
     /// ```
     NoHost,
@@ -102,8 +102,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::Unavailable as u8, 69);
     /// ```
     Unavailable,
@@ -114,8 +114,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::Software as u8, 70);
     /// ```
     Software,
@@ -128,8 +128,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::OsErr as u8, 71);
     /// ```
     ///
@@ -142,8 +142,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::OsFile as u8, 72);
     /// ```
     OsFile,
@@ -153,8 +153,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::CantCreat as u8, 73);
     /// ```
     CantCreat,
@@ -164,8 +164,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::IoErr as u8, 74);
     /// ```
     IoErr,
@@ -177,8 +177,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::TempFail as u8, 75);
     /// ```
     TempFail,
@@ -189,8 +189,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::Protocol as u8, 76);
     /// ```
     Protocol,
@@ -203,8 +203,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::NoPerm as u8, 77);
     /// ```
     NoPerm,
@@ -214,8 +214,8 @@ pub enum ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::Config as u8, 78);
     /// ```
     Config,
@@ -228,8 +228,8 @@ impl ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::Ok.is_success(), true);
     /// assert_eq!(ExitCode::Usage.is_success(), false);
     /// ```
@@ -244,8 +244,8 @@ impl ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::Ok.is_failure(), false);
     /// assert_eq!(ExitCode::Usage.is_failure(), true);
     /// ```
@@ -261,8 +261,8 @@ impl ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// fn main() {
     ///     ExitCode::Ok.exit();
     /// }
