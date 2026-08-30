@@ -24,8 +24,8 @@ impl From<ExitCode> for u8 {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(u8::from(ExitCode::Ok), 0);
     /// assert_eq!(u8::from(ExitCode::Usage), 64);
     /// ```
@@ -49,10 +49,10 @@ impl From<io::Error> for ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use std::io;
-    /// #
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use std::io;
+    ///
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(
     ///     ExitCode::from(io::Error::from(io::ErrorKind::NotFound)),
     ///     ExitCode::NoInput
@@ -70,10 +70,10 @@ impl From<io::ErrorKind> for ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use std::io;
-    /// #
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use std::io;
+    ///
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::from(io::ErrorKind::NotFound), ExitCode::NoInput);
     /// ```
     fn from(kind: io::ErrorKind) -> Self {

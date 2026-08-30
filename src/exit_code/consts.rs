@@ -14,8 +14,8 @@ impl ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::BASE, ExitCode::Usage);
     /// ```
     ///
@@ -29,8 +29,8 @@ impl ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::MAX, ExitCode::Config);
     /// ```
     ///

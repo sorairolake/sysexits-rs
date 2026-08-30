@@ -15,8 +15,8 @@ impl fmt::Display for ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(format!("{}", ExitCode::Ok), "0");
     /// assert_eq!(format!("{}", ExitCode::Usage), "64");
     /// ```

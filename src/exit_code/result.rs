@@ -23,8 +23,8 @@ impl<T> From<Result<T>> for ExitCode {
     /// # Examples
     ///
     /// ```
-    /// # use sysexits::ExitCode;
-    /// #
+    /// use sysexits::ExitCode;
+    ///
     /// assert_eq!(ExitCode::from(Ok::<(), ExitCode>(())), ExitCode::Ok);
     /// assert_eq!(ExitCode::from(Ok::<u8, ExitCode>(42)), ExitCode::Ok);
     ///
