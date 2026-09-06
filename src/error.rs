@@ -18,7 +18,8 @@ impl TryFromExitStatusError {
         Self(code)
     }
 
-    /// Returns the corresponding exit code for this error, or [`None`] if the process was terminated by a signal.
+    /// Returns the corresponding exit code for this error, or [`None`] if the
+    /// process was terminated by a signal.
     #[must_use]
     pub const fn code(self) -> Option<i32> {
         self.0
