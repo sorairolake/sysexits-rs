@@ -16,9 +16,9 @@ pub type Result<T> = core::result::Result<T, ExitCode>;
 impl<T> From<Result<T>> for ExitCode {
     /// Converts a [`Result<T>`] into an `ExitCode`.
     ///
-    /// This method returns [`ExitCode::Ok`] if the result is [`Ok`], otherwise
-    /// returns the appropriate variant of `ExitCode` contained in the [`Err`]
-    /// variant.
+    /// This function returns [`ExitCode::Ok`] if the result is [`Ok`],
+    /// otherwise returns the appropriate variant of `ExitCode` contained in
+    /// the [`Err`] variant.
     ///
     /// # Examples
     ///
