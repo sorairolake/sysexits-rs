@@ -16,6 +16,10 @@ keywords = ["exitcode", "sysexits"]
 categories = ["command-line-interface", "no-std", "os"]
 include = ["/LICENSES", "/README.md", "/src"]
 
+[features]
+default = ["std"]
+std = []
+
 [[example]]
 name = "cat"
 required-features = ["std"]
@@ -28,10 +32,6 @@ required-features = ["std"]
 clap = { version = "4.6.1", features = ["derive"] }
 proptest = "1.11.0"
 test-strategy = "0.4.5"
-
-[features]
-default = ["std"]
-std = []
 
 [lints.clippy]
 cargo = { level = "warn", priority = -1 }
