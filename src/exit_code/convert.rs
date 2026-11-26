@@ -16,32 +16,6 @@ use super::ExitCode;
 #[cfg(feature = "std")]
 use crate::error::TryFromExitStatusError;
 
-impl From<ExitCode> for u8 {
-    /// Converts an `ExitCode` into the raw underlying [`u8`] value.
-    ///
-    /// The resulting value is `0` or `64..=78`.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use sysexits::ExitCode;
-    ///
-    /// assert_eq!(u8::from(ExitCode::Ok), 0);
-    /// assert_eq!(u8::from(ExitCode::Usage), 64);
-    /// ```
-    fn from(code: ExitCode) -> Self {
-        code as Self
-    }
-}
-
-#[cfg(feature = "std")]
-impl From<ExitCode> for process::ExitCode {
-    /// Converts an `sysexits::ExitCode` into an [`process::ExitCode`].
-    fn from(code: ExitCode) -> Self {
-        code.report()
-    }
-}
-
 #[cfg(feature = "std")]
 impl From<io::Error> for ExitCode {
     /// Converts an [`io::Error`] into an `ExitCode`.
@@ -137,6 +111,32 @@ impl TryFrom<ExitStatus> for ExitCode {
     }
 }
 
+impl From<ExitCode> for u8 {
+    /// Converts an `ExitCode` into the raw underlying [`u8`] value.
+    ///
+    /// The resulting value is `0` or `64..=78`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use sysexits::ExitCode;
+    ///
+    /// assert_eq!(u8::from(ExitCode::Ok), 0);
+    /// assert_eq!(u8::from(ExitCode::Usage), 64);
+    /// ```
+    fn from(code: ExitCode) -> Self {
+        code as Self
+    }
+}
+
+#[cfg(feature = "std")]
+impl From<ExitCode> for process::ExitCode {
+    /// Converts an `sysexits::ExitCode` into an [`process::ExitCode`].
+    fn from(code: ExitCode) -> Self {
+        code.report()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     #[cfg(feature = "std")]
@@ -162,95 +162,6 @@ mod tests {
             .arg(format!("exit {status}"))
             .status()
             .unwrap()
-    }
-
-    #[test]
-    fn from_exit_code_to_u8() {
-        assert_eq!(u8::from(ExitCode::Ok), 0);
-        assert_eq!(u8::from(ExitCode::Usage), 64);
-        assert_eq!(u8::from(ExitCode::DataErr), 65);
-        assert_eq!(u8::from(ExitCode::NoInput), 66);
-        assert_eq!(u8::from(ExitCode::NoUser), 67);
-        assert_eq!(u8::from(ExitCode::NoHost), 68);
-        assert_eq!(u8::from(ExitCode::Unavailable), 69);
-        assert_eq!(u8::from(ExitCode::Software), 70);
-        assert_eq!(u8::from(ExitCode::OsErr), 71);
-        assert_eq!(u8::from(ExitCode::OsFile), 72);
-        assert_eq!(u8::from(ExitCode::CantCreat), 73);
-        assert_eq!(u8::from(ExitCode::IoErr), 74);
-        assert_eq!(u8::from(ExitCode::TempFail), 75);
-        assert_eq!(u8::from(ExitCode::Protocol), 76);
-        assert_eq!(u8::from(ExitCode::NoPerm), 77);
-        assert_eq!(u8::from(ExitCode::Config), 78);
-    }
-
-    #[cfg(feature = "std")]
-    #[test]
-    fn from_exit_code_to_process_exit_code() {
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::Ok)),
-            format!("{:?}", process::ExitCode::from(0))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::Usage)),
-            format!("{:?}", process::ExitCode::from(64))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::DataErr)),
-            format!("{:?}", process::ExitCode::from(65))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::NoInput)),
-            format!("{:?}", process::ExitCode::from(66))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::NoUser)),
-            format!("{:?}", process::ExitCode::from(67))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::NoHost)),
-            format!("{:?}", process::ExitCode::from(68))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::Unavailable)),
-            format!("{:?}", process::ExitCode::from(69))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::Software)),
-            format!("{:?}", process::ExitCode::from(70))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::OsErr)),
-            format!("{:?}", process::ExitCode::from(71))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::OsFile)),
-            format!("{:?}", process::ExitCode::from(72))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::CantCreat)),
-            format!("{:?}", process::ExitCode::from(73))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::IoErr)),
-            format!("{:?}", process::ExitCode::from(74))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::TempFail)),
-            format!("{:?}", process::ExitCode::from(75))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::Protocol)),
-            format!("{:?}", process::ExitCode::from(76))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::NoPerm)),
-            format!("{:?}", process::ExitCode::from(77))
-        );
-        assert_eq!(
-            format!("{:?}", process::ExitCode::from(ExitCode::Config)),
-            format!("{:?}", process::ExitCode::from(78))
-        );
     }
 
     #[cfg(feature = "std")]
@@ -636,6 +547,95 @@ mod tests {
         assert_eq!(
             ExitCode::try_from(get_exit_status()).unwrap_err(),
             TryFromExitStatusError::new(None)
+        );
+    }
+
+    #[test]
+    fn from_exit_code_to_u8() {
+        assert_eq!(u8::from(ExitCode::Ok), 0);
+        assert_eq!(u8::from(ExitCode::Usage), 64);
+        assert_eq!(u8::from(ExitCode::DataErr), 65);
+        assert_eq!(u8::from(ExitCode::NoInput), 66);
+        assert_eq!(u8::from(ExitCode::NoUser), 67);
+        assert_eq!(u8::from(ExitCode::NoHost), 68);
+        assert_eq!(u8::from(ExitCode::Unavailable), 69);
+        assert_eq!(u8::from(ExitCode::Software), 70);
+        assert_eq!(u8::from(ExitCode::OsErr), 71);
+        assert_eq!(u8::from(ExitCode::OsFile), 72);
+        assert_eq!(u8::from(ExitCode::CantCreat), 73);
+        assert_eq!(u8::from(ExitCode::IoErr), 74);
+        assert_eq!(u8::from(ExitCode::TempFail), 75);
+        assert_eq!(u8::from(ExitCode::Protocol), 76);
+        assert_eq!(u8::from(ExitCode::NoPerm), 77);
+        assert_eq!(u8::from(ExitCode::Config), 78);
+    }
+
+    #[cfg(feature = "std")]
+    #[test]
+    fn from_exit_code_to_process_exit_code() {
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::Ok)),
+            format!("{:?}", process::ExitCode::from(0))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::Usage)),
+            format!("{:?}", process::ExitCode::from(64))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::DataErr)),
+            format!("{:?}", process::ExitCode::from(65))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::NoInput)),
+            format!("{:?}", process::ExitCode::from(66))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::NoUser)),
+            format!("{:?}", process::ExitCode::from(67))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::NoHost)),
+            format!("{:?}", process::ExitCode::from(68))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::Unavailable)),
+            format!("{:?}", process::ExitCode::from(69))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::Software)),
+            format!("{:?}", process::ExitCode::from(70))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::OsErr)),
+            format!("{:?}", process::ExitCode::from(71))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::OsFile)),
+            format!("{:?}", process::ExitCode::from(72))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::CantCreat)),
+            format!("{:?}", process::ExitCode::from(73))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::IoErr)),
+            format!("{:?}", process::ExitCode::from(74))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::TempFail)),
+            format!("{:?}", process::ExitCode::from(75))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::Protocol)),
+            format!("{:?}", process::ExitCode::from(76))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::NoPerm)),
+            format!("{:?}", process::ExitCode::from(77))
+        );
+        assert_eq!(
+            format!("{:?}", process::ExitCode::from(ExitCode::Config)),
+            format!("{:?}", process::ExitCode::from(78))
         );
     }
 }
